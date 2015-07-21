@@ -546,6 +546,10 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
     }
 
     private void updateModels(RestApi api, Map<String, com.wordnik.swagger.models.Model> definitions, List<String> apiProduces) {
+        if (definitions == null) {
+            return;
+        }
+
         for (Map.Entry<String, com.wordnik.swagger.models.Model> entry : definitions.entrySet()) {
             final String modelName = entry.getKey();
             final com.wordnik.swagger.models.Model model = entry.getValue();
