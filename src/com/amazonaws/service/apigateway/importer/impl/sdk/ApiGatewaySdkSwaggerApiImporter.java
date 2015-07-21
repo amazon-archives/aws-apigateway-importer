@@ -168,12 +168,12 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
     }
 
     private void deleteDefaultModels(RestApi api) {
-        try {
-            api.getModels().getItem().stream().forEach(model -> {
-                LOG.info("Removing default model " + model.getName());
+        api.getModels().getItem().stream().forEach(model -> {
+            LOG.info("Removing default model " + model.getName());
+            try {
                 model.deleteModel();
-            });
-        } catch (Throwable ignored) {} // todo: temporary catch until API fix
+            } catch (Throwable ignored) {} // todo: temporary catch until API fix
+        });
     }
 
     private Optional<Resource> getResource(RestApi api, String parentResourceId, String pathPart) {
@@ -583,7 +583,9 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
     private void cleanupModels(RestApi api, Map<String, com.wordnik.swagger.models.Model> definitions) {
         api.getModels().getItem().stream().filter(model -> !definitions.containsKey(model.getName())).forEach(model -> {
             LOG.info("Removing deleted model " + model.getName());
-            model.deleteModel();
+            try {
+                model.deleteModel();
+            }  catch (Throwable ignored) {} // todo: temporary catch until API fix
         });
     }
 
