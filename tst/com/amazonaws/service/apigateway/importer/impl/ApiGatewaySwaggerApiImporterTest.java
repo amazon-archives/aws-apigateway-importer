@@ -109,13 +109,13 @@ public class ApiGatewaySwaggerApiImporterTest {
 
     @Test
     public void testImport_create_api() throws Exception {
-        importer.importApi(getResourcePath("/extensions.json"));
+        importer.importApi(getResourcePath("/apigateway.json"));
         verify(client, times(1)).createRestApi(any());
     }
 
     @Test
     public void testImport_create_resources() throws Exception {
-        importer.importApi(getResourcePath("/extensions.json"));
+        importer.importApi(getResourcePath("/apigateway.json"));
 
         // to simplify mocking, all child resources are added to the root resource, and parent resources will be added multiple times
         // /v1, /v1/products, /v1, /v1/products, /v1/products/child
@@ -126,7 +126,7 @@ public class ApiGatewaySwaggerApiImporterTest {
 
     @Test
     public void testImport_create_methods() throws Exception {
-        importer.importApi(getResourcePath("/extensions.json"));
+        importer.importApi(getResourcePath("/apigateway.json"));
 
         verify(mockChildResource, times(1)).putMethod(
                 argThat(new LambdaMatcher<>(i -> i.getAuthorizationType().equals("AWS_IAM"))),
@@ -138,7 +138,7 @@ public class ApiGatewaySwaggerApiImporterTest {
 
     @Test
     public void testImport_create_models() throws Exception {
-        importer.importApi(getResourcePath("/extensions.json"));
+        importer.importApi(getResourcePath("/apigateway.json"));
 
         verify(mockRestApi, times(1)).createModel(argThat(new LambdaMatcher<>(i -> i.getName().equals("Product"))));
         verify(mockRestApi, times(1)).createModel(argThat(new LambdaMatcher<>(i -> i.getName().equals("PriceEstimate"))));
