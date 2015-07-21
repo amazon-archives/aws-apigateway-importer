@@ -9,16 +9,21 @@ To learn more about API Gateway, please see the [service documentation][service-
 [service-docs]: http://docs.aws.amazon.com/apigateway/latest/developerguide/
 [api-docs]: http://docs.aws.amazon.com/apigateway/api-reference
 
+# Usage
 
-# Usage Examples
+## Prerequisites
 
-## Import a new API
+This tool requires the [AWS CLI](http://aws.amazon.com/cli) to be installed and configured on your system.
 
-e.g. ./aws-api-import.sh --create path/to/swagger.json
+## Usage Examples
 
-## Update an existing API and deploy it to a stage
+### Import a new API
 
-e.g. ./aws-api-import.sh --update API_ID --deploy STAGE_NAME path/to/swagger.yaml
+e.g. `./aws-api-import.sh --create path/to/swagger.json`
+
+### Update an existing API and deploy it to a stage
+
+e.g. `./aws-api-import.sh --update API_ID --deploy STAGE_NAME path/to/swagger.yaml`
 
 
 # API Gateway Swagger Extension Example
