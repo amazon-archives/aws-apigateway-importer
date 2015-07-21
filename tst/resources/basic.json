@@ -1,0 +1,12 @@
+{
+    "apiVersion": "",
+    "apis": [
+
+    ],
+    "basePath": "http://192.168.1.1:8000",
+    "models": {
+
+    },
+    "resourcePath": "/api",
+    "swaggerVersion": "1.2"
+}
