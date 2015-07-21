@@ -9,24 +9,25 @@ To learn more about API Gateway, please see the [service documentation][service-
 [service-docs]: http://docs.aws.amazon.com/apigateway/latest/developerguide/
 [api-docs]: http://docs.aws.amazon.com/apigateway/api-reference
 
-# Usage
+## Usage
 
-## Prerequisites
+### Prerequisites
 
 This tool requires the [AWS CLI](http://aws.amazon.com/cli) to be installed and configured on your system.
 
-## Usage Examples
+Build with `mvn assembly:assembly`
 
-### Import a new API
+### Usage Examples
+
+#### Import a new API
 
 e.g. `./aws-api-import.sh --create path/to/swagger.json`
 
-### Update an existing API and deploy it to a stage
+#### Update an existing API and deploy it to a stage
 
 e.g. `./aws-api-import.sh --update API_ID --deploy STAGE_NAME path/to/swagger.yaml`
 
-
-# API Gateway Swagger Extension Example
+### API Gateway Swagger Extension Example
 
 You can fully define an API Gateway API in Swagger using the x-amazon-apigateway-auth and x-amazon-apigateway-integration extensions.
 
