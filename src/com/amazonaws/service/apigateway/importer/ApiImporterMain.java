@@ -51,6 +51,9 @@ public class ApiImporterMain {
     @Parameter(names = {"--test", "-t"}, description = "Delete the API after import (create only)")
     private boolean cleanup = false;
 
+    @Parameter(names = {"--profile", "-p"}, description = "AWS CLI profile to use")
+    private String profile = "default";
+
     @Parameter(names = "--help", help = true)
     private boolean help;
 
@@ -79,7 +82,7 @@ public class ApiImporterMain {
             System.exit(1);
         }
 
-        AwsConfig config = new AwsConfig();
+        AwsConfig config = new AwsConfig(profile);
         try {
             config.load();
         } catch (Throwable t) {
