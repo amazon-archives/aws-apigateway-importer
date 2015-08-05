@@ -65,9 +65,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.wordnik</groupId>
+            <groupId>io.swagger</groupId>
             <artifactId>swagger-core</artifactId>
-            <version>1.5.3-M1</version>
+            <version>1.5.0</version>
         </dependency>
 
         <dependency>
