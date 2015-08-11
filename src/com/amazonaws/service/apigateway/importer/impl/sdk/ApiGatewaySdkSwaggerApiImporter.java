@@ -26,12 +26,14 @@ import com.amazonaws.services.apigateway.model.IntegrationType;
 import com.amazonaws.services.apigateway.model.Method;
 import com.amazonaws.services.apigateway.model.MethodResponse;
 import com.amazonaws.services.apigateway.model.Model;
+import com.amazonaws.services.apigateway.model.Models;
 import com.amazonaws.services.apigateway.model.PatchDocument;
 import com.amazonaws.services.apigateway.model.PutIntegrationInput;
 import com.amazonaws.services.apigateway.model.PutIntegrationResponseInput;
 import com.amazonaws.services.apigateway.model.PutMethodInput;
 import com.amazonaws.services.apigateway.model.PutMethodResponseInput;
 import com.amazonaws.services.apigateway.model.Resource;
+import com.amazonaws.services.apigateway.model.Resources;
 import com.amazonaws.services.apigateway.model.RestApi;
 import com.google.inject.Inject;
 import com.wordnik.swagger.models.Operation;
@@ -50,6 +52,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -168,7 +171,7 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
     }
 
     private void deleteDefaultModels(RestApi api) {
-        api.getModels().getItem().stream().forEach(model -> {
+        buildModelList(api).stream().forEach(model -> {
             LOG.info("Removing default model " + model.getName());
             try {
                 model.deleteModel();
@@ -177,12 +180,11 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
     }
 
     private Optional<Resource> getResource(RestApi api, String parentResourceId, String pathPart) {
-        for (Resource r : api.getResources().getItem()) {
+        for (Resource r : buildResourceList(api)) {
             if (pathEquals(pathPart, r.getPathPart()) && r.getParentId().equals(parentResourceId)) {
                 return Optional.of(r);
             }
         }
-
         return Optional.empty();
     }
 
@@ -191,7 +193,7 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
     }
 
     private Optional<Resource> getResource(RestApi api, String fullPath) {
-        for (Resource r : api.getResources().getItem()) {
+        for (Resource r : buildResourceList(api)) {
             if (r.getPath().equals(fullPath)) {
                 return Optional.of(r);
             }
@@ -201,7 +203,7 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
     }
 
     private Optional<Resource> getRootResource(RestApi api) {
-        for (Resource r : api.getResources().getItem()) {
+        for (Resource r : buildResourceList(api)) {
             if ("/".equals(r.getPath())) {
                 return Optional.of(r);
             }
@@ -585,7 +587,7 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
     }
 
     private void cleanupModels(RestApi api, Map<String, com.wordnik.swagger.models.Model> definitions) {
-        api.getModels().getItem().stream().filter(model -> !definitions.containsKey(model.getName())).forEach(model -> {
+        buildModelList(api).stream().filter(model -> !definitions.containsKey(model.getName())).forEach(model -> {
             LOG.info("Removing deleted model " + model.getName());
             try {
                 model.deleteModel();
@@ -596,7 +598,7 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
     private void cleanupMethods(RestApi api, String basePath, Map<String, Path> paths) {
         LOG.info("Cleaning up removed methods");
 
-        for (Resource r : api.getResources().getItem()) {
+        for (Resource r : buildResourceList(api)) {
             for (Method m : r.getResourceMethods().values()) {
                 String httpMethod = m.getHttpMethod().toLowerCase();
 
@@ -630,7 +632,7 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
 
         // don't remove the resource if it's path part exists in any of the swagger paths
         // this prevents intermediate resources from being deleted, but may also prevent deletion when resources are "moved"
-        api.getResources().getItem().stream().filter(resource -> !resourceSet.contains(resource.getPathPart()))
+        buildResourceList(api).stream().filter(resource -> !resourceSet.contains(resource.getPathPart()))
                 .forEach(resource -> {
                     LOG.info("Removing deleted resource " + resource.getPath());
                     deleteResource(resource);
@@ -644,6 +646,53 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
         }
         resourceSet.add(StringUtils.removeStart(basePath, "/"));
         return resourceSet;
+    }
+
+    private List<Resource> buildResourceList(RestApi api) {
+        List<Resource> resourceList = new ArrayList<>();
+        Resources resources = api.getResources();
+        List<Resource> previousList = null;
+
+        while (true) {
+            previousList = resources.getItem();
+            resourceList.addAll(previousList);
+            if (previousList.size() < 25) {
+                break;
+            }
+            sleep();
+
+            try {
+                resources = api.getResources().getNext();
+            } catch (UnsupportedOperationException e) {
+                // no way to tell if there is another page without trying getNext
+                break;
+            }
+
+        }
+        return resourceList;
+    }
+
+    private List<Model> buildModelList(RestApi api) {
+        List<Model> modelList = new ArrayList<>();
+        Models models = api.getModels();
+        List<Model> previousList = null;
+
+        while(true) {
+            previousList = models.getItem();
+            modelList.addAll(previousList);
+            if (previousList.size() < 25) {
+                break;
+            }
+            sleep();
+
+            try {
+                models = api.getModels().getNext();
+            } catch (UnsupportedOperationException e) {
+                // no way to tell if there is another page without trying getNext
+                break;
+            }
+        }
+        return modelList;
     }
 
     private PutMethodResponseInput getCreateResponseInput(RestApi api, String modelContentType, Response response) {
