@@ -656,7 +656,7 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
         resourceList.addAll(resources.getItem());
 
         while (resources._isLinkAvailable("next")) {
-            resources = api.getResources().getNext();
+            resources = resources.getNext();
             resourceList.addAll(resources.getItem());
             sleep();
         }
@@ -671,7 +671,7 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
         modelList.addAll(models.getItem());
 
         while (models._isLinkAvailable("next")) {
-            models = api.getModels().getNext();
+            models = models.getNext();
             modelList.addAll(models.getItem());
             sleep();
         }
