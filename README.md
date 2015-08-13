@@ -56,7 +56,7 @@ e.g.
     "cacheNamespace" : "cache-namespace",
     "cacheKeyParameters" : [],
     "responses" : {
-        "2//d{2}" : {
+        "2\\d{2}" : {
             "statusCode" : "200",
             "responseParameters" : {
                 "method.response.header.test-method-response-header" : "integration.response.header.integrationResponseHeaderParam1"
