@@ -14,6 +14,7 @@
  */
 package com.amazonaws.service.apigateway.importer.config;
 
+import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.service.apigateway.importer.ApiImporterMain;
@@ -30,6 +31,7 @@ import org.apache.commons.logging.LogFactory;
 
 public class ApiImporterModule extends AbstractModule {
     private static final Log LOG = LogFactory.getLog(ApiImporterMain.class);
+    private static final String USER_AGENT = "AmazonApiGatewaySwaggerImporter/1.0";
 
     private final AwsConfig config;
 
@@ -61,7 +63,8 @@ public class ApiImporterModule extends AbstractModule {
     @Provides
     ApiGateway provideAmazonApiGateway(AWSCredentialsProvider credsProvider,
                                        @Named("region") String region) {
-        return new AmazonApiGateway(getEndpoint(region)).with(credsProvider).getApiGateway();
+        ClientConfiguration clientConfig = new ClientConfiguration().withUserAgent(USER_AGENT);
+        return new AmazonApiGateway(getEndpoint(region)).with(credsProvider).with(clientConfig).getApiGateway();
     }
 
     private String getEndpoint(String region) {
