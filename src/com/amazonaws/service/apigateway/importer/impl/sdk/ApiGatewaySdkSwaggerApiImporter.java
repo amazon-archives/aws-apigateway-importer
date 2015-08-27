@@ -633,7 +633,7 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
 
         // don't remove the resource if it's path part exists in any of the swagger paths
         // this prevents intermediate resources from being deleted, but may also prevent deletion when resources are "moved"
-        buildResourceList(api).stream().filter(resource -> !resourceSet.contains(resource.getPathPart()))
+        buildResourceList(api).stream().filter(resource -> !resourceSet.contains(resource.getPathPart()) && !resource.getPath().equals("/"))
                 .forEach(resource -> {
                     LOG.info("Removing deleted resource " + resource.getPath());
                     deleteResource(resource);
