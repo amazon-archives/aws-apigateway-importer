@@ -645,7 +645,7 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
         for (String path : paths.keySet()) {
             resourceSet.addAll(Arrays.asList(path.split("/")));
         }
-        resourceSet.add(StringUtils.removeStart(basePath, "/"));
+        resourceSet.addAll(Arrays.asList(basePath.split("/")));
         return resourceSet;
     }
 
