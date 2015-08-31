@@ -42,6 +42,9 @@ public class ApiImporterMain {
     @Parameter(names = {"--create", "-c"}, description = "Create a new API")
     private boolean createNew;
 
+    @Parameter(names = {"--create-update", "-a"}, description = "Create a new API or update existing one based on API title")
+    private boolean createOrUpdate;
+
     @Parameter(description = "Path to API definition file to import")
     private List<String> files;
 
@@ -97,7 +100,9 @@ public class ApiImporterMain {
 
             String swaggerFile = files.get(0);
 
-            if (createNew) {
+            if (createOrUpdate) {
+                apiId = importer.createOrUpdateApi(swaggerFile);
+            } else if (createNew) {
                 apiId = importer.importApi(swaggerFile);
 
                 if (cleanup) {
@@ -117,7 +122,7 @@ public class ApiImporterMain {
     }
 
     private boolean validateArgs() {
-        if ((apiId == null && !createNew) || files == null || files.isEmpty()) {
+        if ((apiId == null && !createNew && !createOrUpdate) || files == null || files.isEmpty()) {
             return false;
         }
 

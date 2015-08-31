@@ -27,6 +27,12 @@ e.g. `./aws-api-import.sh --create path/to/swagger.json`
 
 e.g. `./aws-api-import.sh --update API_ID --deploy STAGE_NAME path/to/swagger.yaml`
 
+#### Create or update an existing API by name.
+
+e.g. `./aws-api-import.sh --create-update --deploy STAGE_NAME path/to/swagger.yaml`
+
+Note: AWS allows multiple APIs to be created with the same name. This option will pick the first one in the order provided by AWS.
+
 ### API Gateway Swagger Extension Example
 
 You can fully define an API Gateway API in Swagger using the x-amazon-apigateway-auth and x-amazon-apigateway-integration extensions.
