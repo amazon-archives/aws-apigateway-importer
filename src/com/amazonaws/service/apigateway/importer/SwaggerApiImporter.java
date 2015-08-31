@@ -19,6 +19,7 @@ import com.wordnik.swagger.models.Swagger;
 public interface SwaggerApiImporter {
     String createApi(Swagger swagger, String name);
     void updateApi(String apiId, Swagger swagger);
+    String createOrUpdateApi(Swagger swagger, String defaultApiName);
     void deploy(String apiId, String deploymentStage);
     void deleteApi(String apiId);
 }

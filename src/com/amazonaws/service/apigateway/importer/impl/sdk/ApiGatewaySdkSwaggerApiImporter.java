@@ -16,25 +16,7 @@ package com.amazonaws.service.apigateway.importer.impl.sdk;
 
 import com.amazonaws.service.apigateway.importer.SwaggerApiImporter;
 import com.amazonaws.service.apigateway.importer.impl.SchemaTransformer;
-import com.amazonaws.services.apigateway.model.ApiGateway;
-import com.amazonaws.services.apigateway.model.CreateDeploymentInput;
-import com.amazonaws.services.apigateway.model.CreateModelInput;
-import com.amazonaws.services.apigateway.model.CreateResourceInput;
-import com.amazonaws.services.apigateway.model.CreateRestApiInput;
-import com.amazonaws.services.apigateway.model.Integration;
-import com.amazonaws.services.apigateway.model.IntegrationType;
-import com.amazonaws.services.apigateway.model.Method;
-import com.amazonaws.services.apigateway.model.MethodResponse;
-import com.amazonaws.services.apigateway.model.Model;
-import com.amazonaws.services.apigateway.model.Models;
-import com.amazonaws.services.apigateway.model.PatchDocument;
-import com.amazonaws.services.apigateway.model.PutIntegrationInput;
-import com.amazonaws.services.apigateway.model.PutIntegrationResponseInput;
-import com.amazonaws.services.apigateway.model.PutMethodInput;
-import com.amazonaws.services.apigateway.model.PutMethodResponseInput;
-import com.amazonaws.services.apigateway.model.Resource;
-import com.amazonaws.services.apigateway.model.Resources;
-import com.amazonaws.services.apigateway.model.RestApi;
+import com.amazonaws.services.apigateway.model.*;
 import com.google.inject.Inject;
 import com.wordnik.swagger.models.Operation;
 import com.wordnik.swagger.models.Path;
@@ -61,6 +43,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createAddOperation;
 import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createPatchDocument;
@@ -99,16 +82,38 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
         return api.getId();
     }
 
+		public void updateApi(RestApi api, Swagger swagger) {
+			Optional<Resource> rootResource = getRootResource(api);
+
+			updateModels(api, swagger.getDefinitions(), swagger.getProduces());
+			updateResources(api, rootResource.get(), swagger.getBasePath(), swagger.getPaths(), swagger.getProduces());
+			updateMethods(api, swagger.getBasePath(), swagger.getPaths(), swagger.getProduces());
+		}
+
     @Override
     public void updateApi(String apiId, Swagger swagger) {
         this.swagger = swagger;
 
         RestApi api = getApi(apiId);
-        Optional<Resource> rootResource = getRootResource(api);
+				updateApi(api, swagger);
+    }
 
-        updateModels(api, swagger.getDefinitions(), swagger.getProduces());
-        updateResources(api, rootResource.get(), swagger.getBasePath(), swagger.getPaths(), swagger.getProduces());
-        updateMethods(api, swagger.getBasePath(), swagger.getPaths(), swagger.getProduces());
+    @Override
+    public String createOrUpdateApi(Swagger swagger, String defaultApiName) {
+				this.swagger = swagger;
+        String apiName = getApiName(swagger, defaultApiName);
+        Optional<RestApi> api = getApiByName(apiName);
+
+				String apiId;
+
+				if (api.isPresent()) {
+            updateApi(api.get(), swagger);
+            apiId = api.get().getId();
+        } else {
+            apiId = createApi(swagger, defaultApiName);
+        }
+
+				return apiId;
     }
 
     @Override
@@ -148,6 +153,17 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
     private RestApi getApi(String id) {
         return apiGateway.getRestApiById(id);
     }
+
+    private Optional<RestApi> getApiByName(String apiName) {
+        List<RestApi> restApis = apiGateway.getRestApis().getItem();
+
+			RestApi matchedRestApi = restApis.stream()
+					.filter(restApi -> restApi.getName().equals(apiName))
+					.collect(Collectors.toList())
+					.get(0);
+
+			return Optional.ofNullable(matchedRestApi);
+		}
 
     private Resource createResource(RestApi api, String parentResourceId, String pathPart) {
         CreateResourceInput input = new CreateResourceInput();
@@ -635,9 +651,9 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
         // this prevents intermediate resources from being deleted, but may also prevent deletion when resources are "moved"
         buildResourceList(api).stream().filter(resource -> !resourceSet.contains(resource.getPathPart()) && !resource.getPath().equals("/"))
                 .forEach(resource -> {
-                    LOG.info("Removing deleted resource " + resource.getPath());
-                    deleteResource(resource);
-                });
+									LOG.info("Removing deleted resource " + resource.getPath());
+									deleteResource(resource);
+								});
     }
 
     private Set<String> buildResourceSet(Map<String, Path> paths, String basePath) {

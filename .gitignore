@@ -1,0 +1,8 @@
+# maven
+build
+
+# intellij files
+.idea
+*.iml
+*.iws
+*.ipr
