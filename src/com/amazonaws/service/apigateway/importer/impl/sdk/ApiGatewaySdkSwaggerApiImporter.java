@@ -33,6 +33,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -157,12 +158,15 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
     private Optional<RestApi> getApiByName(String apiName) {
         List<RestApi> restApis = apiGateway.getRestApis().getItem();
 
-			RestApi matchedRestApi = restApis.stream()
-					.filter(restApi -> restApi.getName().equals(apiName))
-					.collect(Collectors.toList())
-					.get(0);
+        List<RestApi> matchingApis = restApis.stream()
+            .filter(restApi -> restApi.getName().equals(apiName))
+            .collect(Collectors.toList());
 
-			return Optional.ofNullable(matchedRestApi);
+        if (matchingApis != null && !matchingApis.isEmpty()) {
+            return Optional.ofNullable(matchingApis.get(0));
+        }
+
+			  return Optional.empty();
 		}
 
     private Resource createResource(RestApi api, String parentResourceId, String pathPart) {
