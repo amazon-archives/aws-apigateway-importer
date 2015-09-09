@@ -764,6 +764,7 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
 
                     method.updateMethod(createPatchDocument(createAddOperation("/requestParameters/" + expression,
                                                                                getStringValue(p.getRequired()))));
+                    sleep();
                 }
             }
         });
