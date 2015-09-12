@@ -21,11 +21,19 @@ Build with `mvn assembly:assembly`
 
 #### Import a new API
 
-e.g. `./aws-api-import.sh --create path/to/swagger.json`
+**Bash:**  
+`./aws-api-import.sh --create path/to/swagger.json`  
+
+**Windows:**  
+`./aws-api-import.cmd --create path/to/swagger.json`
 
 #### Update an existing API and deploy it to a stage
 
-e.g. `./aws-api-import.sh --update API_ID --deploy STAGE_NAME path/to/swagger.yaml`
+**Bash:**  
+`./aws-api-import.sh --update API_ID --deploy STAGE_NAME path/to/swagger.yaml` 
+
+**Windows:**  
+`./aws-api-import.cmd --update API_ID --deploy STAGE_NAME path/to/swagger.yaml`
 
 ### API Gateway Swagger Extension Example
 
