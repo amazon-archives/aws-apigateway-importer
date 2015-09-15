@@ -14,10 +14,11 @@
  */
 package com.amazonaws.service.apigateway.importer;
 
+import com.amazonaws.util.json.JSONObject;
 
-public interface ApiFileImporter {
-    String importApi(String filePath);
-    void updateApi(String apiId, String filePath);
+public interface RamlApiFileImporter {
+    String importApi(String filePath, JSONObject config);
+    void updateApi(String apiId, String filePath, JSONObject config);
     void deploy(String apiId, String deploymentStage);
     void deleteApi(String apiId);
 }

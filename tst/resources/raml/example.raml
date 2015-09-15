@@ -1,0 +1,20 @@
+#%RAML 0.8
+
+title: Example API
+
+baseUri: http://example.com/{version}
+
+schemas:
+  - endpointJson: >
+      {
+        "type": "string"
+      }
+
+mediaType: application/json
+
+/endpoint:
+  get:
+    body:
+      schema: endpointJson
+  post:
+    body:

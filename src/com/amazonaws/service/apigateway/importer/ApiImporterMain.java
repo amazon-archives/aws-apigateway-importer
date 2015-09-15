@@ -17,6 +17,10 @@ package com.amazonaws.service.apigateway.importer;
 import com.amazonaws.service.apigateway.importer.config.ApiImporterModule;
 import com.amazonaws.service.apigateway.importer.config.AwsConfig;
 import com.amazonaws.service.apigateway.importer.impl.ApiGatewaySwaggerFileImporter;
+import com.amazonaws.service.apigateway.importer.impl.ApiGatewayRamlFileImporter;
+import com.amazonaws.util.json.JSONException;
+import com.amazonaws.util.json.JSONObject;
+import com.amazonaws.util.json.JSONTokener;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.google.inject.Guice;
@@ -28,8 +32,10 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
+import java.io.FileReader;
 import java.util.List;
 
 public class ApiImporterMain {
@@ -53,6 +59,9 @@ public class ApiImporterMain {
 
     @Parameter(names = {"--profile", "-p"}, description = "AWS CLI profile to use")
     private String profile = "default";
+
+    @Parameter(names = {"--raml-config"}, description = "Provide a configuration file to load AWS information from")
+    private String configFile;
 
     @Parameter(names = "--help", help = true)
     private boolean help;
@@ -93,25 +102,53 @@ public class ApiImporterMain {
         try {
             Injector injector = Guice.createInjector(new ApiImporterModule(config));
 
-            ApiGatewaySwaggerFileImporter importer = injector.getInstance(ApiGatewaySwaggerFileImporter.class);
+            String fileName = files.get(0);
 
-            String swaggerFile = files.get(0);
+            if (FilenameUtils.getExtension(fileName).equals("raml")) {
+                final JSONObject configData;
 
-            if (createNew) {
-                apiId = importer.importApi(swaggerFile);
+                RamlApiFileImporter importer = injector.getInstance(ApiGatewayRamlFileImporter.class);
 
-                if (cleanup) {
-                    importer.deleteApi(apiId);
+                try {
+                    configData = configFile == null ? null : new JSONObject(new JSONTokener(new FileReader(configFile)));
+                } catch (JSONException e) {
+                    LOG.info("Unable to parse configuration file: " + e);
+                    System.exit(1);
+                    return;
+                }
+
+                if (createNew) {
+                    apiId = importer.importApi(fileName, configData);
+
+                    if (cleanup) {
+                        importer.deleteApi(apiId);
+                    }
+                } else {
+                    importer.updateApi(apiId, fileName, configData);
+                }
+
+                if (!StringUtils.isBlank(deploymentLabel)) {
+                    importer.deploy(apiId, deploymentLabel);
                 }
             } else {
-                importer.updateApi(apiId, swaggerFile);
-            }
+                SwaggerApiFileImporter importer = injector.getInstance(ApiGatewaySwaggerFileImporter.class);
 
-            if (!StringUtils.isBlank(deploymentLabel)) {
-                importer.deploy(apiId, deploymentLabel);
+                if (createNew) {
+                    apiId = importer.importApi(fileName);
+
+                    if (cleanup) {
+                        importer.deleteApi(apiId);
+                    }
+                } else {
+                    importer.updateApi(apiId, fileName);
+                }
+
+                if (!StringUtils.isBlank(deploymentLabel)) {
+                    importer.deploy(apiId, deploymentLabel);
+                }
             }
         } catch (Throwable t) {
-            LOG.error("Error importing API from Swagger", t);
+            LOG.error("Error importing API definition", t);
             System.exit(1);
         }
     }
@@ -126,9 +163,10 @@ public class ApiImporterMain {
             return false;
         }
 
-        final String swaggerFile = files.get(0);
-        if (!new File(swaggerFile).exists()) {
-            LOG.error(String.format("Could not load Swagger file '%s'", swaggerFile));
+        final String fileName = files.get(0);
+        
+        if (!new File(fileName).exists()) {
+            LOG.error(String.format("Could not load file '%s'", fileName));
             return false;
         }
 

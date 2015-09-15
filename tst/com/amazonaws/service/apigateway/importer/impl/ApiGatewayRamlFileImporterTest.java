@@ -14,32 +14,24 @@
  */
 package com.amazonaws.service.apigateway.importer.impl;
 
-import com.amazonaws.service.apigateway.importer.ApiFileImporter;
-import com.amazonaws.service.apigateway.importer.config.ApiImporterTestModule;
-import com.amazonaws.services.apigateway.model.ApiGateway;
-import com.amazonaws.services.apigateway.model.Integration;
-import com.amazonaws.services.apigateway.model.Method;
-import com.amazonaws.services.apigateway.model.Model;
-import com.amazonaws.services.apigateway.model.Models;
-import com.amazonaws.services.apigateway.model.Resource;
-import com.amazonaws.services.apigateway.model.Resources;
-import com.amazonaws.services.apigateway.model.RestApi;
-import com.amazonaws.services.apigateway.model.RestApis;
+import com.amazonaws.service.apigateway.importer.RamlApiFileImporter;
+import com.amazonaws.service.apigateway.importer.config.RamlApiImporterTestModule;
+import com.amazonaws.services.apigateway.model.*;
+import com.amazonaws.util.json.JSONException;
+import com.amazonaws.util.json.JSONObject;
+import com.amazonaws.util.json.JSONTokener;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.apache.log4j.BasicConfigurator;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.net.URISyntaxException;
-import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Optional;
-import java.util.function.Predicate;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
@@ -49,8 +41,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class ApiGatewaySwaggerApiImporterTest {
-    private ApiFileImporter importer;
+public class ApiGatewayRamlFileImporterTest {
+    private RamlApiFileImporter importer;
+
+    private final String API_GATEWAY = "/raml/apigateway.raml";
+    private final String API_GATEWAY_CONFIG = "/raml/apigateway.json";
 
     @Mock
     private ApiGateway client;
@@ -68,10 +63,10 @@ public class ApiGatewaySwaggerApiImporterTest {
     public void setUp() throws Exception {
         BasicConfigurator.configure();
 
-        Injector injector = Guice.createInjector(new ApiImporterTestModule());
+        Injector injector = Guice.createInjector(new RamlApiImporterTestModule());
 
         client = injector.getInstance(ApiGateway.class);
-        importer = injector.getInstance(ApiFileImporter.class);
+        importer = injector.getInstance(RamlApiFileImporter.class);
 
         RestApis mockRestApis = mock(RestApis.class);
         Integration mockIntegration = Mockito.mock(Integration.class);
@@ -105,18 +100,17 @@ public class ApiGatewaySwaggerApiImporterTest {
 
         when(client.getRestApis()).thenReturn(mockRestApis);
         when(client.createRestApi(any())).thenReturn(mockRestApi);
+
+        importer.importApi(getResourcePath(API_GATEWAY), getJsonObject(API_GATEWAY_CONFIG));
     }
 
     @Test
     public void testImport_create_api() throws Exception {
-        importer.importApi(getResourcePath("/apigateway.json"));
         verify(client, times(1)).createRestApi(any());
     }
 
     @Test
     public void testImport_create_resources() throws Exception {
-        importer.importApi(getResourcePath("/apigateway.json"));
-
         // to simplify mocking, all child resources are added to the root resource, and parent resources will be added multiple times
         // /v1, /v1/products, /v1, /v1/products, /v1/products/child
         verify(mockResource, atLeastOnce()).createResource(argThat(new LambdaMatcher<>(i -> i.getPathPart().equals("v1"))));
@@ -126,8 +120,6 @@ public class ApiGatewaySwaggerApiImporterTest {
 
     @Test
     public void testImport_create_methods() throws Exception {
-        importer.importApi(getResourcePath("/apigateway.json"));
-
         verify(mockChildResource, times(1)).putMethod(
                 argThat(new LambdaMatcher<>(i -> i.getAuthorizationType().equals("AWS_IAM"))),
                 argThat(new LambdaMatcher<>(i -> i.equals("GET"))));
@@ -138,46 +130,22 @@ public class ApiGatewaySwaggerApiImporterTest {
 
     @Test
     public void testImport_create_models() throws Exception {
-        importer.importApi(getResourcePath("/apigateway.json"));
-
         verify(mockRestApi, times(1)).createModel(argThat(new LambdaMatcher<>(i -> i.getName().equals("Product"))));
         verify(mockRestApi, times(1)).createModel(argThat(new LambdaMatcher<>(i -> i.getName().equals("PriceEstimate"))));
         verify(mockRestApi, times(1)).createModel(argThat(new LambdaMatcher<>(i -> i.getName().equals("Profile"))));
         verify(mockRestApi, times(1)).createModel(argThat(new LambdaMatcher<>(i -> i.getName().equals("Activity"))));
         verify(mockRestApi, times(1)).createModel(argThat(new LambdaMatcher<>(i -> i.getName().equals("Activities"))));
         verify(mockRestApi, times(1)).createModel(argThat(new LambdaMatcher<>(i -> i.getName().equals("Error"))));
-        verify(mockRestApi, atLeastOnce()).createModel(argThat(new LambdaMatcher<>(i -> i.getName().equals("Anarrayofproducts"))));
+        verify(mockRestApi, atLeastOnce()).createModel(argThat(new LambdaMatcher<>(i -> i.getName().matches("model\\w+"))));
     }
 
     //    todo: add more tests
     private String getResourcePath(String path) throws URISyntaxException {
-        return Paths.get(getClass().getResource(path).toURI()).toString();
+        return getClass().getResource(path).toURI().toString();
     }
 
-    public class LambdaMatcher<T> extends BaseMatcher<T> {
-        private final Predicate<T> matcher;
-        private final Optional<String> description;
-
-        public LambdaMatcher(Predicate<T> matcher) {
-            this(matcher, null);
-        }
-
-        public LambdaMatcher(Predicate<T> matcher, String description) {
-            this.matcher = matcher;
-            this.description = Optional.ofNullable(description);
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public boolean matches(Object argument) {
-            return matcher.test((T) argument);
-        }
-
-        @Override
-        public void describeTo(Description description) {
-            this.description.ifPresent(description::appendText);
-        }
-
+    private JSONObject getJsonObject(String path) throws FileNotFoundException, JSONException {
+        return new JSONObject(new JSONTokener(new FileReader(getClass().getResource(path).getFile())));
     }
 
 }

@@ -71,6 +71,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.raml</groupId>
+            <artifactId>raml-parser</artifactId>
+            <version>0.8.11</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-io</artifactId>
             <version>1.3.2</version>
@@ -208,4 +214,3 @@
     </build>
 
 </project>
-
