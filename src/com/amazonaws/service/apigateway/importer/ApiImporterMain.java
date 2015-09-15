@@ -14,8 +14,10 @@
  */
 package com.amazonaws.service.apigateway.importer;
 
+import com.amazonaws.auth.*;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+
 import com.amazonaws.service.apigateway.importer.config.ApiImporterModule;
-import com.amazonaws.service.apigateway.importer.config.AwsConfig;
 import com.amazonaws.service.apigateway.importer.impl.ApiGatewaySwaggerFileImporter;
 import com.amazonaws.service.apigateway.importer.impl.ApiGatewayRamlFileImporter;
 import com.amazonaws.util.json.JSONException;
@@ -57,6 +59,9 @@ public class ApiImporterMain {
     @Parameter(names = {"--test", "-t"}, description = "Delete the API after import (create only)")
     private boolean cleanup = false;
 
+    @Parameter(names = {"--region", "-r"}, description = "AWS region to use")
+    private String region = "us-east-1";
+
     @Parameter(names = {"--profile", "-p"}, description = "AWS CLI profile to use")
     private String profile = "default";
 
@@ -91,16 +96,15 @@ public class ApiImporterMain {
             System.exit(1);
         }
 
-        AwsConfig config = new AwsConfig(profile);
-        try {
-            config.load();
-        } catch (Throwable t) {
-            LOG.error("Could not load AWS configuration. Please run 'aws configure'");
-            System.exit(1);
-        }
+        AWSCredentialsProvider credentialsProvider;
+        credentialsProvider = new AWSCredentialsProviderChain(
+                new EnvironmentVariableCredentialsProvider(),
+                new SystemPropertiesCredentialsProvider(),
+                new ProfileCredentialsProvider(profile),
+                new InstanceProfileCredentialsProvider());
 
         try {
-            Injector injector = Guice.createInjector(new ApiImporterModule(config));
+            Injector injector = Guice.createInjector(new ApiImporterModule(credentialsProvider, region));
 
             String fileName = files.get(0);
 

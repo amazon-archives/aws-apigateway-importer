@@ -16,7 +16,6 @@ package com.amazonaws.service.apigateway.importer.config;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.service.apigateway.importer.ApiImporterMain;
 import com.amazonaws.service.apigateway.importer.RamlApiImporter;
 import com.amazonaws.service.apigateway.importer.SwaggerApiImporter;
@@ -35,32 +34,25 @@ public class ApiImporterModule extends AbstractModule {
     private static final Log LOG = LogFactory.getLog(ApiImporterMain.class);
     private static final String USER_AGENT = "AmazonApiGatewaySwaggerImporter/1.0";
 
-    private final AwsConfig config;
+    private final AWSCredentialsProvider awsCredentialsProvider;
 
-    public ApiImporterModule(AwsConfig config) {
-        this.config = config;
+    private String region;
+
+    public ApiImporterModule(AWSCredentialsProvider awsCredentialsProvider, String region) {
+        this.awsCredentialsProvider = awsCredentialsProvider;
+        this.region = region;
     }
 
     @Override
     protected void configure() {
         bind(SwaggerApiImporter.class).to(ApiGatewaySdkSwaggerApiImporter.class);
         bind(RamlApiImporter.class).to(ApiGatewaySdkRamlApiImporter.class);
-        bind(String.class).annotatedWith(Names.named("profile")).toInstance(config.getProfile());
-        bind(String.class).annotatedWith(Names.named("region")).toInstance(config.getRegion());
+        bind(String.class).annotatedWith(Names.named("region")).toInstance(region);
     }
 
     @Provides
-    AWSCredentialsProvider provideCredentialsProvider(@Named("profile") String profile) {
-        ProfileCredentialsProvider provider = new ProfileCredentialsProvider(profile);
-
-        try {
-            provider.getCredentials();
-        } catch (Throwable t) {
-            LOG.error("Could not load AWS configuration. Please run 'aws configure'");
-            throw t;
-        }
-
-        return provider;
+    AWSCredentialsProvider provideCredentialsProvider() {
+        return awsCredentialsProvider;
     }
 
     @Provides

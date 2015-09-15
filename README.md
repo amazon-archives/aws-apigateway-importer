@@ -14,8 +14,6 @@ To learn more about API Gateway, please see the [service documentation][service-
 
 ### Prerequisites
 
-This tool requires the [AWS CLI](http://aws.amazon.com/cli) to be installed and configured on your system.
-
 Build with `mvn assembly:assembly`
 
 ### Import a new API
