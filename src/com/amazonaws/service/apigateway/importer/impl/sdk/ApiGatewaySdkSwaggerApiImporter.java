@@ -374,6 +374,11 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
                 // create new model from nested schema
                 String modelName = generateModelName(bodyParam);
                 LOG.info("Creating new model referenced from parameter: " + modelName);
+
+                if (bodyParam.getSchema() == null) {
+                    throw new IllegalArgumentException("Body parameter '" + bodyParam.getName() + "' must have a schema defined");
+                }
+
                 createModel(api, modelName, bodyParam.getSchema(), swagger.getDefinitions(), modelContentType);
             }
         });
@@ -691,7 +696,7 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
         }
 
         // if the schema references an existing model, use that model for the response
-        Optional<com.amazonaws.services.apigateway.model.Model> modelOpt = getModel(api, response);
+        Optional<Model> modelOpt = getModel(api, response);
         if (modelOpt.isPresent()) {
             input.setResponseModels(new HashMap<>());
             input.getResponseModels().put(modelContentType, modelOpt.get().getName());
@@ -734,7 +739,7 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
     /*
      * Get the model referenced by given schema if it exists
      */
-    private Optional<com.amazonaws.services.apigateway.model.Model> getModel(RestApi api, Response response) {
+    private Optional<Model> getModel(RestApi api, Response response) {
 
         String modelName;
 
