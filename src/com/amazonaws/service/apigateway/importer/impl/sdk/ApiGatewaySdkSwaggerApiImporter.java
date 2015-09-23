@@ -295,15 +295,7 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
             createMethod(api, resource, x.getKey(), x.getValue(),
                          getProducesContentType(apiProduces, x.getValue().getProduces()));
             LOG.info(format("Creating method for api id %s and resource id %s with method %s", api.getId(), resource.getId(), x.getKey()));
-
-            sleep();
         });
-    }
-
-    private void sleep() {
-        try {
-            Thread.sleep(500);  // todo: temporary hack to get around throttling limits - sdk should backoff and retry when throttled
-        } catch (InterruptedException ignored) {}
     }
 
     private Resource createResource(RestApi api, String parentResourceId, String parentPart, String part) {
@@ -312,7 +304,6 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
         // create resource if doesn't exist
         if (!existingResource.isPresent()) {
             LOG.info("Creating resource '" + part + "' with parent '" + parentPart + "'");
-            sleep();
             return createResource(api, parentResourceId, part);
         } else {
             return existingResource.get();
@@ -574,7 +565,6 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
     private void updateModel(RestApi api, String modelName, com.wordnik.swagger.models.Model model) {
         LOG.info(format("Updating model for api id %s and model name %s", api.getId(), modelName));
         updateModel(api, modelName, generateSchema(model, modelName, swagger.getDefinitions()));
-        sleep();
     }
 
     private void updateMethod(RestApi api, Resource resource, String httpMethod, Operation op, String modelContentType) {
@@ -588,8 +578,6 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
         updateMethodResponses(api, method, modelContentType, op.getResponses());
         updateMethodParameters(api, method, op.getParameters());
         createIntegration(method, op.getVendorExtensions());
-
-        sleep();
     }
 
     private void cleanupModels(RestApi api, Map<String, com.wordnik.swagger.models.Model> definitions) {
@@ -663,7 +651,6 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
         while (resources._isLinkAvailable("next")) {
             resources = resources.getNext();
             resourceList.addAll(resources.getItem());
-            sleep();
         }
 
         return resourceList;
@@ -678,7 +665,6 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
         while (models._isLinkAvailable("next")) {
             models = models.getNext();
             modelList.addAll(models.getItem());
-            sleep();
         }
 
         return modelList;
