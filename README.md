@@ -9,6 +9,8 @@ To learn more about API Gateway, please see the [service documentation][service-
 [service-docs]: http://docs.aws.amazon.com/apigateway/latest/developerguide/
 [api-docs]: http://docs.aws.amazon.com/apigateway/api-reference
 
+![](https://api.travis-ci.org/awslabs/aws-apigateway-swagger-importer.svg?branch=master)
+
 ## Usage
 
 ### Prerequisites
