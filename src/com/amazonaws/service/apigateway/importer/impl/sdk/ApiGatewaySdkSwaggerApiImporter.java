@@ -250,6 +250,11 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
                     getStringValue(methodSetting.getCacheTtlInSeconds())));
         }
 
+        if (getStringValue(methodSetting.getCachingEnabled()) != null) {
+            patchOperations.add(createReplaceOperation("/" + methodSettingKey + "/caching/enabled",
+                    getStringValue(methodSetting.getCachingEnabled())));
+        }
+
         if (getStringValue(methodSetting.getCacheDataEncrypted()) != null) {
             patchOperations.add(createReplaceOperation("/" + methodSettingKey + "/caching/dataEncrypted",
                     getStringValue(methodSetting.getCacheDataEncrypted())));
