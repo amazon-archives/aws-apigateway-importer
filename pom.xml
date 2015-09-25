@@ -134,7 +134,11 @@
         <directory>${basedir}/build/maven</directory>
         <sourceDirectory>${basedir}/src</sourceDirectory>
         <testSourceDirectory>${basedir}/tst</testSourceDirectory>
-        <!--<testResources>${basedir/tst/resources}</testResources>-->
+        <testResources>
+            <testResource>
+                <directory>${basedir}/tst/resources</directory>
+            </testResource>
+        </testResources>
         <outputDirectory>${basedir}/build/private/classes/library</outputDirectory>
         <testOutputDirectory>${basedir}/build/private/classes/tests</testOutputDirectory>
         <resources>
@@ -206,7 +210,6 @@
     <properties>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.test.skip>true</maven.test.skip>
     </properties>
 
 </project>

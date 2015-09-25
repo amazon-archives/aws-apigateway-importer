@@ -634,6 +634,10 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
     }
 
     private Set<String> buildResourceSet(Map<String, Path> paths, String basePath) {
+        if (StringUtils.isBlank(basePath)) {
+            basePath = "/";
+        }
+
         Set<String> resourceSet = new HashSet<>();
         for (String path : paths.keySet()) {
             resourceSet.addAll(Arrays.asList(path.split("/")));
