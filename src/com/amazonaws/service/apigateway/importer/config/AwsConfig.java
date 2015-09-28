@@ -52,7 +52,7 @@ public class AwsConfig {
                 }
 
                 if (foundProfile && line.startsWith("region")) {
-                    return Optional.of(line.substring(9, line.length()));
+                    return Optional.of(line.substring(7, line.length()));
                 }
             }
         } catch (Throwable t) {
