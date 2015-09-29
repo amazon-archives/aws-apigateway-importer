@@ -49,6 +49,7 @@ public class AwsConfig {
             String region;
             Pattern regionPat = Pattern.compile("[a-z]{2}+-[a-z]{2,}+-[0-9]"); 
             Matcher regionMat;
+            Integer eqPos;
 
             while ((line = br.readLine()) != null) {
 
@@ -57,7 +58,8 @@ public class AwsConfig {
                 }
 
                 if (foundProfile && line.startsWith("region")) {
-                    region = line.substring(9, line.length());
+                    eqPos = line.indexOf("=");
+                    region = line.substring(eqPos + 1, line.length());
                     regionMat = regionPat.matcher(region);
                     if (! regionMat.matches()) {
                         LOG.error("Region does not match '[a-z]{2}+-[a-z]{2,}+-[0-9]': " + region);
