@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.Optional;
+import java.util.regex.*;
 
 public class AwsConfig {
     private static final Log LOG = LogFactory.getLog(AwsConfig.class);
@@ -45,6 +46,10 @@ public class AwsConfig {
         boolean foundProfile = false;
         try (BufferedReader br = new BufferedReader(new FileReader(new File(file)))) {
             String line;
+            String region;
+            Pattern regionPat = Pattern.compile("[a-z]{2}+-[a-z]{2,}+-[0-9]"); 
+            Matcher regionMat;
+
             while ((line = br.readLine()) != null) {
 
                 if (line.startsWith("[") && line.contains(this.profile)) {
@@ -52,7 +57,13 @@ public class AwsConfig {
                 }
 
                 if (foundProfile && line.startsWith("region")) {
-                    return Optional.of(line.substring(7, line.length()));
+                    region = line.substring(9, line.length());
+                    regionMat = regionPat.matcher(region);
+                    if (! regionMat.matches()) {
+                        LOG.error("Region does not match '[a-z]{2}+-[a-z]{2,}+-[0-9]': " + region);
+                        throw new RuntimeException("Region does not match '[a-z]{2}+-[a-z]{2,}+-[0-9]'" + region);
+                    }
+                    return Optional.of(region);
                 }
             }
         } catch (Throwable t) {
