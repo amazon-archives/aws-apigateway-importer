@@ -59,7 +59,7 @@ public class AwsConfig {
 
                 if (foundProfile && line.startsWith("region")) {
                     eqPos = line.indexOf("=");
-                    region = line.substring(eqPos + 1, line.length());
+                    region = line.substring(eqPos + 1, line.length()).trim();
                     regionMat = regionPat.matcher(region);
                     if (! regionMat.matches()) {
                         LOG.error("Region does not match '[a-z]{2}+-[a-z]{2,}+-[0-9]': " + region);
