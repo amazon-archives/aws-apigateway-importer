@@ -356,10 +356,10 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
             BodyParameter bodyParam = (BodyParameter) p;
             Optional<String> inputModel = getInputModel(bodyParam);
 
+            input.setRequestModels(new HashMap<>());
             // model already imported
             if (inputModel.isPresent()) {
                 LOG.info("Found input model reference " + inputModel.get());
-                input.setRequestModels(new HashMap<>());
                 input.getRequestModels().put(modelContentType, inputModel.get());
             } else {
                 // create new model from nested schema
@@ -371,6 +371,7 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
                 }
 
                 createModel(api, modelName, bodyParam.getSchema(), swagger.getDefinitions(), modelContentType);
+                input.getRequestModels().put(modelContentType, modelName);
             }
         });
 
