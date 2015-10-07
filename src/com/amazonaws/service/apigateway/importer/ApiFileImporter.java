@@ -18,6 +18,7 @@ package com.amazonaws.service.apigateway.importer;
 public interface ApiFileImporter {
     String importApi(String filePath);
     void updateApi(String apiId, String filePath);
+    String createOrUpdateApi(String filePath);
     void deploy(String apiId, String deploymentStage);
     void deleteApi(String apiId);
 }

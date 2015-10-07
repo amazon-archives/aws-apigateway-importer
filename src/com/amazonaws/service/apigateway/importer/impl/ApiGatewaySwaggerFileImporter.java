@@ -59,6 +59,16 @@ public class ApiGatewaySwaggerFileImporter implements ApiFileImporter {
     }
 
     @Override
+    public String createOrUpdateApi(String filePath) {
+        LOG.info(format("Attempting to create API from Swagger definition. " +
+            "Swagger file: %s", filePath));
+
+        final Swagger swagger = parse(filePath);
+
+        return client.createOrUpdateApi(swagger, new File(filePath).getName());
+    }
+
+    @Override
     public void deploy(String apiId, String deploymentStage) {
         client.deploy(apiId, deploymentStage);
     }
