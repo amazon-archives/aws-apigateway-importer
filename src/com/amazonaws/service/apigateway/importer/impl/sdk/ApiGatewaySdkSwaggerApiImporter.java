@@ -17,17 +17,21 @@ package com.amazonaws.service.apigateway.importer.impl.sdk;
 import com.amazonaws.service.apigateway.importer.SwaggerApiImporter;
 import com.amazonaws.service.apigateway.importer.impl.SchemaTransformer;
 import com.amazonaws.services.apigateway.model.ApiGateway;
+import com.amazonaws.services.apigateway.model.CacheClusterSize;
 import com.amazonaws.services.apigateway.model.CreateDeploymentInput;
 import com.amazonaws.services.apigateway.model.CreateModelInput;
 import com.amazonaws.services.apigateway.model.CreateResourceInput;
 import com.amazonaws.services.apigateway.model.CreateRestApiInput;
+import com.amazonaws.services.apigateway.model.Deployment;
 import com.amazonaws.services.apigateway.model.Integration;
 import com.amazonaws.services.apigateway.model.IntegrationType;
 import com.amazonaws.services.apigateway.model.Method;
 import com.amazonaws.services.apigateway.model.MethodResponse;
+import com.amazonaws.services.apigateway.model.MethodSetting;
 import com.amazonaws.services.apigateway.model.Model;
 import com.amazonaws.services.apigateway.model.Models;
 import com.amazonaws.services.apigateway.model.PatchDocument;
+import com.amazonaws.services.apigateway.model.PatchOperation;
 import com.amazonaws.services.apigateway.model.PutIntegrationInput;
 import com.amazonaws.services.apigateway.model.PutIntegrationResponseInput;
 import com.amazonaws.services.apigateway.model.PutMethodInput;
@@ -35,6 +39,7 @@ import com.amazonaws.services.apigateway.model.PutMethodResponseInput;
 import com.amazonaws.services.apigateway.model.Resource;
 import com.amazonaws.services.apigateway.model.Resources;
 import com.amazonaws.services.apigateway.model.RestApi;
+import com.amazonaws.services.apigateway.model.Stage;
 import com.google.inject.Inject;
 import com.wordnik.swagger.models.Operation;
 import com.wordnik.swagger.models.Path;
@@ -75,6 +80,7 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
     private static final String DEFAULT_PRODUCES_CONTENT_TYPE = "application/json";
     private static final String EXTENSION_AUTH = "x-amazon-apigateway-auth";
     private static final String EXTENSION_INTEGRATION = "x-amazon-apigateway-integration";
+    private static final String EXTENSION_STAGE = "x-amazon-apigateway-stage";
 
     @Inject
     private ApiGateway apiGateway;
@@ -118,7 +124,44 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
         CreateDeploymentInput input = new CreateDeploymentInput();
         input.setStageName(deploymentStage);
 
-        apiGateway.getRestApiById(apiId).createDeployment(input);
+        HashMap<String, HashMap> stageExt =
+                (HashMap<String, HashMap>) swagger.getInfo().getVendorExtensions().get(EXTENSION_STAGE);
+
+        if (stageExt != null) {
+            if (getStringValue(stageExt.get("cacheEnabled")) != null) {
+                input.setCacheClusterEnabled(Boolean.valueOf(getStringValue(stageExt.get("cacheEnabled"))));
+            }
+
+            if (getStringValue(stageExt.get("cacheSize")) != null) {
+                input.setCacheClusterSize(CacheClusterSize.fromValue(getStringValue(stageExt.get("cacheSize"))));
+            }
+        }
+
+        Deployment deployment = null;
+        try {
+             deployment = apiGateway.getRestApiById(apiId).createDeployment(input);
+        } catch (Throwable t) {
+            LOG.error("Error deploying API, rolling back", t);
+            if (deployment.getStages() != null && deployment.getStages().getStageByName(deploymentStage) != null)
+            deployment.getStages().getStageByName(deploymentStage).deleteStage();
+            deployment.deleteDeployment();
+            throw t;
+        }
+
+        Stage stage = deployment.getStages().getStageByName(deploymentStage);
+        try {
+            if (stageExt != null) {
+                // method settings at this level apply to all methods
+                updateStageMethodSetting(stage, swagger.getInfo().getVendorExtensions(), "*/*");
+            }
+
+            // update the stage with individual method overrides
+            updateStageMethodSettings(stage, swagger.getPaths());
+        } catch (Throwable t) {
+            LOG.error("Error updating stage after deployment, rolling back stage", t);
+            stage.deleteStage();
+            throw t;
+        }
     }
 
     @Override
@@ -156,6 +199,100 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
         Resource resource = api.getResourceById(parentResourceId);
 
         return resource.createResource(input);
+    }
+
+    private Stage updateStageMethodSettings(Stage stage, Map<String, Path> paths) {
+        for(Map.Entry<String, Path> entry : paths.entrySet()) {
+            final Map<String, Operation> ops = getOperations(entry.getValue());
+            for (Map.Entry<String, Operation> subEntry : ops.entrySet()) {
+                updateStageMethodSetting(stage, subEntry.getValue().getVendorExtensions(),
+                        generateMethodSettingKey(subEntry.getKey(), entry.getKey()));
+            }
+        }
+        return stage;
+    }
+
+    private void updateStageMethodSetting(Stage stage, Map<String, Object> vendorExtensions, String methodSettingKey) {
+        MethodSetting methodSetting = getMethodSettingFromExtension(vendorExtensions);
+        if (methodSetting == null) {
+            return;
+        }
+        LOG.info("Updating stage '" + stage.getStageName() + "' method settings for method '" + methodSettingKey + "'");
+        List<PatchOperation> patchOperations = new ArrayList<>();
+
+        if (getStringValue(methodSetting.getMetricsEnabled()) != null) {
+            patchOperations.add(createReplaceOperation("/" + methodSettingKey + "/metrics/enabled",
+                    getStringValue(methodSetting.getMetricsEnabled())));
+        }
+
+        if (getStringValue(methodSetting.getThrottlingBurstLimit()) != null) {
+            patchOperations.add(createReplaceOperation("/" + methodSettingKey + "/throttling/burstLimit",
+                    getStringValue(methodSetting.getThrottlingBurstLimit())));
+        }
+
+        if (getStringValue(methodSetting.getThrottlingRateLimit()) != null) {
+            patchOperations.add(createReplaceOperation("/" + methodSettingKey + "/throttling/rateLimit",
+                    getStringValue(methodSetting.getThrottlingRateLimit())));
+        }
+
+        if (getStringValue(methodSetting.getLoggingLevel()) != null) {
+            patchOperations.add(createReplaceOperation("/" + methodSettingKey + "/logging/loglevel",
+                    getStringValue(methodSetting.getLoggingLevel())));
+        }
+
+        if (getStringValue(methodSetting.getDataTraceEnabled()) != null) {
+            patchOperations.add(createReplaceOperation("/" + methodSettingKey + "/logging/dataTrace",
+                    getStringValue(methodSetting.getDataTraceEnabled())));
+        }
+
+        if (getStringValue(methodSetting.getCacheTtlInSeconds()) != null) {
+            patchOperations.add(createReplaceOperation("/" + methodSettingKey + "/caching/ttlInSeconds",
+                    getStringValue(methodSetting.getCacheTtlInSeconds())));
+        }
+
+        if (getStringValue(methodSetting.getCachingEnabled()) != null) {
+            patchOperations.add(createReplaceOperation("/" + methodSettingKey + "/caching/enabled",
+                    getStringValue(methodSetting.getCachingEnabled())));
+        }
+
+        if (getStringValue(methodSetting.getCacheDataEncrypted()) != null) {
+            patchOperations.add(createReplaceOperation("/" + methodSettingKey + "/caching/dataEncrypted",
+                    getStringValue(methodSetting.getCacheDataEncrypted())));
+        }
+
+        PatchDocument pd = createPatchDocument(patchOperations.toArray(new PatchOperation[patchOperations.size()]));
+
+        stage.updateStage(pd);
+    }
+
+    private MethodSetting getMethodSettingFromExtension(Map<String, Object> vendorExtensions) {
+        HashMap<String, HashMap> stageExt =
+                (HashMap<String, HashMap>) vendorExtensions.get(EXTENSION_STAGE);
+        if (stageExt == null) {
+            return null;
+        }
+        HashMap<String, String> methodSettings = stageExt.get("methodSettings");
+        if (methodSettings == null) {
+            return null;
+        }
+
+        MethodSetting methodSetting = new MethodSetting();
+        methodSetting.withCacheTtlInSeconds(getStringValue(methodSettings.get("cacheTtlInSeconds")) != null ?
+                Integer.valueOf(getStringValue(methodSettings.get("cacheTtlInSeconds"))) : null);
+        methodSetting.withCacheDataEncrypted(Boolean.valueOf(getStringValue(methodSettings.get("cacheDataEncrypted"))));
+        methodSetting.setMetricsEnabled(Boolean.valueOf(getStringValue(methodSettings.get("metricsEnabled"))));
+        methodSetting.setThrottlingBurstLimit(getStringValue(methodSettings.get("throttlingBurstLimit")) != null ?
+                Integer.valueOf(getStringValue(methodSettings.get("throttlingBurstLimit"))) : null);
+        methodSetting.setThrottlingRateLimit(getStringValue(methodSettings.get("throttlingRateLimit")) != null ?
+                Double.valueOf(getStringValue(methodSettings.get("throttlingRateLimit"))) : null);
+        methodSetting.setLoggingLevel(getStringValue(methodSettings.get("loggingLevel")));
+        methodSetting.setDataTraceEnabled(Boolean.valueOf(getStringValue(methodSettings.get("dataTraceEnabled"))));
+        methodSetting.setCachingEnabled(Boolean.valueOf(getStringValue(methodSettings.get("cachingEnabled"))));
+        return methodSetting;
+    }
+
+    private String generateMethodSettingKey(String operationType, String path) {
+        return path.replaceAll("/", "~1") + "/" + operationType.toUpperCase();
     }
 
     private void createModel(RestApi api, String modelName, String description, String schema, String modelContentType) {
