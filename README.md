@@ -1,6 +1,6 @@
 # Amazon API Gateway Importer
 
-The **Amazon API Gateway Importer** lets you create or update [Amazon API Gateway][service-page] APIs from an API specification.
+The **Amazon API Gateway Importer** lets you create or update [Amazon API Gateway][service-page] APIs from a Swagger or RAML API representation.
 
 To learn more about API Gateway, please see the [service documentation][service-docs] or the [API documentation][api-docs].
 
@@ -8,7 +8,7 @@ To learn more about API Gateway, please see the [service documentation][service-
 [service-docs]: http://docs.aws.amazon.com/apigateway/latest/developerguide/
 [api-docs]: http://docs.aws.amazon.com/apigateway/api-reference
 
-![](https://api.travis-ci.org/awslabs/aws-apigateway-swagger-importer.svg?branch=master)
+[![Build Status](https://api.travis-ci.org/awslabs/aws-apigateway-swagger-importer.svg?branch=master)](https://travis-ci.org/awslabs/aws-apigateway-swagger-importer)
 
 ## Usage
 
@@ -17,8 +17,6 @@ To learn more about API Gateway, please see the [service documentation][service-
 This tool requires the [AWS CLI](http://aws.amazon.com/cli) to be installed and configured on your system.
 
 Build with `mvn assembly:assembly`
-
-**Using Windows? Replace `./aws-api-import.sh` with `./aws-api-import.cmd` in the examples.**
 
 ### Import a new API
 
@@ -36,9 +34,12 @@ Build with `mvn assembly:assembly`
 ./aws-api-import.sh --update API_ID --deploy STAGE_NAME --raml-config path/to/config.json path/to/api.raml
 ```
 
-### API Gateway Swagger Extension Example
+For Windows environments replace `./aws-api-import.sh` with `./aws-api-import.cmd` in the examples.
 
-You can define an API Gateway API in Swagger using the `x-amazon-apigateway-auth` and `x-amazon-apigateway-integration` extensions, and RAML using an external configuration file.
+### API Gateway Extension Example
+
+You can fully define an API Gateway API in Swagger using the `x-amazon-apigateway-auth` and `x-amazon-apigateway-integration` extensions,
+or in RAML using an external configuration file.
 
 Defined on an Operation:
 
@@ -90,5 +91,5 @@ Defined on an Operation:
 ## Testing
 
 ```sh
-mvn test -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.NoOpLog
+mvn test
 ```
