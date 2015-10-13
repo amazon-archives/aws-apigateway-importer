@@ -14,7 +14,7 @@
  */
 package com.amazonaws.service.apigateway.importer.impl;
 
-import com.amazonaws.service.apigateway.importer.ApiFileImporter;
+import com.amazonaws.service.apigateway.importer.SwaggerApiFileImporter;
 import com.amazonaws.service.apigateway.importer.SwaggerApiImporter;
 import com.google.inject.Inject;
 import com.wordnik.swagger.models.Swagger;
@@ -26,7 +26,7 @@ import java.io.File;
 
 import static java.lang.String.format;
 
-public class ApiGatewaySwaggerFileImporter implements ApiFileImporter {
+public class ApiGatewaySwaggerFileImporter implements SwaggerApiFileImporter {
     private static final Log LOG = LogFactory.getLog(ApiGatewaySwaggerFileImporter.class);
 
     private final SwaggerParser parser;

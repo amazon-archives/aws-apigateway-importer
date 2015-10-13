@@ -14,7 +14,7 @@
  */
 package com.amazonaws.service.apigateway.importer.config;
 
-import com.amazonaws.service.apigateway.importer.ApiFileImporter;
+import com.amazonaws.service.apigateway.importer.SwaggerApiFileImporter;
 import com.amazonaws.service.apigateway.importer.SwaggerApiImporter;
 import com.amazonaws.service.apigateway.importer.impl.ApiGatewaySwaggerFileImporter;
 import com.amazonaws.service.apigateway.importer.impl.sdk.ApiGatewaySdkSwaggerApiImporter;
@@ -22,11 +22,11 @@ import com.amazonaws.services.apigateway.model.ApiGateway;
 import com.google.inject.AbstractModule;
 import org.mockito.Mockito;
 
-public class ApiImporterTestModule extends AbstractModule {
+public class SwaggerApiImporterTestModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(ApiFileImporter.class).to(ApiGatewaySwaggerFileImporter.class);
+        bind(SwaggerApiFileImporter.class).to(ApiGatewaySwaggerFileImporter.class);
         bind(SwaggerApiImporter.class).to(ApiGatewaySdkSwaggerApiImporter.class);
         bind(ApiGateway.class).toInstance(Mockito.mock(ApiGateway.class));
     }
