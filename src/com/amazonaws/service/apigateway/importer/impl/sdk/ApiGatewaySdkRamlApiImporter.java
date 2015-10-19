@@ -15,24 +15,46 @@
 package com.amazonaws.service.apigateway.importer.impl.sdk;
 
 import com.amazonaws.service.apigateway.importer.RamlApiImporter;
-import com.amazonaws.services.apigateway.model.*;
+import com.amazonaws.services.apigateway.model.Integration;
+import com.amazonaws.services.apigateway.model.IntegrationType;
+import com.amazonaws.services.apigateway.model.Method;
+import com.amazonaws.services.apigateway.model.MethodResponse;
+import com.amazonaws.services.apigateway.model.PatchDocument;
+import com.amazonaws.services.apigateway.model.PutIntegrationInput;
+import com.amazonaws.services.apigateway.model.PutIntegrationResponseInput;
+import com.amazonaws.services.apigateway.model.PutMethodInput;
+import com.amazonaws.services.apigateway.model.PutMethodResponseInput;
 import com.amazonaws.services.apigateway.model.Resource;
+import com.amazonaws.services.apigateway.model.RestApi;
 import com.amazonaws.util.json.JSONArray;
 import com.amazonaws.util.json.JSONException;
 import com.amazonaws.util.json.JSONObject;
-import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.raml.model.*;
+import org.raml.model.Action;
+import org.raml.model.ActionType;
+import org.raml.model.MimeType;
+import org.raml.model.Raml;
+import org.raml.model.Response;
 import org.raml.model.parameter.Header;
 import org.raml.model.parameter.QueryParameter;
 import org.raml.model.parameter.UriParameter;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
-import static com.amazonaws.service.apigateway.importer.util.PatchUtils.*;
+import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createAddOperation;
+import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createPatchDocument;
+import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createRemoveOperation;
 import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createReplaceOperation;
 import static java.lang.String.format;
 
@@ -40,10 +62,6 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
 
     private static final Log LOG = LogFactory.getLog(ApiGatewaySdkRamlApiImporter.class);
 
-    @Inject
-    private Raml raml;
-
-    @Inject
     private JSONObject config;
 
     // NOTE: This is the only shared state - is there a better approach? Why wasn't this used until now? Can this be
@@ -53,7 +71,6 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
 
     @Override
     public String createApi(Raml raml, String name, JSONObject config) {
-        this.raml = raml;
         this.config = config;
 
         // TODO: What to use as description?
@@ -74,7 +91,6 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
 
     @Override
     public void updateApi(String apiId, Raml raml, JSONObject config) {
-        this.raml = raml;
         this.config = config;
 
         RestApi api = getApi(apiId);
@@ -452,5 +468,45 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
 
         return null;
     }
+
+    private String getExpression(String area, String part, String type, String name) {
+        return area + "." + part + "." + type + "." + name;
+    }
+
+    private void updateMethod(RestApi api, Method method, String type, String name, boolean required) {
+        String expression = getExpression("method", "request", type, name);
+        Map<String, Boolean> requestParameters = method.getRequestParameters();
+        Boolean requestParameter = requestParameters == null ? null : requestParameters.get(expression);
+
+        if (requestParameter != null && requestParameter.equals(required)) {
+            return;
+        }
+
+        LOG.info(format("Creating method parameter for api %s and method %s with name %s",
+                        api.getId(), method.getHttpMethod(), expression));
+
+        method.updateMethod(createPatchDocument(createAddOperation("/requestParameters/" + expression, getStringValue(required))));
+    }
+
+    private String getAuthorizationTypeFromConfig(Resource resource, String method, JSONObject config) {
+        if (config == null) {
+            return "NONE";
+        }
+
+        try {
+            return config.getJSONObject(resource.getPath())
+                    .getJSONObject(method.toLowerCase())
+                    .getJSONObject("auth")
+                    .getString("type")
+                    .toUpperCase();
+        } catch (JSONException exception) {
+            return "NONE";
+        }
+    }
+
+    private String escapeOperationString(String value) {
+        return value.replaceAll("~", "~0").replaceAll("/", "~1");
+    }
+
 
 }

@@ -19,15 +19,12 @@ import com.amazonaws.services.apigateway.model.CreateDeploymentInput;
 import com.amazonaws.services.apigateway.model.CreateModelInput;
 import com.amazonaws.services.apigateway.model.CreateResourceInput;
 import com.amazonaws.services.apigateway.model.CreateRestApiInput;
-import com.amazonaws.services.apigateway.model.Method;
 import com.amazonaws.services.apigateway.model.Model;
 import com.amazonaws.services.apigateway.model.Models;
 import com.amazonaws.services.apigateway.model.NotFoundException;
 import com.amazonaws.services.apigateway.model.Resource;
 import com.amazonaws.services.apigateway.model.Resources;
 import com.amazonaws.services.apigateway.model.RestApi;
-import com.amazonaws.util.json.JSONException;
-import com.amazonaws.util.json.JSONObject;
 import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -35,14 +32,11 @@ import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createAddOperation;
 import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createPatchDocument;
 import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createReplaceOperation;
-import static java.lang.String.format;
 
 public class ApiGatewaySdkApiImporter {
 
@@ -148,10 +142,7 @@ public class ApiGatewaySdkApiImporter {
     protected void cleanupModels(RestApi api, Set<String> models) {
         buildModelList(api).stream().filter(model -> !models.contains(model.getName())).forEach(model -> {
             LOG.info("Removing deleted model " + model.getName());
-            try {
-                model.deleteModel();
-            } catch (Throwable ignored) {
-            } // todo: temporary catch until API fix
+            model.deleteModel();
         });
     }
 
@@ -247,45 +238,6 @@ public class ApiGatewaySdkApiImporter {
 
     protected String getStringValue(Object in) {
         return in == null ? null : String.valueOf(in);  // use null value instead of "null"
-    }
-
-    protected String getExpression(String area, String part, String type, String name) {
-        return area + "." + part + "." + type + "." + name;
-    }
-
-    protected void updateMethod(RestApi api, Method method, String type, String name, boolean required) {
-        String expression = getExpression("method", "request", type, name);
-        Map<String, Boolean> requestParameters = method.getRequestParameters();
-        Boolean requestParameter = requestParameters == null ? null : requestParameters.get(expression);
-
-        if (requestParameter != null && requestParameter.equals(required)) {
-            return;
-        }
-
-        LOG.info(format("Creating method parameter for api %s and method %s with name %s",
-                api.getId(), method.getHttpMethod(), expression));
-
-        method.updateMethod(createPatchDocument(createAddOperation("/requestParameters/" + expression, getStringValue(required))));
-    }
-
-    protected String escapeOperationString(String value) {
-        return value.replaceAll("~", "~0").replaceAll("/", "~1");
-    }
-
-    protected String getAuthorizationTypeFromConfig(Resource resource, String method, JSONObject config) {
-        if (config == null) {
-            return "NONE";
-        }
-
-        try {
-            return config.getJSONObject(resource.getPath())
-                    .getJSONObject(method.toLowerCase())
-                    .getJSONObject("auth")
-                    .getString("type")
-                    .toUpperCase();
-        } catch (JSONException exception) {
-            return "NONE";
-        }
     }
 
 }

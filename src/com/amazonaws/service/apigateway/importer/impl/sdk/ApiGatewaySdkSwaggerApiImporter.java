@@ -36,6 +36,7 @@ import org.apache.commons.logging.LogFactory;
 import java.io.IOException;
 import java.util.*;
 
+import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createAddOperation;
 import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createPatchDocument;
 import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createRemoveOperation;
 import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createReplaceOperation;
@@ -535,11 +536,22 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
     private void createMethodParameters(RestApi api, Method method, List<Parameter> parameters) {
         parameters.forEach(p -> {
             if (!p.getIn().equals("body")) {
-                Optional<String> loc = getParameterLocation(p);
+                if (getParameterLocation(p).isPresent()) {
+                    String expression = createRequestParameterExpression(p);
 
-                updateMethod(api, method, loc.get(), p.getName(), p.getRequired());
+                    LOG.info(format("Creating method parameter for api %s and method %s with name %s",
+                                    api.getId(), method.getHttpMethod(), expression));
+
+                    method.updateMethod(createPatchDocument(createAddOperation("/requestParameters/" + expression,
+                                                                               getStringValue(p.getRequired()))));
+                }
             }
         });
+    }
+
+    private String createRequestParameterExpression(Parameter p) {
+        Optional<String> loc = getParameterLocation(p);
+        return "method.request." + loc.get() + "." + p.getName();
     }
 
     private Optional<String> getParameterLocation(Parameter p) {
@@ -560,9 +572,8 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
     private void updateMethodParameters(RestApi api, Method method, List<Parameter> parameters) {
         // clear existing params
         if (method.getRequestParameters() != null) {
-            method.getRequestParameters().keySet().forEach(k -> {
-                method.updateMethod(createPatchDocument(createRemoveOperation("/requestParameters/" + k)));
-            });
+            method.getRequestParameters().keySet().forEach(
+                    k -> method.updateMethod(createPatchDocument(createRemoveOperation("/requestParameters/" + k))));
         }
 
         // add all params from swaqgger
