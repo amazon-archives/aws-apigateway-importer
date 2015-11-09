@@ -34,6 +34,11 @@ public class AwsConfig {
         this.profile = profile;
     }
 
+    public AwsConfig(String profile, String region) {
+        this.profile = profile;
+        this.region = region;
+    }
+
     public String getRegion() {
         return region;
     }

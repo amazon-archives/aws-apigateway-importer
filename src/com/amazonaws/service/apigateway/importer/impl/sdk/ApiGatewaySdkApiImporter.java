@@ -65,7 +65,9 @@ public class ApiGatewaySdkApiImporter {
         input.setName(name);
         input.setDescription(description);
 
-        return apiGateway.createRestApi(input);
+        RestApi api = apiGateway.createRestApi(input);
+        LOG.info("Created API " + api.getId());
+        return api;
     }
 
     protected void rollback(RestApi api) {
