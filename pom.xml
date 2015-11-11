@@ -4,7 +4,7 @@
 
     <groupId>com.amazonaws</groupId>
     <artifactId>aws-apigateway-importer</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
 
     <parent>
         <groupId>org.sonatype.oss</groupId>
@@ -276,7 +276,7 @@
         <url>scm:git:git@github.com:awslabs/aws-apigateway-importer.git</url>
         <connection>scm:git:git@github.com:awslabs/aws-apigateway-importer.git</connection>
         <developerConnection>scm:git:git@github.com:awslabs/aws-apigateway-importer.git</developerConnection>
-        <tag>aws-apigateway-importer-1.0.1</tag>
+        <tag>HEAD</tag>
     </scm>
 
 </project>
