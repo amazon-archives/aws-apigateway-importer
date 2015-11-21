@@ -16,25 +16,7 @@ package com.amazonaws.service.apigateway.importer.impl.sdk;
 
 import com.amazonaws.service.apigateway.importer.SwaggerApiImporter;
 import com.amazonaws.service.apigateway.importer.impl.SchemaTransformer;
-import com.amazonaws.services.apigateway.model.ApiGateway;
-import com.amazonaws.services.apigateway.model.CreateDeploymentInput;
-import com.amazonaws.services.apigateway.model.CreateModelInput;
-import com.amazonaws.services.apigateway.model.CreateResourceInput;
-import com.amazonaws.services.apigateway.model.CreateRestApiInput;
-import com.amazonaws.services.apigateway.model.Integration;
-import com.amazonaws.services.apigateway.model.IntegrationType;
-import com.amazonaws.services.apigateway.model.Method;
-import com.amazonaws.services.apigateway.model.MethodResponse;
-import com.amazonaws.services.apigateway.model.Model;
-import com.amazonaws.services.apigateway.model.Models;
-import com.amazonaws.services.apigateway.model.PatchDocument;
-import com.amazonaws.services.apigateway.model.PutIntegrationInput;
-import com.amazonaws.services.apigateway.model.PutIntegrationResponseInput;
-import com.amazonaws.services.apigateway.model.PutMethodInput;
-import com.amazonaws.services.apigateway.model.PutMethodResponseInput;
-import com.amazonaws.services.apigateway.model.Resource;
-import com.amazonaws.services.apigateway.model.Resources;
-import com.amazonaws.services.apigateway.model.RestApi;
+import com.amazonaws.services.apigateway.model.*;
 import com.google.inject.Inject;
 import com.wordnik.swagger.models.Operation;
 import com.wordnik.swagger.models.Path;
@@ -52,15 +34,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createAddOperation;
 import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createPatchDocument;
@@ -69,7 +43,7 @@ import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createRe
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 
-public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
+public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter implements SwaggerApiImporter {
 
     private static final Log LOG = LogFactory.getLog(ApiGatewaySdkSwaggerApiImporter.class);
     private static final String DEFAULT_PRODUCES_CONTENT_TYPE = "application/json";
@@ -77,7 +51,6 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
     private static final String EXTENSION_INTEGRATION = "x-amazon-apigateway-integration";
 
     @Inject
-    private ApiGateway apiGateway;
     private Swagger swagger;
 
     @Override
@@ -111,156 +84,9 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
         updateMethods(api, swagger.getBasePath(), swagger.getPaths(), swagger.getProduces());
     }
 
-    @Override
-    public void deploy(String apiId, String deploymentStage) {
-        LOG.info(String.format("Creating deployment for API %s and stage %s", apiId, deploymentStage));
-
-        CreateDeploymentInput input = new CreateDeploymentInput();
-        input.setStageName(deploymentStage);
-
-        apiGateway.getRestApiById(apiId).createDeployment(input);
-    }
-
-    @Override
-    public void deleteApi(String apiId) {
-        deleteApi(apiGateway.getRestApiById(apiId));
-    }
-
-    private void rollback(RestApi api) {
-        deleteApi(api);
-    }
-
-    private void deleteApi(RestApi api) {
-        LOG.info("Deleting API " + api.getId());
-        api.deleteRestApi();
-    }
-
-    private RestApi createApi(String name, String description) {
-        LOG.info("Creating API with name " + name);
-
-        CreateRestApiInput input = new CreateRestApiInput();
-        input.setName(name);
-        input.setDescription(description);
-
-        return apiGateway.createRestApi(input);
-    }
-
-    private RestApi getApi(String id) {
-        return apiGateway.getRestApiById(id);
-    }
-
-    private Resource createResource(RestApi api, String parentResourceId, String pathPart) {
-        CreateResourceInput input = new CreateResourceInput();
-        input.setPathPart(pathPart);
-
-        Resource resource = api.getResourceById(parentResourceId);
-
-        return resource.createResource(input);
-    }
-
-    private void createModel(RestApi api, String modelName, String description, String schema, String modelContentType) {
-
-        CreateModelInput input = new CreateModelInput();
-
-        input.setName(modelName);
-        input.setDescription(description);
-        input.setContentType(modelContentType);
-        input.setSchema(schema);
-
-        api.createModel(input);
-    }
-
-    private void deleteDefaultModels(RestApi api) {
-        buildModelList(api).stream().forEach(model -> {
-            LOG.info("Removing default model " + model.getName());
-            try {
-                model.deleteModel();
-            } catch (Throwable ignored) {} // todo: temporary catch until API fix
-        });
-    }
-
-    private Optional<Resource> getResource(RestApi api, String parentResourceId, String pathPart) {
-        for (Resource r : buildResourceList(api)) {
-            if (pathEquals(pathPart, r.getPathPart()) && r.getParentId().equals(parentResourceId)) {
-                return Optional.of(r);
-            }
-        }
-        return Optional.empty();
-    }
-
-    private boolean pathEquals(String p1, String p2) {
-        return (StringUtils.isBlank(p1) && StringUtils.isBlank(p2)) || p1.equals(p2);
-    }
-
-    private Optional<Resource> getResource(RestApi api, String fullPath) {
-        for (Resource r : buildResourceList(api)) {
-            if (r.getPath().equals(fullPath)) {
-                return Optional.of(r);
-            }
-        }
-
-        return Optional.empty();
-    }
-
-    private Optional<Resource> getRootResource(RestApi api) {
-        for (Resource r : buildResourceList(api)) {
-            if ("/".equals(r.getPath())) {
-                return Optional.of(r);
-            }
-        }
-        return Optional.empty();
-    }
-
-    private Optional<Model> getModel(RestApi api, String modelName) {
-        try {
-            return Optional.of(api.getModelByName(modelName));
-        } catch (Exception ignored) {
-            return Optional.empty();
-        }
-    }
-
-    private void updateModel(RestApi api, String modelName, String schema) {
-        api.getModelByName(modelName).updateModel(createPatchDocument(createReplaceOperation("/schema", schema)));
-    }
-
-    private boolean methodExists(Resource resource, String httpMethod) {
-        return resource.getResourceMethods().get(httpMethod.toUpperCase()) != null;
-    }
-
-    private void deleteResource(Resource resource) {
-        if (resource._isLinkAvailable("resource:delete")) {
-            resource.deleteResource();
-        }
-        // can't delete root resource
-    }
-
     private String getApiName(Swagger swagger, String fileName) {
         String title = swagger.getInfo().getTitle();
         return StringUtils.isNotBlank(title) ? title : fileName;
-    }
-
-    private void createResources(RestApi api, Resource rootResource, String basePath, List<String> apiProduces, Map<String, Path> paths, boolean createMethods) {
-        //build path tree
-
-        for (Map.Entry<String, Path> entry : paths.entrySet()) {
-
-            // create the resource tree
-            Resource parentResource = rootResource;
-            String parentPart = null;
-
-            final String fullPath = buildResourcePath(basePath, entry.getKey());    // prepend the base path to all paths
-            final String[] parts = fullPath.split("/");
-
-            for (int i = 1; i < parts.length; i++) { // exclude root resource as this will be created when the api is created
-                parentResource = createResource(api, parentResource.getId(), parentPart, parts[i]);
-                parentPart = parts[i];
-            }
-
-            if (createMethods) {
-                // create methods on the leaf resource for each path
-                createMethods(api, parentResource, entry.getValue(), apiProduces);
-            }
-        }
     }
 
     private void createModels(RestApi api, Map<String, com.wordnik.swagger.models.Model> definitions, List<String> produces) {
@@ -286,34 +112,6 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
         LOG.info(format("Creating model for api id %s with name %s", api.getId(), modelName));
 
         createModel(api, modelName, model.getDescription(), generateSchema(model, modelName, swagger.getDefinitions()), modelContentType);
-    }
-
-    private void createMethods(final RestApi api, final Resource resource, Path path, List<String> apiProduces) {
-        final Map<String, Operation> ops = getOperations(path);
-
-        ops.entrySet().forEach(x -> {
-            createMethod(api, resource, x.getKey(), x.getValue(),
-                         getProducesContentType(apiProduces, x.getValue().getProduces()));
-            LOG.info(format("Creating method for api id %s and resource id %s with method %s", api.getId(), resource.getId(), x.getKey()));
-        });
-    }
-
-    private Resource createResource(RestApi api, String parentResourceId, String parentPart, String part) {
-        final Optional<Resource> existingResource = getResource(api, parentResourceId, part);
-
-        // create resource if doesn't exist
-        if (!existingResource.isPresent()) {
-            LOG.info("Creating resource '" + part + "' with parent '" + parentPart + "'");
-            return createResource(api, parentResourceId, part);
-        } else {
-            return existingResource.get();
-        }
-    }
-
-    private void addOp(Map<String, Operation> ops, String method, Operation operation) {
-        if (operation != null) {
-            ops.put(method, operation);
-        }
     }
 
     private void updateMethods(RestApi api, String basePath, Map<String, Path> paths, List<String> apiProduces) {
@@ -342,6 +140,57 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
         }
 
         cleanupMethods(api, basePath, paths);
+    }
+
+    private void createResources(RestApi api, Resource rootResource, String basePath, List<String> apiProduces, Map<String, Path> paths, boolean createMethods) {
+        //build path tree
+
+        for (Map.Entry<String, Path> entry : paths.entrySet()) {
+
+            // create the resource tree
+            Resource parentResource = rootResource;
+
+            final String fullPath = buildResourcePath(basePath, entry.getKey());    // prepend the base path to all paths
+            final String[] parts = fullPath.split("/");
+
+            for (int i = 1; i < parts.length; i++) { // exclude root resource as this will be created when the api is created
+                parentResource = createResource(api, parentResource.getId(), parts[i]);
+            }
+
+            if (createMethods) {
+                // create methods on the leaf resource for each path
+                createMethods(api, parentResource, entry.getValue(), apiProduces);
+            }
+        }
+    }
+
+    private void createMethods(final RestApi api, final Resource resource, Path path, List<String> apiProduces) {
+        final Map<String, Operation> ops = getOperations(path);
+
+        ops.entrySet().forEach(x -> {
+            createMethod(api, resource, x.getKey(), x.getValue(),
+                    getProducesContentType(apiProduces, x.getValue().getProduces()));
+            LOG.info(format("Creating method for api id %s and resource id %s with method %s", api.getId(), resource.getId(), x.getKey()));
+        });
+    }
+
+    private Map<String, Operation> getOperations(Path path) {
+        final Map<String, Operation> ops = new HashMap<>();
+
+        addOp(ops, "get", path.getGet());
+        addOp(ops, "post", path.getPost());
+        addOp(ops, "put", path.getPut());
+        addOp(ops, "delete", path.getDelete());
+        addOp(ops, "options", path.getOptions());
+        addOp(ops, "patch", path.getPatch());
+
+        return ops;
+    }
+
+    private void addOp(Map<String, Operation> ops, String method, Operation operation) {
+        if (operation != null) {
+            ops.put(method, operation);
+        }
     }
 
     public void createMethod(RestApi api, Resource resource, String httpMethod,
@@ -383,26 +232,6 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
         createIntegration(method, op.getVendorExtensions());
     }
 
-    private void createIntegrationResponses(Integration integration, HashMap<String, HashMap> integ) {
-
-        // todo: avoid unchecked casts
-        HashMap<String, HashMap> responses = (HashMap<String, HashMap>) integ.get("responses");
-
-        responses.entrySet().forEach(e -> {
-            String pattern = e.getKey().equals("default") ? null : e.getKey();
-            HashMap response = e.getValue();
-
-            String status = (String) response.get("statusCode");
-
-            PutIntegrationResponseInput input = new PutIntegrationResponseInput()
-                    .withResponseParameters((Map<String, String>) response.get("responseParameters"))
-                    .withResponseTemplates((Map<String, String>) response.get("responseTemplates"))
-                    .withSelectionPattern(pattern);
-
-            integration.putIntegrationResponse(input, status);
-        });
-    }
-
     private void createIntegration(Method method, Map<String, Object> vendorExtensions) {
         if (!vendorExtensions.containsKey(EXTENSION_INTEGRATION)) {
             return;
@@ -430,8 +259,23 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
         createIntegrationResponses(integration, integ);
     }
 
-    private String getStringValue(Object in) {
-        return in == null ? null : String.valueOf(in);  // use null value instead of "null"
+    private void createIntegrationResponses(Integration integration, HashMap<String, HashMap> integ) {
+        // todo: avoid unchecked casts
+        HashMap<String, HashMap> responses = (HashMap<String, HashMap>) integ.get("responses");
+
+        responses.entrySet().forEach(e -> {
+            String pattern = e.getKey().equals("default") ? null : e.getKey();
+            HashMap response = e.getValue();
+
+            String status = (String) response.get("statusCode");
+
+            PutIntegrationResponseInput input = new PutIntegrationResponseInput()
+                    .withResponseParameters((Map<String, String>) response.get("responseParameters"))
+                    .withResponseTemplates((Map<String, String>) response.get("responseTemplates"))
+                    .withSelectionPattern(pattern);
+
+            integration.putIntegrationResponse(input, status);
+        });
     }
 
     private String getAuthorizationType(Operation op) {
@@ -500,6 +344,7 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
             String modelName = ((RefModel) model).getSimpleRef();   // assumption: complex ref?
             return Optional.of(modelName);
         }
+
         return Optional.empty();
     }
 
@@ -519,24 +364,10 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
 
     private String generateModelName(BodyParameter param) {
         return generateModelName(param.getDescription());
-
     }
 
     private String getModelNameSanitizeRegex() {
         return "[^A-Za-z0-9]";
-    }
-
-    private Map<String, Operation> getOperations(Path path) {
-        final Map<String, Operation> ops = new HashMap<>();
-
-        addOp(ops, "get", path.getGet());
-        addOp(ops, "post", path.getPost());
-        addOp(ops, "put", path.getPut());
-        addOp(ops, "delete", path.getDelete());
-        addOp(ops, "options", path.getOptions());
-        addOp(ops, "patch", path.getPatch());
-
-        return ops;
     }
 
     private void updateResources(RestApi api, Resource rootResourceId, String basePath, Map<String, Path> paths, List<String> apiProduces) {
@@ -560,7 +391,7 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
             }
         }
 
-        cleanupModels(api, definitions);
+        cleanupModels(api, definitions.keySet());
     }
 
     private void updateModel(RestApi api, String modelName, com.wordnik.swagger.models.Model model) {
@@ -579,15 +410,6 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
         updateMethodResponses(api, method, modelContentType, op.getResponses());
         updateMethodParameters(api, method, op.getParameters());
         createIntegration(method, op.getVendorExtensions());
-    }
-
-    private void cleanupModels(RestApi api, Map<String, com.wordnik.swagger.models.Model> definitions) {
-        buildModelList(api).stream().filter(model -> !definitions.containsKey(model.getName())).forEach(model -> {
-            LOG.info("Removing deleted model " + model.getName());
-            try {
-                model.deleteModel();
-            }  catch (Throwable ignored) {} // todo: temporary catch until API fix
-        });
     }
 
     private void cleanupMethods(RestApi api, String basePath, Map<String, Path> paths) {
@@ -621,58 +443,20 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
     }
 
     private void cleanupResources(RestApi api, String basePath, Map<String, Path> paths) {
-        LOG.info("Cleaning up removed resources");
-
-        Set<String> resourceSet = buildResourceSet(paths, basePath);
-
-        // don't remove the resource if it's path part exists in any of the swagger paths
-        // this prevents intermediate resources from being deleted, but may also prevent deletion when resources are "moved"
-        buildResourceList(api).stream().filter(resource -> !resourceSet.contains(resource.getPathPart()) && !resource.getPath().equals("/"))
-                .forEach(resource -> {
-                    LOG.info("Removing deleted resource " + resource.getPath());
-                    deleteResource(resource);
-                });
+        cleanupResources(api, buildResourceSet(paths.keySet(), basePath));
     }
 
-    private Set<String> buildResourceSet(Map<String, Path> paths, String basePath) {
+    private Set<String> buildResourceSet(Set<String> paths, String basePath) {
         if (StringUtils.isBlank(basePath)) {
             basePath = "/";
         }
 
         Set<String> resourceSet = new HashSet<>();
-        for (String path : paths.keySet()) {
+        for (String path : paths) {
             resourceSet.addAll(Arrays.asList(path.split("/")));
         }
         resourceSet.addAll(Arrays.asList(basePath.split("/")));
         return resourceSet;
-    }
-
-    private List<Resource> buildResourceList(RestApi api) {
-        List<Resource> resourceList = new ArrayList<>();
-
-        Resources resources = api.getResources();
-        resourceList.addAll(resources.getItem());
-
-        while (resources._isLinkAvailable("next")) {
-            resources = resources.getNext();
-            resourceList.addAll(resources.getItem());
-        }
-
-        return resourceList;
-    }
-
-    private List<Model> buildModelList(RestApi api) {
-        List<Model> modelList = new ArrayList<>();
-
-        Models models = api.getModels();
-        modelList.addAll(models.getItem());
-
-        while (models._isLinkAvailable("next")) {
-            models = models.getNext();
-            modelList.addAll(models.getItem());
-        }
-
-        return modelList;
     }
 
     private PutMethodResponseInput getCreateResponseInput(RestApi api, String modelContentType, Response response) {
@@ -788,9 +572,8 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
     private void updateMethodParameters(RestApi api, Method method, List<Parameter> parameters) {
         // clear existing params
         if (method.getRequestParameters() != null) {
-            method.getRequestParameters().keySet().forEach(k -> {
-                method.updateMethod(createPatchDocument(createRemoveOperation("/requestParameters/" + k)));
-            });
+            method.getRequestParameters().keySet().forEach(
+                    k -> method.updateMethod(createPatchDocument(createRemoveOperation("/requestParameters/" + k))));
         }
 
         // add all params from swaqgger
@@ -803,32 +586,6 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
         // delete all existing responses
         responseMap.values().forEach(MethodResponse::deleteMethodResponse);
         createMethodResponses(api, method, modelContentType, responses);
-    }
-
-    /**
-     * Build the full resource path, including base path, add any missing leading '/', remove any trailing '/',
-     * and remove any double '/'
-     * @param basePath the base path
-     * @param resourcePath the resource path
-     * @return the full path
-     */
-    String buildResourcePath(String basePath, String resourcePath) {
-        if (basePath == null) {
-            basePath = "";
-        }
-        String base = trimSlashes(basePath);
-        if (!base.equals("")) {
-            base = "/" + base;
-        }
-        String result = StringUtils.removeEnd(base + "/" + trimSlashes(resourcePath), "/");
-        if (result.equals("")) {
-            result = "/";
-        }
-        return result;
-    }
-
-    private String trimSlashes(String path) {
-        return StringUtils.removeEnd(StringUtils.removeStart(path, "/"), "/");
     }
 
     /*
@@ -860,4 +617,17 @@ public class ApiGatewaySdkSwaggerApiImporter implements SwaggerApiImporter {
 
         return DEFAULT_PRODUCES_CONTENT_TYPE;
     }
+
+    private void cleanupResources(RestApi api, Set<String> paths) {
+        LOG.info("Cleaning up removed resources");
+
+        // don't remove the resource if it's path part exists in any of the swagger paths
+        // this prevents intermediate resources from being deleted, but may also prevent deletion when resources are "moved"
+        buildResourceList(api).stream().filter(resource -> !paths.contains(resource.getPathPart()) && !resource.getPath().equals("/"))
+                .forEach(resource -> {
+                    LOG.info("Removing deleted resource " + resource.getPath());
+                    deleteResource(resource);
+                });
+    }
+
 }

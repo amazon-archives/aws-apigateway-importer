@@ -13,7 +13,7 @@ public class ApiImporterMainTest {
     public void test() throws URISyntaxException {
         ApiImporterMain main = new ApiImporterMain();
 
-        String[] args = {"--create", Paths.get(getClass().getResource("/apigateway.json").toURI()).toString()};
+        String[] args = {"--create", Paths.get(getClass().getResource("/swagger/apigateway.json").toURI()).toString()};
         main.main(args);
     }
 

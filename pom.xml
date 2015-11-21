@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.amazonaws</groupId>
-    <artifactId>aws-apigateway-swagger-importer</artifactId>
-    <version>1.0.1</version>
+    <artifactId>aws-apigateway-importer</artifactId>
+    <version>1.0.2-SNAPSHOT</version>
+
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
 
     <dependencies>
 
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-apigateway-sdk-java</artifactId>
-            <version>1.1.0</version>
+            <version>1.1.1</version>
         </dependency>
 
         <dependency>
@@ -68,6 +72,12 @@
             <groupId>io.swagger</groupId>
             <artifactId>swagger-core</artifactId>
             <version>1.5.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.raml</groupId>
+            <artifactId>raml-parser</artifactId>
+            <version>0.8.11</version>
         </dependency>
 
         <dependency>
@@ -129,28 +139,61 @@
 
     </dependencies>
 
+    <profiles>
+        <!--
+        The maven release plugin will set the property performRelease, thereby activating this profile.
+        Artifacts will be signed only when executing a maven release:perform.
+        -->
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <build>
         <defaultGoal>package</defaultGoal>
-        <directory>${basedir}/build/maven</directory>
+
         <sourceDirectory>${basedir}/src</sourceDirectory>
         <testSourceDirectory>${basedir}/tst</testSourceDirectory>
+
+        <resources>
+            <resource>
+                <directory>${project.basedir}</directory>
+                <includes>
+                    <include>LICENSE</include>
+                    <include>NOTICE.txt</include>
+                    <include>README.md</include>
+                </includes>
+            </resource>
+        </resources>
+
         <testResources>
             <testResource>
                 <directory>${basedir}/tst/resources</directory>
             </testResource>
         </testResources>
-        <outputDirectory>${basedir}/build/private/classes/library</outputDirectory>
-        <testOutputDirectory>${basedir}/build/private/classes/tests</testOutputDirectory>
-        <resources>
-            <resource>
-                <directory>${project.basedir}</directory>
-                <includes>
-                    <include>LICENSE.txt</include>
-                    <include>NOTICE.txt</include>
-                    <include>README.txt</include>
-                </includes>
-            </resource>
-        </resources>
 
         <plugins>
             <plugin>
@@ -182,6 +225,20 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.4.2</version>
                 <configuration>
@@ -207,5 +264,19 @@
         </plugins>
     </build>
 
-</project>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://aws.amazon.com/apache2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
+    <scm>
+        <url>scm:git:git@github.com:awslabs/aws-apigateway-importer.git</url>
+        <connection>scm:git:git@github.com:awslabs/aws-apigateway-importer.git</connection>
+        <developerConnection>scm:git:git@github.com:awslabs/aws-apigateway-importer.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+</project>
