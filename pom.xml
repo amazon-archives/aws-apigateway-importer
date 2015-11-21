@@ -185,6 +185,7 @@
                     <include>LICENSE</include>
                     <include>NOTICE.txt</include>
                     <include>README.md</include>
+                    <include>log4j.properties</include>
                 </includes>
             </resource>
         </resources>

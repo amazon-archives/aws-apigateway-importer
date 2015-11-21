@@ -28,10 +28,6 @@ import com.google.inject.Injector;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
@@ -67,17 +63,10 @@ public class ApiImporterMain {
     private boolean help;
 
     public static void main(String[] args) {
-        bootstrap();
         ApiImporterMain main = new ApiImporterMain();
         JCommander jCommander = new JCommander(main, args);
         jCommander.setProgramName(CMD_NAME);
         main.execute(jCommander);
-    }
-
-    static void bootstrap() {
-        Logger root = Logger.getRootLogger();
-        root.setLevel(Level.INFO);
-        root.addAppender(new ConsoleAppender(new PatternLayout("%d %p - %m%n")));
     }
 
     public void execute(JCommander jCommander) {
