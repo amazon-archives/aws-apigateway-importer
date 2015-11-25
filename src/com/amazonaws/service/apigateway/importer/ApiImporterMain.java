@@ -51,6 +51,9 @@ public class ApiImporterMain {
     @Parameter(description = "Path to API definition file to import")
     private List<String> files;
 
+    @Parameter(names = {"--region", "-r"}, description = "Region used to deploy the API")
+    private String region = null;
+
     @Parameter(names = {"--deploy", "-d"}, description = "Stage used to deploy the API")
     private String deploymentLabel;
 
@@ -91,12 +94,21 @@ public class ApiImporterMain {
             System.exit(1);
         }
 
-        AwsConfig config = new AwsConfig(profile);
-        try {
-            config.load();
-        } catch (Throwable t) {
-            LOG.error("Could not load AWS configuration. Please run 'aws configure'");
-            System.exit(1);
+        AwsConfig config;
+
+        if (region != null)
+        {
+            config = new AwsConfig(profile, region);
+        }
+        else
+        {
+            config = new AwsConfig(profile);
+            try {
+                config.load();
+            } catch (Throwable t) {
+                LOG.error("Could not load AWS configuration. Please run 'aws configure'");
+                System.exit(1);
+            }
         }
 
         try {

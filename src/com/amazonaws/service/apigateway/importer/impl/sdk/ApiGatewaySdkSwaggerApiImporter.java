@@ -82,6 +82,10 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         updateModels(api, swagger.getDefinitions(), swagger.getProduces());
         updateResources(api, rootResource.get(), swagger.getBasePath(), swagger.getPaths(), swagger.getProduces());
         updateMethods(api, swagger.getBasePath(), swagger.getPaths(), swagger.getProduces());
+
+        cleanupMethods(api, swagger.getBasePath(), swagger.getPaths());
+        cleanupResources(api, swagger.getBasePath(), swagger.getPaths());
+        cleanupModels(api, swagger.getDefinitions().keySet());
     }
 
     private String getApiName(Swagger swagger, String fileName) {
@@ -138,8 +142,6 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
                 }
             }
         }
-
-        cleanupMethods(api, basePath, paths);
     }
 
     private void createResources(RestApi api, Resource rootResource, String basePath, List<String> apiProduces, Map<String, Path> paths, boolean createMethods) {
@@ -372,7 +374,6 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
 
     private void updateResources(RestApi api, Resource rootResourceId, String basePath, Map<String, Path> paths, List<String> apiProduces) {
         createResources(api, rootResourceId, basePath, apiProduces, paths, false);
-        cleanupResources(api, basePath, paths);
     }
 
     private void updateModels(RestApi api, Map<String, com.wordnik.swagger.models.Model> definitions, List<String> apiProduces) {
@@ -390,8 +391,6 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
                 createModel(api, modelName, model, definitions, getProducesContentType(apiProduces, emptyList()));
             }
         }
-
-        cleanupModels(api, definitions.keySet());
     }
 
     private void updateModel(RestApi api, String modelName, com.wordnik.swagger.models.Model model) {
