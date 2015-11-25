@@ -2,3 +2,4 @@
 .idea/
 aws-apigateway-swagger-importer.iml
 build/
+target/
