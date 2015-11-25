@@ -14,7 +14,12 @@ To learn more about API Gateway, please see the [service documentation][service-
 
 ### Prerequisites
 
-This tool requires the [AWS CLI](http://aws.amazon.com/cli) to be installed and configured on your system.
+#### Credentials
+This tool requires AWS credentials to be configured in at least one of the locations specified by the [default credential provider chain|http://docs.aws.amazon.com/AWSSdkDocsJava/latest/DeveloperGuide/credentials.html}
+
+It will look for configured credentials in environment variables, Java system properties, [AWS SDK/CLI](http://aws.amazon.com/cli) profile credentials, and EC2 instance profile credentials.
+
+#### Build
 
 Build with `mvn assembly:assembly`
 

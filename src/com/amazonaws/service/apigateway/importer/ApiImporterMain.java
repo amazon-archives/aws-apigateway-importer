@@ -14,10 +14,16 @@
  */
 package com.amazonaws.service.apigateway.importer;
 
-import com.amazonaws.service.apigateway.importer.config.ApiImporterModule;
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.AWSCredentialsProviderChain;
+import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
+import com.amazonaws.auth.SystemPropertiesCredentialsProvider;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.service.apigateway.importer.config.ApiImporterDefaultModule;
 import com.amazonaws.service.apigateway.importer.config.AwsConfig;
-import com.amazonaws.service.apigateway.importer.impl.ApiGatewaySwaggerFileImporter;
 import com.amazonaws.service.apigateway.importer.impl.ApiGatewayRamlFileImporter;
+import com.amazonaws.service.apigateway.importer.impl.ApiGatewaySwaggerFileImporter;
 import com.amazonaws.util.json.JSONException;
 import com.amazonaws.util.json.JSONObject;
 import com.amazonaws.util.json.JSONTokener;
@@ -25,6 +31,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,7 +39,6 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.FileReader;
@@ -56,6 +62,9 @@ public class ApiImporterMain {
 
     @Parameter(names = {"--test", "-t"}, description = "Delete the API after import (create only)")
     private boolean cleanup = false;
+
+    @Parameter(names = {"--region", "-r"}, description = "AWS region to use")
+    private String region = null;
 
     @Parameter(names = {"--profile", "-p"}, description = "AWS CLI profile to use")
     private String profile = "default";
@@ -91,16 +100,27 @@ public class ApiImporterMain {
             System.exit(1);
         }
 
-        AwsConfig config = new AwsConfig(profile);
-        try {
-            config.load();
-        } catch (Throwable t) {
-            LOG.error("Could not load AWS configuration. Please run 'aws configure'");
-            System.exit(1);
+        // use default AWS credentials provider chain
+        AWSCredentialsProvider credentialsProvider = new AWSCredentialsProviderChain(
+                new EnvironmentVariableCredentialsProvider(),
+                new SystemPropertiesCredentialsProvider(),
+                new ProfileCredentialsProvider(profile),
+                new InstanceProfileCredentialsProvider());
+
+        // if region parameter is not specified, attempt to load configured region from profile
+        if (StringUtils.isBlank(region)) {
+            AwsConfig config = new AwsConfig(profile);
+            try {
+                config.load();
+            } catch (Throwable t) {
+                LOG.error("Could not load AWS configuration. Please run 'aws configure'");
+                System.exit(1);
+            }
+            region = config.getRegion();
         }
 
         try {
-            Injector injector = Guice.createInjector(new ApiImporterModule(config));
+            Injector injector = Guice.createInjector(new ApiImporterDefaultModule(credentialsProvider, region));
 
             String fileName = files.get(0);
 
@@ -117,39 +137,47 @@ public class ApiImporterMain {
                     return;
                 }
 
-                if (createNew) {
-                    apiId = importer.importApi(fileName, configData);
-
-                    if (cleanup) {
-                        importer.deleteApi(apiId);
-                    }
-                } else {
-                    importer.updateApi(apiId, fileName, configData);
-                }
-
-                if (!StringUtils.isBlank(deploymentLabel)) {
-                    importer.deploy(apiId, deploymentLabel);
-                }
+                importRaml(fileName, configData, importer);
             } else {
                 SwaggerApiFileImporter importer = injector.getInstance(ApiGatewaySwaggerFileImporter.class);
 
-                if (createNew) {
-                    apiId = importer.importApi(fileName);
-
-                    if (cleanup) {
-                        importer.deleteApi(apiId);
-                    }
-                } else {
-                    importer.updateApi(apiId, fileName);
-                }
-
-                if (!StringUtils.isBlank(deploymentLabel)) {
-                    importer.deploy(apiId, deploymentLabel);
-                }
+                importSwagger(fileName, importer);
             }
         } catch (Throwable t) {
             LOG.error("Error importing API definition", t);
             System.exit(1);
+        }
+    }
+
+    private void importSwagger(String fileName, SwaggerApiFileImporter importer) {
+        if (createNew) {
+            apiId = importer.importApi(fileName);
+
+            if (cleanup) {
+                importer.deleteApi(apiId);
+            }
+        } else {
+            importer.updateApi(apiId, fileName);
+        }
+
+        if (!StringUtils.isBlank(deploymentLabel)) {
+            importer.deploy(apiId, deploymentLabel);
+        }
+    }
+
+    private void importRaml(String fileName, JSONObject configData, RamlApiFileImporter importer) {
+        if (createNew) {
+            apiId = importer.importApi(fileName, configData);
+
+            if (cleanup) {
+                importer.deleteApi(apiId);
+            }
+        } else {
+            importer.updateApi(apiId, fileName, configData);
+        }
+
+        if (!StringUtils.isBlank(deploymentLabel)) {
+            importer.deploy(apiId, deploymentLabel);
         }
     }
 
