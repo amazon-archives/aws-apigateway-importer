@@ -57,19 +57,19 @@ public class ApiImporterMain {
     @Parameter(description = "Path to API definition file to import")
     private List<String> files;
 
-    @Parameter(names = {"--deploy", "-d"}, description = "Stage used to deploy the API")
+    @Parameter(names = {"--deploy", "-d"}, description = "Stage used to deploy the API (optional)")
     private String deploymentLabel;
 
     @Parameter(names = {"--test", "-t"}, description = "Delete the API after import (create only)")
     private boolean cleanup = false;
 
-    @Parameter(names = {"--region", "-r"}, description = "AWS region to use")
-    private String region = null;
+    @Parameter(names = {"--region", "-r"}, description = "AWS region to use (optional)")
+    private String region;
 
-    @Parameter(names = {"--profile", "-p"}, description = "AWS CLI profile to use")
+    @Parameter(names = {"--profile", "-p"}, description = "AWS CLI profile to use (optional)")
     private String profile = "default";
 
-    @Parameter(names = {"--raml-config"}, description = "Provide a configuration file to load AWS information from")
+    @Parameter(names = {"--raml-config"}, description = "RAML file for API Gateway metadata (optional)")
     private String configFile;
 
     @Parameter(names = "--help", help = true)
