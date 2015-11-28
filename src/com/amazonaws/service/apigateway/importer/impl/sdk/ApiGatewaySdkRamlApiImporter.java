@@ -76,6 +76,8 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
         // TODO: What to use as description?
         final RestApi api = createApi(getApiName(raml, name), null);
 
+        LOG.info("Created API "+api.getId());
+        
         try {
             final Resource rootResource = getRootResource(api).get();
             deleteDefaultModels(api);
