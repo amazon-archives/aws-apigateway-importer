@@ -59,6 +59,8 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
 
         final RestApi api = createApi(getApiName(swagger, name), swagger.getInfo().getDescription());
 
+        LOG.info("Created API "+api.getId());
+        
         try {
             final Resource rootResource = getRootResource(api).get();
             deleteDefaultModels(api);
