@@ -113,7 +113,8 @@ public class ApiImporterMain {
             try {
                 config.load();
             } catch (Throwable t) {
-                LOG.error("Could not load AWS configuration. Please run 'aws configure'");
+                LOG.error("Could not load region from profile and no region parameter specified. " +
+                                  "Please run 'aws configure' or specify region with '--region' parameter.");
                 System.exit(1);
             }
             region = config.getRegion();
