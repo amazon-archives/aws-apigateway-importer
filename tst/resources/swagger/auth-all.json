@@ -1,0 +1,98 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "API Gateway Test API",
+        "description" : "Demonstrates an API with AWS SigV4 auth enabled for all operations",
+        "version": "1.0.0"
+    },
+    "schemes": [
+        "https"
+    ],
+    "basePath": "/v1",
+    "produces": [
+        "application/json"
+    ],
+    "security" : [
+        {
+            "aws_sigv4" : []
+        }
+    ],
+    "securityDefinitions" : {
+        "api_key": {
+            "type": "apiKey",
+            "name": "x-api-key",
+            "in": "header"
+        },
+        "aws_sigv4": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "description" : "awsSigv4",
+            "in": "header",
+            "x-amazon-apigateway-authtype" : "awsSigv4"
+        }
+    },
+    "paths": {
+        "/1": {
+            "get": {
+                "parameters": [],
+                "responses": {
+                    "default": {
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "aws",
+                    "uri" : "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:ACCOUNT_ID:function:myFunction/invocations",
+                    "httpMethod" : "POST",
+                    "credentials" : "arn:aws:iam::ACCOUNT_ID:role/lambda_exec_role",
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "400"
+                        }
+                    }
+                }
+            }
+        },
+        "/2": {
+            "get": {
+                "parameters": [],
+                "responses": {
+                    "default": {
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "aws",
+                    "uri" : "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:ACCOUNT_ID:function:myFunction/invocations",
+                    "httpMethod" : "POST",
+                    "credentials" : "arn:aws:iam::ACCOUNT_ID:role/lambda_exec_role",
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "400"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Error": {
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "fields": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

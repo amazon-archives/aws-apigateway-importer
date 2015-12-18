@@ -25,6 +25,7 @@ import com.amazonaws.services.apigateway.model.NotFoundException;
 import com.amazonaws.services.apigateway.model.Resource;
 import com.amazonaws.services.apigateway.model.Resources;
 import com.amazonaws.services.apigateway.model.RestApi;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -236,8 +237,8 @@ public class ApiGatewaySdkApiImporter {
         }
     }
 
-    protected String getStringValue(Object in) {
-        return in == null ? null : String.valueOf(in);  // use null value instead of "null"
+    protected String getStringValue(JsonNode in) {
+        return in == null ? null : in.asText();
     }
 
 }

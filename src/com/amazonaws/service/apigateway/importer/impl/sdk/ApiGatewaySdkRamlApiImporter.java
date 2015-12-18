@@ -485,7 +485,7 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
         LOG.info(format("Creating method parameter for api %s and method %s with name %s",
                         api.getId(), method.getHttpMethod(), expression));
 
-        method.updateMethod(createPatchDocument(createAddOperation("/requestParameters/" + expression, getStringValue(required))));
+        method.updateMethod(createPatchDocument(createAddOperation("/requestParameters/" + expression, String.valueOf(required))));
     }
 
     private String getAuthorizationTypeFromConfig(Resource resource, String method, JSONObject config) {
