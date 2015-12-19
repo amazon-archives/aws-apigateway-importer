@@ -21,6 +21,7 @@ import com.amazonaws.services.apigateway.model.Integration;
 import com.amazonaws.services.apigateway.model.Method;
 import com.amazonaws.services.apigateway.model.Model;
 import com.amazonaws.services.apigateway.model.Models;
+import com.amazonaws.services.apigateway.model.PutMethodInput;
 import com.amazonaws.services.apigateway.model.Resource;
 import com.amazonaws.services.apigateway.model.Resources;
 import com.amazonaws.services.apigateway.model.RestApi;
@@ -129,6 +130,18 @@ public class ApiGatewaySwaggerFileImporterTest {
         verify(mockChildResource, times(1)).putMethod(
                 argThat(new LambdaMatcher<>(i -> i.getAuthorizationType().equals("NONE"))),
                 argThat(new LambdaMatcher<>(i -> i.equals("POST"))));
+        verify(mockChildResource, times(1)).putMethod(
+                argThat(new LambdaMatcher<>(i -> i.getAuthorizationType().equals("AWS_IAM"))),
+                argThat(new LambdaMatcher<>(i -> i.equals("PUT"))));
+        verify(mockChildResource, times(1)).putMethod(
+                argThat(new LambdaMatcher<>(PutMethodInput::getApiKeyRequired)),
+                argThat(new LambdaMatcher<>(i -> i.equals("GET"))));
+        verify(mockChildResource, times(1)).putMethod(
+                argThat(new LambdaMatcher<>(PutMethodInput::getApiKeyRequired)),
+                argThat(new LambdaMatcher<>(i -> i.equals("POST"))));
+        verify(mockChildResource, times(1)).putMethod(
+                argThat(new LambdaMatcher<>(i -> !i.getApiKeyRequired())),
+                argThat(new LambdaMatcher<>(i -> i.equals("PUT"))));
     }
 
     @Test

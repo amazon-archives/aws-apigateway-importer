@@ -37,8 +37,6 @@ import io.swagger.models.Path;
 import io.swagger.models.RefModel;
 import io.swagger.models.Response;
 import io.swagger.models.Swagger;
-import io.swagger.models.auth.ApiKeyAuthDefinition;
-import io.swagger.models.auth.SecuritySchemeDefinition;
 import io.swagger.models.parameters.BodyParameter;
 import io.swagger.models.parameters.Parameter;
 import io.swagger.models.properties.Property;
@@ -315,71 +313,26 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
     }
 
     private String getAuthorizationType(Operation op) {
-
-        if (op.getVendorExtensions() != null) {
-            // look in auth extension
-            ObjectNode authExtension = (ObjectNode) op.getVendorExtensions().get(EXTENSION_AUTH);
-
-            if (authExtension != null) {
-                return authExtension.get("type").asText().toUpperCase();
-            }
-        }
-
-        Optional<String> sigv4Def = getSigV4SecurityDefinitionName();
-
-        if (!sigv4Def.isPresent()) {
-            return "NONE";
-        }
-
         // currently only Sigv4 supported by service
-        return containsSecurity(op, sigv4Def.get()) ? "AWS_IAM" : "NONE";
+        return containsSecurity(op, "sigv4") || containsAuthExtension(op, EXTENSION_AUTH) ? "AWS_IAM" : "NONE";
     }
 
-    private Optional<String> getSigV4SecurityDefinitionName() {
-
-        Map<String, SecuritySchemeDefinition> defs = swagger.getSecurityDefinitions();
-        if (defs == null) {
-            return Optional.empty();
-        }
-
-        for (Map.Entry<String, SecuritySchemeDefinition> entry : defs.entrySet()) {
-
-            SecuritySchemeDefinition securityDef = entry.getValue();
-
-            if (securityDef != null && securityDef.getType().equals("apiKey")
-//                    && securityDef.getDescription() != null && securityDef.getDescription().equals("awsSigv4")) {
-                    && securityDef.getVendorExtensions().containsKey("x-amazon-apigateway-authtype")) {    // swagger parser doesn't yet parse extensions on security definitions
-                return Optional.of(entry.getKey());
+    private boolean containsAuthExtension(Operation op, String extensionAuth) {
+        if (op.getVendorExtensions() != null) {
+            Optional<Map.Entry<String, Object>> vendorExtension = op.getVendorExtensions().entrySet().stream().filter(e -> extensionAuth.equals(e.getKey())).findFirst();
+            if (!vendorExtension.isPresent()) {
+                return false;
             }
+
+            ObjectNode type = (ObjectNode) vendorExtension.get().getValue();
+            return "aws_iam".equals(type.get("type").textValue());
         }
 
-        return Optional.empty();
+        return false;
     }
 
     private Boolean isApiKeyRequired(Operation op) {
-        Optional<Map.Entry<String, SecuritySchemeDefinition>> apiKeySecurityDefinition = Optional.empty();
-
-        // look for an API Gateway-compatible API Key security definition
-        if (swagger.getSecurityDefinitions() != null) {
-            Set<Map.Entry<String, SecuritySchemeDefinition>> entries = swagger.getSecurityDefinitions().entrySet();
-
-            for (Map.Entry<String, SecuritySchemeDefinition> entry : entries) {
-                if (entry.getValue().getType().equals("apiKey")) {
-                    ApiKeyAuthDefinition def = (ApiKeyAuthDefinition) entry.getValue();
-                    if (def.getName().equals("x-api-key")) {
-                        apiKeySecurityDefinition = Optional.of(entry);
-                    }
-                }
-            }
-        }
-
-        if (!apiKeySecurityDefinition.isPresent()) {
-            return false;
-        }
-
-        String securityDefinitionName = apiKeySecurityDefinition.get().getKey();
-
-        return containsSecurity(op, securityDefinitionName);
+        return containsSecurity(op, "api_key");
     }
 
     private Boolean containsSecurity(Operation op, String securityDefinitionName) {
