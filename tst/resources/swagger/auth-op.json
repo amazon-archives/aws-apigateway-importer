@@ -18,7 +18,7 @@
             "name": "x-api-key",
             "in": "header"
         },
-        "aws_sigv4": {
+        "sigv4": {
             "type": "apiKey",
             "name": "Authorization",
             "in": "header",
@@ -39,7 +39,7 @@
                 },
                 "security" : [
                     {
-                        "aws_sigv4" : []
+                        "sigv4" : []
                     }
                 ],
                 "x-amazon-apigateway-integration" : {

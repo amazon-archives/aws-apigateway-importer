@@ -1,15 +1,15 @@
 {
     "swagger": "2.0",
     "info": {
-        "title": "API Gateway Test API",
-        "description": "Move your app forward with the Uber API",
+        "title": "API Gateway GenSDK Test API",
+        "description": "API for testing generated SDKs. See w?AWS/Mobile/Backplane/lyue_intern_project for more info",
         "version": "1.0.0"
     },
-    "host": "api.uber.com",
+    "host": "TODO.com",
     "schemes": [
         "https"
     ],
-    "basePath": "/v1",
+    "basePath": "/",
     "produces": [
         "application/json"
     ],
@@ -24,180 +24,2570 @@
         }
     },
     "paths": {
-        "/products": {
+        "/level1": {
             "get": {
-                "summary": "Product Types",
-                "description": "The Products endpoint returns information about the *Uber* products\noffered at a given location. The response includes the display name\nand other details about each product, and lists the products in the\nproper display order.\n",
-                "parameters": [
-                    {
-                        "name": "latitude",
-                        "in": "query",
-                        "description": "Latitude component of location.",
-                        "required": true,
-                        "type": "number",
-                        "format": "double"
-                    },
-                    {
-                        "name": "longitude",
-                        "in": "query",
-                        "description": "Longitude component of location.",
-                        "required": true,
-                        "type": "number",
-                        "format": "double"
-                    }
-                ],
-                "tags": [
-                    "Products"
-                ],
+                "summary": "GET a string message",
+                "parameters": [],
                 "responses": {
                     "200": {
-                        "description": "An array of products",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Product"
-                            }
+                            "$ref": "#/definitions/Msg"
                         },
                         "headers" : {
-                            "test-method-response-header" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
                                 "type" : "string"
                             }
                         }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "GET",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
                     },
-                    "400": {
-                        "description": "Bad request",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "{\"message\": \"level 1 get\"}"
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
                         }
-                    },
-                    "default": {
-                        "description": "Unexpected error",
+                    }
+                }
+            },
+            "options": {
+                "summary": "OPTIONS for CORS",
+                "parameters": [],
+                "responses": {
+                    "200": {
                         "schema": {
-                            "$ref": "#/definitions/Error"
+                            "$ref": "#/definitions/Empty"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
                         }
                     }
                 },
-                "security" : [{
-                    "api_key" : []
-                }],
                 "x-amazon-apigateway-auth" : {
-                    "type" : "aws_iam"
+                    "type" : "none"
                 },
                 "x-amazon-apigateway-integration" : {
-                    "type" : "aws",
-                    "uri" : "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:ACCOUNT_ID:function:myFunction/invocations",
-                    "httpMethod" : "POST",
-                    "credentials" : "arn:aws:iam::ACCOUNT_ID:role/lambda_exec_role",
+                    "type" : "mock",
+                    "httpMethod" : "OPTIONS",
                     "requestTemplates" : {
-                        "application/json" : "json request template 2",
-                        "application/xml" : "xml request template 2"
+                        "application/json" : "{\"statusCode\": 200}"
                     },
-                    "requestParameters" : {
-                        "integration.request.path.integrationPathParam" : "method.request.querystring.latitude",
-                        "integration.request.querystring.integrationQueryParam" : "method.request.querystring.longitude"
-                    },
-                    "cacheNamespace" : "cache namespace",
-                    "cacheKeyParameters" : [],
                     "responses" : {
-                        "2\\d{2}" : {
-                            "statusCode" : "200",
-                            "responseParameters" : {
-                                "method.response.header.test-method-response-header" : "integration.response.header.integrationResponseHeaderParam1"
-                            },
-                            "responseTemplates" : {
-                                "application/json" : "json 200 response template",
-                                "application/xml" : "xml 200 response template"
-                            }
-                        },
                         "default" : {
-                            "statusCode" : "400",
-                            "responseParameters" : {
-                                "method.response.header.test-method-response-header" : "'static value'"
+                            "statusCode" : "200",
+                            "responseTemplates": {
+                                "application/json": ""
                             },
-                            "responseTemplates" : {
-                                "application/json" : "json 400 response template",
-                                "application/xml" : "xml 400 response template"
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
                             }
                         }
                     }
                 }
             }
         },
-        "/products/child": {
-            "post": {
-                "summary": "Product Types",
-                "description": "The Products endpoint returns information about the *Uber* products\noffered at a given location. The response includes the display name\nand other details about each product, and lists the products in the\nproper display order.\n",
+        "/level1/level2": {
+            "get": {
+                "summary": "GET a string message",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Msg"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "GET",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "{\"message\": \"level 2 get\"}"
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            },
+            "options": {
+                "summary": "OPTIONS for CORS",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Empty"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "httpMethod" : "OPTIONS",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates": {
+                                "application/json": ""
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/level1/level2/level3": {
+            "get": {
+                "summary": "GET a string message",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Msg"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "GET",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "{\"message\": \"level 3 get\"}"
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            },
+            "options": {
+                "summary": "OPTIONS for CORS",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Empty"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "httpMethod" : "OPTIONS",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates": {
+                                "application/json": ""
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/level1/level2/level3/level4/level5/level6/level7/level8": {
+            "get": {
+                "summary": "GET a string message",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Msg"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "GET",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "{\"message\": \"level 8 get\"}"
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            },
+            "options": {
+                "summary": "OPTIONS for CORS",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Empty"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "httpMethod" : "OPTIONS",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates": {
+                                "application/json": ""
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/freakishly-long-resource-name-hydrogen-helium-lithium-berylium-boron-carbon-nitrogen-oxygen-florine-neon-o-canada-our-home-and-native-land-1234567890-31415926535897932384626": {
+            "get": {
+                "summary": "GET a string message",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Msg"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "GET",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "{\"message\": \"very long resource name get\"}"
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            },
+            "options": {
+                "summary": "OPTIONS for CORS",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Empty"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "httpMethod" : "OPTIONS",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates": {
+                                "application/json": ""
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/if": {
+            "get": {
+                "summary": "GET a string message",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Msg"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "GET",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "{\"message\": \"resource named if get\"}"
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            },
+            "options": {
+                "summary": "OPTIONS for CORS",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Empty"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "httpMethod" : "OPTIONS",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates": {
+                                "application/json": ""
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/headertest": {
+            "get": {
+                "summary": "GET a string message",
                 "parameters": [
                     {
-                        "name": "latitude",
-                        "in": "query",
-                        "description": "Latitude component of location.",
+                        "name": "theparam",
+                        "in": "header",
+                        "description": "the parameter in header",
                         "required": true,
-                        "type": "number",
-                        "format": "double"
-                    },
-                    {
-                        "name": "longitude",
-                        "in": "query",
-                        "description": "Longitude component of location.",
-                        "required": true,
-                        "type": "number",
-                        "format": "double"
+                        "type": "string"
                     }
-                ],
-                "tags": [
-                    "Products"
                 ],
                 "responses": {
                     "200": {
-                        "description": "An array of products",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Product"
-                            }
+                            "$ref": "#/definitions/Msg"
                         },
                         "headers" : {
-                            "test-method-response-header" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "GET",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "{\"message\": \"The param given is $input.params('theparam')\"}"
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,theparam'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            },
+            "options": {
+                "summary": "OPTIONS for CORS",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Empty"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "httpMethod" : "OPTIONS",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates": {
+                                "application/json": ""
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,theparam'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/querystringtest": {
+            "get": {
+                "summary": "GET a string message",
+                "parameters": [
+                    {
+                        "name": "theparam",
+                        "in": "query",
+                        "description": "the parameter in query",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Msg"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "GET",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "{\"message\": \"The param given is $input.params('theparam')\"}"
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            },
+            "options": {
+                "summary": "OPTIONS for CORS",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Empty"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "httpMethod" : "OPTIONS",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates": {
+                                "application/json": ""
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/pathparametertest/{theparam}": {
+            "get": {
+                "summary": "GET a string message",
+                "parameters": [
+                    {
+                        "name": "theparam",
+                        "in": "path",
+                        "description": "the parameter in path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Msg"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "GET",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "{\"message\": \"The param given is $input.params('theparam')\"}"
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            },
+            "options": {
+                "summary": "OPTIONS for CORS",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Empty"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "httpMethod" : "OPTIONS",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates": {
+                                "application/json": ""
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/throw400": {
+            "get": {
+                "summary": "GET a string message",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Should never happen",
+                        "schema": {
+                            "$ref": "#/definitions/Msg"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
                                 "type" : "string"
                             }
                         }
                     },
                     "400": {
-                        "description": "Bad request",
                         "schema": {
                             "$ref": "#/definitions/Error"
-                        }
-                    },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
                         }
                     }
                 },
-                "security" : [{
-                    "api_key" : []
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "GET",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "400",
+                            "responseTemplates" : {
+                                "application/json" : "{\"code\":400,\"message\": \"400 error\"}"
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            },
+            "options": {
+                "summary": "OPTIONS for CORS",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Empty"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "httpMethod" : "OPTIONS",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates": {
+                                "application/json": ""
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/throw404": {
+            "get": {
+                "summary": "GET a string message",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Should never happen",
+                        "schema": {
+                            "$ref": "#/definitions/Msg"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "GET",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "404",
+                            "responseTemplates" : {
+                                "application/json" : "{\"message\": \"404 error\"}"
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            },
+            "options": {
+                "summary": "OPTIONS for CORS",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Empty"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "httpMethod" : "OPTIONS",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates": {
+                                "application/json": ""
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/throw500": {
+            "get": {
+                "summary": "GET a string message",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Should never happen",
+                        "schema": {
+                            "$ref": "#/definitions/Msg"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "GET",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "500",
+                            "responseTemplates" : {
+                                "application/json" : "{\"message\": \"500 error\"}"
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            },
+            "options": {
+                "summary": "OPTIONS for CORS",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Empty"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "httpMethod" : "OPTIONS",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates": {
+                                "application/json": ""
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/numericalparam": {
+            "get": {
+                "summary": "GET a string message",
+                "parameters": [
+                    {
+                        "name": "1234",
+                        "in": "query",
+                        "description": "the parameter in path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "1234paramname",
+                        "in": "query",
+                        "description": "the parameter in path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "78cy48hc8dyg4g8fh873dh",
+                        "in": "query",
+                        "description": "the parameter in path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Msg"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "GET",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "{\"message\": \"param 1234 is: $input.params('1234') , param 1234paramname is: $input.params('1234paramname'), param 78cy48hc8dyg4g8fh873dh is $input.params('78cy48hc8dyg4g8fh873dh')\"}"
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            },
+            "options": {
+                "summary": "OPTIONS for CORS",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Empty"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "httpMethod" : "OPTIONS",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates": {
+                                "application/json": ""
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/testApikeyAuth": {
+            "get": {
+                "summary": "GET a string message",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Msg"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "security": [{
+                    "api_key": []
                 }],
                 "x-amazon-apigateway-auth" : {
                     "type" : "none"
                 },
                 "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "GET",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "{\"message\": \"message that requires an apikey\"}"
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            },
+            "options": {
+                "summary": "OPTIONS for CORS",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Empty"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "httpMethod" : "OPTIONS",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates": {
+                                "application/json": ""
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/testIAMAuth": {
+            "get": {
+                "summary": "GET a string message",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Msg"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "aws_iam"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "GET",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "{\"message\": \"message that requires IAM authentication\"}"
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            },
+            "options": {
+                "summary": "OPTIONS for CORS",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Empty"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "httpMethod" : "OPTIONS",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates": {
+                                "application/json": ""
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/testSimpleModel": {
+            "get": {
+                "summary": "GET a SimpleModel",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/SimpleModel"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "GET",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "{\"name\": \"nom\",\"id\":6}"
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "post a SimpleModel",
+                "parameters": [
+                    {
+                        "name": "thing",
+                        "in": "body",
+                        "description": "the SimpleModel getting posted",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SimpleModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/SimpleModel"
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "POST",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "$input.json('$')"
+                            }
+                        }
+                    }
+                }
+            },
+            "options": {
+                "summary": "OPTIONS for CORS",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Empty"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "httpMethod" : "OPTIONS",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates": {
+                                "application/json": ""
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/testArraySimpleModel": {
+            "get": {
+                "summary": "GET an array of SimpleModel",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/SimpleModel"
+                            }
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "GET",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "[{\"name\": \"name1\",\"id\": 1},{\"name\": \"name2\",\"id\": 2},{\"name\": \"name3\",\"id\": 3}]"
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "post an array of SimpleModel",
+                "parameters": [
+                    {
+                        "name": "things",
+                        "in": "body",
+                        "description": "the SimpleModels getting posted",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/SimpleModel"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/SimpleModel"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "POST",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "$input.json('$')"
+                            }
+                        }
+                    }
+                }
+            },
+            "options": {
+                "summary": "OPTIONS for CORS",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Empty"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "httpMethod" : "OPTIONS",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates": {
+                                "application/json": ""
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/testListofSimpleModel": {
+            "get": {
+                "summary": "GET a list of simple model",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/ListofSimpleModel"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "GET",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "[{\"name\": \"name1\",\"id\": 1},{\"name\": \"name2\",\"id\": 2},{\"name\": \"name3\",\"id\": 3}]"
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "post a list of simple model",
+                "parameters": [
+                    {
+                        "name": "thelist",
+                        "in": "body",
+                        "description": "the list getting posted",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ListofSimpleModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/ListofSimpleModel"
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "POST",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "$input.json('$')"
+                            }
+                        }
+                    }
+                }
+            },
+            "options": {
+                "summary": "OPTIONS for CORS",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Empty"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "httpMethod" : "OPTIONS",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates": {
+                                "application/json": ""
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/testExtendedSimpleModel": {
+            "get": {
+                "summary": "GET an extended simple model",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/ExtendedSimpleModel"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "GET",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "{\"name\": \"name1\",\"id\": 1, \"anotherproperty\": \"foo\"}"
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "post an extended simple model",
+                "parameters": [
+                    {
+                        "name": "thelist",
+                        "in": "body",
+                        "description": "the thing getting posted",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ExtendedSimpleModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/ExtendedSimpleModel"
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "POST",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "$input.json('$')"
+                            }
+                        }
+                    }
+                }
+            },
+            "options": {
+                "summary": "OPTIONS for CORS",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Empty"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "httpMethod" : "OPTIONS",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates": {
+                                "application/json": ""
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/testModelWithMap": {
+            "get": {
+                "summary": "GET an ModelWithMap",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/ModelWithMap"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "GET",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "{\"key1\": \"value1\", \"key2\": \"value2\", \"key3\": \"value3\"}"
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "post an ModelWithMap",
+                "parameters": [
+                    {
+                        "name": "thelist",
+                        "in": "body",
+                        "description": "the thing getting posted",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ModelWithMap"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/ModelWithMap"
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "POST",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "$input.json('$')"
+                            }
+                        }
+                    }
+                }
+            },
+            "options": {
+                "summary": "OPTIONS for CORS",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Empty"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "httpMethod" : "OPTIONS",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates": {
+                                "application/json": ""
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/testComplexObject": {
+            "get": {
+                "summary": "GET an ComplexObject",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/ComplexObject"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "GET",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "{\"stringproperty\": \"foo\", \"intproperty\": 2147483647, \"longintproperty\": 2147483650, \"floatproperty\": 1.2, \"doubleproperty\": 3.1415926535, \"boolproperty\": false, \"nestedobject1\": {\"nestedobject2\": {\"asdf\":18}}, \"asimplemodel\": {\"name\": \"constantinople\", id: 1453}, \"arrayofint\": [1,2,3,4,5], \"arrayofsimplemodel\": [{\"name\": \"agincourt\", id: 1415 }, {\"name\": \"rubicon\", id: -49}, {\"name\": \"carthage\", id\" -149}], \"alistofsimplemodel\": [{\"name\": \"agincourt\", id: 1415 }, {\"name\": \"rubicon\", id: -49}, {\"name\": \"carthage\", id\" -149}], \"2darray\": [[1,2,3],[4,5,6],[7,8,9]]}"
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "post an ComplexObject",
+                "parameters": [
+                    {
+                        "name": "thelist",
+                        "in": "body",
+                        "description": "the thing getting posted",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ComplexObject"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/ComplexObject"
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "uri" : "",
+                    "httpMethod" : "POST",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "$input.json('$')"
+                            }
+                        }
+                    }
+                }
+            },
+            "options": {
+                "summary": "OPTIONS for CORS",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Empty"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "httpMethod" : "OPTIONS",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates": {
+                                "application/json": ""
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/pets": {
+            "get": {
+                "summary": "GET an array of pet",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Pets"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
                     "type" : "http",
-                    "uri" : "https://api.github.com",
+                    "uri" : "http://backplane-mu-1225129806.us-east-1.elb.amazonaws.com/pets",
                     "httpMethod" : "GET",
                     "responses" : {
                         "2\\d{2}" : {
-                            "statusCode" : "200"
+                            "statusCode" : "200",
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
                         },
                         "default" : {
                             "statusCode" : "400",
-                            "responseParameters" : {
-                                "method.response.header.test-method-response-header" : "'static value'"
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "post a pet",
+                "description": "NOTE: the request header mapping for Content-Type is in case when browsers send application/json; charset=UTF-8 instead",
+                "parameters": [
+                    {
+                        "name": "thePet",
+                        "in": "body",
+                        "description": "the pet getting posted",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Pet"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Pet"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
                             },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "http",
+                    "uri" : "http://backplane-mu-1225129806.us-east-1.elb.amazonaws.com/pets",
+                    "httpMethod" : "POST",
+                    "requestParameters" : {
+                        "integration.request.header.Content-Type": "'application/json'"
+                    },
+                    "responses" : {
+                        "2\\d{2}" : {
+                            "statusCode" : "200",
                             "responseTemplates" : {
-                                "application/json" : "json 400 response template",
-                                "application/xml" : "xml 400 response template"
+                                "application/json" : "$input.json('$.pet')"
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        },
+                        "default" : {
+                            "statusCode" : "400",
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            },
+            "options": {
+                "summary": "OPTIONS for CORS",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Empty"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "httpMethod" : "OPTIONS",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates": {
+                                "application/json": ""
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/nestedobject": {
+            "get": {
+                "summary": "GET a nestedobject",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/NestedObject"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "httpMethod" : "GET",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates" : {
+                                "application/json" : "{\"nesty\": {\"id\": 5, \"name\": \"nessie\"}}"
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                            }
+                        }
+                    }
+                }
+            },
+            "options": {
+                "summary": "OPTIONS for CORS",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/definitions/Empty"
+                        },
+                        "headers" : {
+                            "Access-Control-Allow-Headers" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Methods" : {
+                                "type" : "string"
+                            },
+                            "Access-Control-Allow-Origin" : {
+                                "type" : "string"
+                            }
+                        }
+                    }
+                },
+                "x-amazon-apigateway-auth" : {
+                    "type" : "none"
+                },
+                "x-amazon-apigateway-integration" : {
+                    "type" : "mock",
+                    "httpMethod" : "OPTIONS",
+                    "requestTemplates" : {
+                        "application/json" : "{\"statusCode\": 200}"
+                    },
+                    "responses" : {
+                        "default" : {
+                            "statusCode" : "200",
+                            "responseTemplates": {
+                                "application/json": ""
+                            },
+                            "responseParameters": {
+                                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                                "method.response.header.Access-Control-Allow-Methods" : "'*'",
+                                "method.response.header.Access-Control-Allow-Origin" : "'*'"
                             }
                         }
                     }
@@ -206,119 +2596,6 @@
         }
     },
     "definitions": {
-        "Product": {
-            "properties": {
-                "product_id": {
-                    "type": "string",
-                    "description": "Unique identifier representing a specific product for a given latitude & longitude. For example, uberX in San Francisco will have a different product_id than uberX in Los Angeles."
-                },
-                "description": {
-                    "type": "string",
-                    "description": "Description of product."
-                },
-                "display_name": {
-                    "type": "string",
-                    "description": "Display name of product."
-                },
-                "capacity": {
-                    "type": "string",
-                    "description": "Capacity of product. For example, 4 people."
-                },
-                "image": {
-                    "type": "string",
-                    "description": "Image URL representing the product."
-                }
-            }
-        },
-        "PriceEstimate": {
-            "properties": {
-                "product_id": {
-                    "type": "string",
-                    "description": "Unique identifier representing a specific product for a given latitude & longitude. For example, uberX in San Francisco will have a different product_id than uberX in Los Angeles"
-                },
-                "currency_code": {
-                    "type": "string",
-                    "description": "[ISO 4217](http://en.wikipedia.org/wiki/ISO_4217) currency code."
-                },
-                "display_name": {
-                    "type": "string",
-                    "description": "Display name of product."
-                },
-                "estimate": {
-                    "type": "string",
-                    "description": "Formatted string of estimate in local currency of the start location. Estimate could be a range, a single number (flat rate) or \"Metered\" for TAXI."
-                },
-                "low_estimate": {
-                    "type": "number",
-                    "description": "Lower bound of the estimated price."
-                },
-                "high_estimate": {
-                    "type": "number",
-                    "description": "Upper bound of the estimated price."
-                },
-                "surge_multiplier": {
-                    "type": "number",
-                    "description": "Expected surge multiplier. Surge is active if surge_multiplier is greater than 1. Price estimate already factors in the surge multiplier."
-                }
-            }
-        },
-        "Profile": {
-            "properties": {
-                "first_name": {
-                    "type": "string",
-                    "description": "First name of the Uber user."
-                },
-                "last_name": {
-                    "type": "string",
-                    "description": "Last name of the Uber user."
-                },
-                "email": {
-                    "type": "string",
-                    "description": "Email address of the Uber user"
-                },
-                "picture": {
-                    "type": "string",
-                    "description": "Image URL of the Uber user."
-                },
-                "promo_code": {
-                    "type": "string",
-                    "description": "Promo code of the Uber user."
-                }
-            }
-        },
-        "Activity": {
-            "properties": {
-                "uuid": {
-                    "type": "string",
-                    "description": "Unique identifier for the activity"
-                }
-            }
-        },
-        "Activities": {
-            "properties": {
-                "offset": {
-                    "type": "integer",
-                    "format": "int32",
-                    "description": "Position in pagination."
-                },
-                "limit": {
-                    "type": "integer",
-                    "format": "int32",
-                    "description": "Number of items to retrieve (100 max)."
-                },
-                "count": {
-                    "type": "integer",
-                    "format": "int32",
-                    "description": "Total number of items available."
-                },
-                "history": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/Activity"
-                    }
-                }
-            }
-        },
         "Error": {
             "properties": {
                 "code": {
@@ -332,6 +2609,149 @@
                     "type": "string"
                 }
             }
+        },
+        "Msg": {
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "SimpleModel": {
+            "properties": {
+                "name":    { "type": "string" },
+                "id":    { "type": "integer" }
+            }
+        },
+        "ListofSimpleModel": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/SimpleModel"
+            }
+        },
+        "ExtendedSimpleModel": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/SimpleModel"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "anotherproperty": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "ComplexObject": {
+            "type": "object",
+            "properties": {
+                "stringproperty":{
+                    "type": "string"
+                },
+                "intproperty":{
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "longintproperty":{
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "floatproperty":{
+                    "type": "number",
+                    "format": "float"
+                },
+                "doubleproperty":{
+                    "type": "number",
+                    "format": "double"
+                },
+                "boolproperty":{
+                    "type": "boolean"
+                },
+                "nestedobject1":{
+                    "type": "object",
+                    "properties": {
+                        "nestedobject2": {
+                            "type": "object",
+                            "properties":{
+                                "asdf": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            }
+                        }
+                    }
+                },
+                "asimplemodel":{
+                    "$ref": "#/definitions/SimpleModel"
+                },
+                "arrayofint":{
+                    "type": "array",
+                    "items":{
+                        "type": "integer"
+                    }
+                },
+                "arrayofsimplemodel":{
+                    "type": "array",
+                    "items":{
+                        "$ref": "#/definitions/SimpleModel"
+                    }
+                },
+                "alistofsimplemodel":{
+                    "$ref": "#/definitions/ListofSimpleModel"
+                }
+            }
+        },
+        "NestedObject": {
+            "type": "object",
+            "properties": {
+                "nesty": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "integer"
+                        },
+                        "name": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "ModelWithMap": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "string"
+            }
+        },
+        "Pet": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number",
+                    "format": "double"
+                }
+            }
+        },
+        "Pets": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/Pet"
+            }
+        },
+        "Empty": {
+            "type": "object",
+            "properties": {}
         }
     }
 }
