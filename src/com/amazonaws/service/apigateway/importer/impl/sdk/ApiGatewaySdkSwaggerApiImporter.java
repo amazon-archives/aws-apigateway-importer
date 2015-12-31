@@ -53,10 +53,14 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
     @Inject
     private Swagger swagger;
 
+    private Set<String> modelsInUse = new HashSet<String>();
+
     @Override
     public String createApi(Swagger swagger, String name) {
         this.swagger = swagger;
 
+        this.modelsInUse.clear();
+        
         final RestApi api = createApi(getApiName(swagger, name), swagger.getInfo().getDescription());
 
         LOG.info("Created API "+api.getId());
@@ -78,6 +82,8 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
     public void updateApi(String apiId, Swagger swagger) {
         this.swagger = swagger;
 
+        this.modelsInUse.clear();
+        
         RestApi api = getApi(apiId);
         Optional<Resource> rootResource = getRootResource(api);
 
@@ -87,7 +93,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
 
         cleanupMethods(api, swagger.getBasePath(), swagger.getPaths());
         cleanupResources(api, swagger.getBasePath(), swagger.getPaths());
-        cleanupModels(api, swagger.getDefinitions().keySet());
+        cleanupModels(api, this.modelsInUse);
     }
 
     private String getApiName(Swagger swagger, String fileName) {
@@ -111,12 +117,14 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
     private void createModel(RestApi api, String modelName, com.wordnik.swagger.models.Model model, Map<String, com.wordnik.swagger.models.Model> definitions, String modelContentType) {
         LOG.info(format("Creating model for api id %s with name %s", api.getId(), modelName));
 
+        this.modelsInUse.add(modelName);
         createModel(api, modelName, model.getDescription(), generateSchema(model, modelName, definitions), modelContentType);
     }
 
     private void createModel(RestApi api, String modelName, Property model, String modelContentType) {
         LOG.info(format("Creating model for api id %s with name %s", api.getId(), modelName));
 
+        this.modelsInUse.add(modelName);
         createModel(api, modelName, model.getDescription(), generateSchema(model, modelName, swagger.getDefinitions()), modelContentType);
     }
 
@@ -397,6 +405,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
 
     private void updateModel(RestApi api, String modelName, com.wordnik.swagger.models.Model model) {
         LOG.info(format("Updating model for api id %s and model name %s", api.getId(), modelName));
+        this.modelsInUse.add(modelName);
         updateModel(api, modelName, generateSchema(model, modelName, swagger.getDefinitions()));
     }
 
