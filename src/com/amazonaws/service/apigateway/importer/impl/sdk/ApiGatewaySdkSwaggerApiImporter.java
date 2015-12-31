@@ -56,6 +56,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
     @Override
     public String createApi(Swagger swagger, String name) {
         this.swagger = swagger;
+        this.processedModels.clear();
 
         final RestApi api = createApi(getApiName(swagger, name), swagger.getInfo().getDescription());
 
@@ -77,6 +78,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
     @Override
     public void updateApi(String apiId, Swagger swagger) {
         this.swagger = swagger;
+        this.processedModels.clear();
 
         RestApi api = getApi(apiId);
         Optional<Resource> rootResource = getRootResource(api);
@@ -87,7 +89,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
 
         cleanupMethods(api, swagger.getBasePath(), swagger.getPaths());
         cleanupResources(api, swagger.getBasePath(), swagger.getPaths());
-        cleanupModels(api, swagger.getDefinitions().keySet());
+        cleanupModels(api, this.processedModels);
     }
 
     private String getApiName(Swagger swagger, String fileName) {
@@ -212,6 +214,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
             input.setRequestModels(new HashMap<>());
             // model already imported
             if (inputModel.isPresent()) {
+                this.processedModels.add(inputModel.get());
                 LOG.info("Found input model reference " + inputModel.get());
                 input.getRequestModels().put(modelContentType, inputModel.get());
             } else {
@@ -475,8 +478,10 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         Optional<Model> modelOpt = getModel(api, response);
         if (modelOpt.isPresent()) {
             input.setResponseModels(new HashMap<>());
-            input.getResponseModels().put(modelContentType, modelOpt.get().getName());
-            LOG.info("Found reference to existing model " + modelOpt.get().getName());
+            String modelName = modelOpt.get().getName();
+            input.getResponseModels().put(modelContentType, modelName);
+            this.processedModels.add(modelName);
+            LOG.info("Found reference to existing model " + modelName);
         } else {
             // generate a model based on the schema if the model doesn't already exist
             if (response.getSchema() != null) {

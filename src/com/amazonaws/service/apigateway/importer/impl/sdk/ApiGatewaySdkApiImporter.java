@@ -31,9 +31,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createPatchDocument;
 import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createReplaceOperation;
@@ -44,6 +46,9 @@ public class ApiGatewaySdkApiImporter {
 
     @Inject
     protected ApiGateway apiGateway;
+
+    // keep track of the models created/updated from the definition file. Any orphaned models left in the API will be deleted
+    protected HashSet<String> processedModels = new HashSet<>();
 
     public void deleteApi(String apiId) {
         deleteApi(apiGateway.getRestApiById(apiId));
@@ -129,6 +134,8 @@ public class ApiGatewaySdkApiImporter {
     }
 
     protected void createModel(RestApi api, String modelName, String description, String schema, String modelContentType) {
+        this.processedModels.add(modelName);
+
         CreateModelInput input = new CreateModelInput();
 
         input.setName(modelName);
@@ -139,8 +146,17 @@ public class ApiGatewaySdkApiImporter {
         api.createModel(input);
     }
 
+    protected void updateModel(RestApi api, String modelName, String schema) {
+        this.processedModels.add(modelName);
+
+        api.getModelByName(modelName).updateModel(createPatchDocument(createReplaceOperation("/schema", schema)));
+    }
+
     protected void cleanupModels(RestApi api, Set<String> models) {
-        buildModelList(api).stream().filter(model -> !models.contains(model.getName())).forEach(model -> {
+        List<Model> existingModels = buildModelList(api);
+        Stream<Model> modelsToDelete = existingModels.stream().filter(model -> !models.contains(model.getName()));
+
+        modelsToDelete.forEach(model -> {
             LOG.info("Removing deleted model " + model.getName());
             model.deleteModel();
         });
@@ -175,10 +191,6 @@ public class ApiGatewaySdkApiImporter {
         } catch (Exception ignored) {
             return Optional.empty();
         }
-    }
-
-    protected void updateModel(RestApi api, String modelName, String schema) {
-        api.getModelByName(modelName).updateModel(createPatchDocument(createReplaceOperation("/schema", schema)));
     }
 
     protected boolean methodExists(Resource resource, String httpMethod) {
