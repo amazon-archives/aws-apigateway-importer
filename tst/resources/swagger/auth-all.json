@@ -14,7 +14,7 @@
     ],
     "security" : [
         {
-            "sigv4" : []
+            "aws_sigv4" : []
         }
     ],
     "securityDefinitions" : {
@@ -23,7 +23,7 @@
             "name": "x-api-key",
             "in": "header"
         },
-        "sigv4": {
+        "aws_sigv4": {
             "type": "apiKey",
             "name": "Authorization",
             "description" : "awsSigv4",
@@ -42,15 +42,11 @@
                         }
                     }
                 },
-                "security" : [
-                    {
-                        "api_key" : []
-                    }
-                ],
                 "x-amazon-apigateway-integration" : {
-                    "type" : "http",
-                    "uri" : "https://example.com",
-                    "httpMethod" : "GET",
+                    "type" : "aws",
+                    "uri" : "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:ACCOUNT_ID:function:myFunction/invocations",
+                    "httpMethod" : "POST",
+                    "credentials" : "arn:aws:iam::ACCOUNT_ID:role/lambda_exec_role",
                     "responses" : {
                         "default" : {
                             "statusCode" : "400"
@@ -70,9 +66,10 @@
                     }
                 },
                 "x-amazon-apigateway-integration" : {
-                    "type" : "http",
-                    "uri" : "https://example.com",
-                    "httpMethod" : "GET",
+                    "type" : "aws",
+                    "uri" : "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:ACCOUNT_ID:function:myFunction/invocations",
+                    "httpMethod" : "POST",
+                    "credentials" : "arn:aws:iam::ACCOUNT_ID:role/lambda_exec_role",
                     "responses" : {
                         "default" : {
                             "statusCode" : "400"
