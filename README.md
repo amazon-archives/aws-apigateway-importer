@@ -10,7 +10,7 @@ To learn more about API Gateway, please see the [service documentation][service-
 
 [![Build Status](https://api.travis-ci.org/awslabs/aws-apigateway-importer.svg?branch=master)](https://travis-ci.org/awslabs/aws-apigateway-importer)
 
-## Installation
+## Usage
 
 ### Prerequisites
 
@@ -21,23 +21,7 @@ It will look for configured credentials in environment variables, Java system pr
 
 #### Build
 
-### Maven
-
 Build with `mvn assembly:assembly`
-
-### Docker
-
-Using [Docker](http://docker.com), Java and Maven are not required on the host machine.
-
-Download the Docker image with `docker pull joshuajabbour/aws-apigateway-importer`. Then, add the following alias to `.profile`:
-
-```sh
-alias aws-api-import="docker run --rm -it -v ~/.aws:/root/.aws -v $PWD:/data joshuajabbour/aws-apigateway-importer"
-```
-
-All import commands listed below should then be executed with `aws-api-import` instead of `./aws-api-import.sh`.
-
-## Usage
 
 ### Import a new API
 
