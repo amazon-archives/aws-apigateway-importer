@@ -255,8 +255,6 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
             method = resource.putMethod(input, httpMethod.toString());
         }
 
-        createIntegration(resource, method, this.config);
-
         for (Map.Entry<String, UriParameter> entry : action.getResource().getUriParameters().entrySet()) {
             updateMethod(api, method, "path", entry.getKey(), entry.getValue().isRequired());
         }
@@ -274,6 +272,8 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
             cleanupMethod(api, method, "header", action.getHeaders().keySet());
             cleanupMethod(api, method, "querystring", action.getQueryParameters().keySet());
         }
+
+        createIntegration(resource, method, this.config);
 
         createMethodResponses(api, method, action.getResponses(), update);
     }
