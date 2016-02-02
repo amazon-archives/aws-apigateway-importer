@@ -46,6 +46,7 @@ public class ApiGatewaySdkApiImporter {
 
     private static final Log LOG = LogFactory.getLog(ApiGatewaySdkApiImporter.class);
     private static final int THROTTLE_RETRIES = 3;
+    private static final long THROTTLE_DELAY = 500;
 
     @Inject
     protected ApiGateway apiGateway;
@@ -80,6 +81,11 @@ public class ApiGatewaySdkApiImporter {
         		if (currentTry == THROTTLE_RETRIES) {
         			throw ex;
         		}
+
+        		try {
+					Thread.sleep(THROTTLE_DELAY);
+				} catch (InterruptedException e) {
+				}
         	}
     	}
     	
