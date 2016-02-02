@@ -25,6 +25,7 @@ import com.amazonaws.services.apigateway.model.NotFoundException;
 import com.amazonaws.services.apigateway.model.Resource;
 import com.amazonaws.services.apigateway.model.Resources;
 import com.amazonaws.services.apigateway.model.RestApi;
+import com.amazonaws.services.apigateway.model.TooManyRequestsException;
 import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -35,6 +36,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createPatchDocument;
@@ -43,6 +45,8 @@ import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createRe
 public class ApiGatewaySdkApiImporter {
 
     private static final Log LOG = LogFactory.getLog(ApiGatewaySdkApiImporter.class);
+    private static final int THROTTLE_RETRIES = 3;
+    private static final long THROTTLE_DELAY = 500;
 
     @Inject
     protected ApiGateway apiGateway;
@@ -63,6 +67,31 @@ public class ApiGatewaySdkApiImporter {
         apiGateway.getRestApiById(apiId).createDeployment(input);
     }
 
+    protected <T> T callWithThrottle(Supplier<T> supp) {
+    	int currentTry = 0;
+    	T result = null;
+    	
+    	while (currentTry < THROTTLE_RETRIES) {
+        	try {
+        		result = supp.get();
+        		currentTry = THROTTLE_RETRIES;
+        	} catch (TooManyRequestsException ex) {
+        		LOG.warn("API throttled - trying again #" + Integer.toString(currentTry));
+        		currentTry++;
+        		if (currentTry == THROTTLE_RETRIES) {
+        			throw ex;
+        		}
+
+        		try {
+					Thread.sleep(THROTTLE_DELAY);
+				} catch (InterruptedException e) {
+				}
+        	}
+    	}
+    	
+		return result;
+    }
+    
     protected RestApi createApi(String name, String description) {
         LOG.info("Creating API with name " + name);
 
@@ -94,12 +123,15 @@ public class ApiGatewaySdkApiImporter {
     protected List<Resource> buildResourceList(RestApi api) {
         List<Resource> resourceList = new ArrayList<>();
 
-        Resources resources = api.getResources();
-        resourceList.addAll(resources.getItem());
+        Resources resources = callWithThrottle(() -> api.getResources());
+        final Resources resources2 = resources;
+        resourceList.addAll(callWithThrottle(() -> resources2.getItem()));
 
         while (resources._isLinkAvailable("next")) {
-            resources = resources.getNext();
-            resourceList.addAll(resources.getItem());
+        	final Resources resources3 = resources;
+            resources = callWithThrottle(() -> resources3.getNext());
+        	final Resources resources4 = resources;
+            resourceList.addAll(callWithThrottle(() -> resources4.getItem()));
         }
 
         return resourceList;
