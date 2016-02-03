@@ -168,8 +168,10 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
 
         Resource parentResource = resource;
 
+        List<Resource> resources = buildResourceList(api);
+
         for (int i = 1; i < parts.length; i++) {
-            parentResource = createResource(api, parentResource.getId(), parts[i]);
+            parentResource = createResource(api, parentResource.getId(), parts[i], resources);
 
             paths.add(parentResource.getPath());
         }

@@ -92,13 +92,16 @@ public class ApiGatewaySdkApiImporter {
         return Optional.empty();
     }
 
+    // todo: optimize number of calls to this as it is an expensive operation
     protected List<Resource> buildResourceList(RestApi api) {
         List<Resource> resourceList = new ArrayList<>();
 
         Resources resources = api.getResources();
         resourceList.addAll(resources.getItem());
 
-        final RateLimiter rl = RateLimiter.create(1.5);
+        LOG.debug("Building list of resources. Stack trace: ", new Throwable());
+
+        final RateLimiter rl = RateLimiter.create(2);
         while (resources._isLinkAvailable("next")) {
             rl.acquire();
             resources = resources.getNext();
@@ -165,8 +168,8 @@ public class ApiGatewaySdkApiImporter {
         });
     }
 
-    protected Optional<Resource> getResource(RestApi api, String parentResourceId, String pathPart) {
-        for (Resource r : buildResourceList(api)) {
+    protected Optional<Resource> getResource(RestApi api, String parentResourceId, String pathPart, List<Resource> resources) {
+        for (Resource r : resources) {
             if (pathEquals(pathPart, r.getPathPart()) && r.getParentId().equals(parentResourceId)) {
                 return Optional.of(r);
             }
@@ -235,8 +238,8 @@ public class ApiGatewaySdkApiImporter {
         return StringUtils.removeEnd(StringUtils.removeStart(path, "/"), "/");
     }
 
-    protected Resource createResource(RestApi api, String parentResourceId, String part) {
-        final Optional<Resource> existingResource = getResource(api, parentResourceId, part);
+    protected Resource createResource(RestApi api, String parentResourceId, String part, List<Resource> resources) {
+        final Optional<Resource> existingResource = getResource(api, parentResourceId, part, resources);
 
         // create resource if doesn't exist
         if (!existingResource.isPresent()) {

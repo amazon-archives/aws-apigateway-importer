@@ -97,6 +97,9 @@ public class ApiImporterDefaultModule extends AbstractModule {
         final Random random = new Random();
 
         return (originalRequest, exception, retriesAttempted) -> {
+
+            LOG.debug("Caught error from service. Retry attempt: " + retriesAttempted, exception);
+
             if (retriesAttempted < 0) return 0;
             if (retriesAttempted > maxRetriesBeforeBackoff) return maxBackoffInMilliseconds;
 

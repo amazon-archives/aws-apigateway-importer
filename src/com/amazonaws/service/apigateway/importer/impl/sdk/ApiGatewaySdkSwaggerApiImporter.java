@@ -151,6 +151,8 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
     private void createResources(RestApi api, Resource rootResource, String basePath, List<String> apiProduces, Map<String, Path> paths, boolean createMethods) {
         //build path tree
 
+        List<Resource> resources = buildResourceList(api);
+
         for (Map.Entry<String, Path> entry : paths.entrySet()) {
 
             // create the resource tree
@@ -160,7 +162,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
             final String[] parts = fullPath.split("/");
 
             for (int i = 1; i < parts.length; i++) { // exclude root resource as this will be created when the api is created
-                parentResource = createResource(api, parentResource.getId(), parts[i]);
+                parentResource = createResource(api, parentResource.getId(), parts[i], resources);
             }
 
             if (createMethods) {
