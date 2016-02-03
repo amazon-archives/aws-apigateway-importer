@@ -10,9 +10,8 @@ COPY tst /app/tst/
 WORKDIR /app
 
 RUN mvn assembly:assembly \
-    && mv build/maven/aws-apigateway-*-jar-with-dependencies.jar /aws-apigateway-importer.jar \
-    && mvn clean \
-    && rm -rf /app ~/.m2
+    && mv target/aws-apigateway-*-jar-with-dependencies.jar /aws-apigateway-importer.jar \
+    && mvn clean
 
 VOLUME ["/root/.aws"]
 VOLUME ["/data"]
