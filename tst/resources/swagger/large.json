@@ -30,318 +30,6 @@
             "post": {
             }
         },
-        "noslash" : {
-            "get": {
-            }
-        },
-        "postbody" : {
-            "post": {
-                "summary": "Product Types",
-                "description": "The Products endpoint returns information about the *Uber* products\noffered at a given location. The response includes the display name\nand other details about each product, and lists the products in the\nproper display order.\n",
-                "parameters": [
-                    {
-                        "name": "postbody",
-                        "in": "body",
-                        "description": "Latitude component of location.",
-                        "required": true,
-                        "type": "object",
-                        "schema": {
-                            "properties": {
-                                "prop1": {
-                                    "type": "string"
-                                },
-                                "prop2": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/definitions/Product"
-                                    }
-
-                                }
-                            }
-                        }
-                    }
-                ],
-                "tags": [
-                    "Products"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "An array of products",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Product"
-                            }
-                        }
-                    },
-                    "400": {
-                        "schema": {
-                            "properties": {
-                                "prop1" : { "type" : "string" },
-                                "prop2" : { "type" : "array"}
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/products": {
-            "get": {
-                "summary": "Product Types",
-                "description": "The Products endpoint returns information about the *Uber* products\noffered at a given location. The response includes the display name\nand other details about each product, and lists the products in the\nproper display order.\n",
-                "parameters": [
-                    {
-                        "name": "latitude",
-                        "in": "query",
-                        "description": "Latitude component of location.",
-                        "required": true,
-                        "type": "number",
-                        "format": "double"
-                    },
-                    {
-                        "name": "longitude",
-                        "in": "query",
-                        "description": "Longitude component of location.",
-                        "required": true,
-                        "type": "number",
-                        "format": "double"
-                    }
-                ],
-                "tags": [
-                    "Products"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "An array of products",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Product"
-                            }
-                        }
-                    },
-                    "400": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "prop1" : { "type" : "string" },
-                                "prop2" : { "type" : "array"}
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/estimates/price": {
-            "get": {
-                "summary": "Price Estimates",
-                "description": "The Price Estimates endpoint returns an estimated price range\nfor each product offered at a given location. The price estimate is\nprovided as a formatted string with the full price range and the localized\ncurrency symbol.<br><br>The response also includes low and high estimates,\nand the [ISO 4217](http://en.wikipedia.org/wiki/ISO_4217) currency code for\nsituations requiring currency conversion. When surge is active for a particular\nproduct, its surge_multiplier will be greater than 1, but the price estimate\nalready factors in this multiplier.\n",
-                "parameters": [
-                    {
-                        "name": "start_latitude",
-                        "in": "query",
-                        "description": "Latitude component of start location.",
-                        "required": true,
-                        "type": "number",
-                        "format": "double"
-                    },
-                    {
-                        "name": "start_longitude",
-                        "in": "query",
-                        "description": "Longitude component of start location.",
-                        "required": true,
-                        "type": "number",
-                        "format": "double"
-                    },
-                    {
-                        "name": "end_latitude",
-                        "in": "query",
-                        "description": "Latitude component of end location.",
-                        "required": true,
-                        "type": "number",
-                        "format": "double"
-                    },
-                    {
-                        "name": "end_longitude",
-                        "in": "query",
-                        "description": "Longitude component of end location.",
-                        "required": true,
-                        "type": "number",
-                        "format": "double"
-                    }
-                ],
-                "tags": [
-                    "Estimates"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "An array of price estimates by product",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/PriceEstimate"
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    }
-                }
-            },
-
-            "put" : {
-            },
-            "delete" : {
-            },
-            "options" : {
-            },
-            "patch" : {
-            }
-        },
-        "/estimates/time": {
-            "get": {
-                "summary": "Time Estimates",
-                "description": "The Time Estimates endpoint returns ETAs for all products offered at a given location, with the responses expressed as integers in seconds. We recommend that this endpoint be called every minute to provide the most accurate, up-to-date ETAs.",
-                "parameters": [
-                    {
-                        "name": "start_latitude",
-                        "in": "query",
-                        "description": "Latitude component of start location.",
-                        "required": true,
-                        "type": "number",
-                        "format": "double"
-                    },
-                    {
-                        "name": "start_longitude",
-                        "in": "query",
-                        "description": "Longitude component of start location.",
-                        "required": true,
-                        "type": "number",
-                        "format": "double"
-                    },
-                    {
-                        "name": "customer_uuid",
-                        "in": "query",
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "Unique customer identifier to be used for experience customization."
-                    },
-                    {
-                        "name": "product_id",
-                        "in": "query",
-                        "type": "string",
-                        "description": "Unique identifier representing a specific product for a given latitude & longitude."
-                    }
-                ],
-                "tags": [
-                    "Estimates"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "An array of products",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Product"
-                            }
-                        }
-                    },
-                    "301": {
-                        "description": "An array of products",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Product"
-                            }
-                        }
-                    },
-
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/me": {
-            "get": {
-                "summary": "User Profile",
-                "description": "The User Profile endpoint returns information about the Uber user that has authorized with the application.",
-                "tags": [
-                    "User"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Profile information for a user",
-                        "schema": {
-                            "$ref": "#/definitions/Profile"
-                        }
-                    },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/history": {
-            "get": {
-                "summary": "User Activity",
-                "description": "The User Activity endpoint returns data about a user's lifetime activity with Uber. The response will include pickup locations and times, dropoff locations and times, the distance of past requests, and information about which products were requested.<br><br>The history array in the response will have a maximum length based on the limit parameter. The response value count may exceed limit, therefore subsequent API requests may be necessary.",
-                "parameters": [
-                    {
-                        "name": "offset",
-                        "in": "query",
-                        "type": "integer",
-                        "format": "int32",
-                        "description": "Offset the list of returned results by this amount. Default is zero."
-                    },
-                    {
-                        "name": "limit",
-                        "in": "query",
-                        "type": "integer",
-                        "format": "int32",
-                        "description": "Number of items to retrieve. Default is 5, maximum is 100."
-                    }
-                ],
-                "tags": [
-                    "User"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "History information for the given user",
-                        "schema": {
-                            "$ref": "#/definitions/Activities"
-                        }
-                    },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    }
-                }
-            }
-        },
         "/1" : {"get": {}},
         "/2" : {"get": {}},
         "/3" : {"get": {}},
@@ -373,7 +61,33 @@
         "/29" : {"get": {}},
         "/30" : {"get": {}},
         "/31" : {"get": {}},
-        "/32" : {"get": {}}
+        "/33" : {"get": {}},
+        "/34" : {"get": {}},
+        "/35" : {"get": {}},
+        "/36" : {"get": {}},
+        "/37" : {"get": {}},
+        "/38" : {"get": {}},
+        "/39" : {"get": {}},
+        "/40" : {"get": {}},
+        "/41" : {"get": {}},
+        "/42" : {"get": {}},
+        "/43" : {"get": {}},
+        "/44" : {"get": {}},
+        "/45" : {"get": {}},
+        "/46" : {"get": {}},
+        "/47" : {"get": {}},
+        "/48" : {"get": {}},
+        "/49" : {"get": {}},
+        "/50" : {"get": {}},
+        "/51" : {"get": {}},
+        "/52" : {"get": {}},
+        "/53" : {"get": {}},
+        "/54" : {"get": {}},
+        "/55" : {"get": {}},
+        "/56" : {"get": {}},
+        "/57" : {"get": {}},
+        "/58" : {"get": {}},
+        "/59" : {"get": {}}
 
     },
     "definitions": {

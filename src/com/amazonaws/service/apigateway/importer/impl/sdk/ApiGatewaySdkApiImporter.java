@@ -25,6 +25,7 @@ import com.amazonaws.services.apigateway.model.NotFoundException;
 import com.amazonaws.services.apigateway.model.Resource;
 import com.amazonaws.services.apigateway.model.Resources;
 import com.amazonaws.services.apigateway.model.RestApi;
+import com.google.common.util.concurrent.RateLimiter;
 import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -97,7 +98,9 @@ public class ApiGatewaySdkApiImporter {
         Resources resources = api.getResources();
         resourceList.addAll(resources.getItem());
 
+        final RateLimiter rl = RateLimiter.create(1.5);
         while (resources._isLinkAvailable("next")) {
+            rl.acquire();
             resources = resources.getNext();
             resourceList.addAll(resources.getItem());
         }
