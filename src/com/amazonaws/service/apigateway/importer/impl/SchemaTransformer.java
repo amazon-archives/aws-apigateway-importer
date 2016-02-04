@@ -47,7 +47,7 @@ public class SchemaTransformer {
         return getFlattened(deserialize(model), deserialize(models));
     }
 
-    private void buildSchemaReferenceMap(JsonNode model, JsonNode models, Map<String, String> modelMap) {
+    private static void buildSchemaReferenceMap(JsonNode model, JsonNode models, Map<String, String> modelMap) {
         Map<JsonNode, JsonNode> refs = new HashMap<>();
         findReferences(model, refs);
 
@@ -67,7 +67,7 @@ public class SchemaTransformer {
         }
     }
 
-    private JsonNode getSchema(String schemaName, JsonNode models) {
+    private static JsonNode getSchema(String schemaName, JsonNode models) {
         return models.findPath(schemaName);
     }
 
@@ -91,7 +91,7 @@ public class SchemaTransformer {
         return flattened;
     }
 
-    private void validate(JsonNode rootNode) {
+    private static void validate(JsonNode rootNode) {
         final JsonSchemaFactory factory;
         try {
             factory = JsonSchemaFactory.byDefault();
@@ -126,14 +126,14 @@ public class SchemaTransformer {
     /*
      * Replace a reference node with an inline reference
      */
-    private void replaceRef(ObjectNode parent, String schemaName) {
+    private static void replaceRef(ObjectNode parent, String schemaName) {
         parent.set("$ref", new TextNode("#/definitions/" + schemaName));
     }
 
     /*
      * Find all reference node in the schema tree. Build a map of the reference node to its parent
      */
-    private void findReferences(JsonNode node, Map<JsonNode, JsonNode> refNodes) {
+    private static void findReferences(JsonNode node, Map<JsonNode, JsonNode> refNodes) {
         JsonNode refNode = node.path("$ref");
         if (!refNode.isMissingNode()) {
             refNodes.put(refNode, node);
@@ -161,7 +161,7 @@ public class SchemaTransformer {
      * Attempt to serialize an existing schema
      * If this fails something is seriously wrong, because this schema has already been saved by the control plane
      */
-    private String serializeExisting(JsonNode root) {
+    private static String serializeExisting(JsonNode root) {
         try {
             return new ObjectMapper().writeValueAsString(root);
         } catch (JsonProcessingException e) {
