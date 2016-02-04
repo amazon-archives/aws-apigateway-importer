@@ -95,10 +95,7 @@ public class ApiImporterMain {
             return;
         }
 
-        if (!validateArgs()) {
-            jCommander.usage();
-            System.exit(1);
-        }
+        exitWithErrorIfWrongArgs(jCommander);
 
         // use default AWS credentials provider chain
         AWSCredentialsProvider credentialsProvider = new AWSCredentialsProviderChain(
@@ -107,18 +104,7 @@ public class ApiImporterMain {
                 new ProfileCredentialsProvider(profile),
                 new InstanceProfileCredentialsProvider());
 
-        // if region parameter is not specified, attempt to load configured region from profile
-        if (StringUtils.isBlank(region)) {
-            AwsConfig config = new AwsConfig(profile);
-            try {
-                config.load();
-            } catch (Throwable t) {
-                LOG.error("Could not load region from profile and no region parameter specified. " +
-                                  "Please run 'aws configure' or specify region with '--region' parameter.");
-                System.exit(1);
-            }
-            region = config.getRegion();
-        }
+        loadConfig();
 
         try {
             Injector injector = Guice.createInjector(new ApiImporterDefaultModule(credentialsProvider, region));
@@ -146,6 +132,28 @@ public class ApiImporterMain {
             }
         } catch (Throwable t) {
             LOG.error("Error importing API definition", t);
+            System.exit(1);
+        }
+    }
+
+	private void loadConfig() {
+		// if region parameter is not specified, attempt to load configured region from profile
+        if (StringUtils.isBlank(region)) {
+            AwsConfig config = new AwsConfig(profile);
+            try {
+                config.load();
+            } catch (Throwable t) {
+                LOG.error("Could not load region from profile and no region parameter specified. " +
+                                  "Please run 'aws configure' or specify region with '--region' parameter.");
+                System.exit(1);
+            }
+            region = config.getRegion();
+        }
+	}
+
+    private void exitWithErrorIfWrongArgs(JCommander jCommander) {
+        if (!validateArgs()) {
+            jCommander.usage();
             System.exit(1);
         }
     }
@@ -183,23 +191,35 @@ public class ApiImporterMain {
     }
 
     private boolean validateArgs() {
-        if ((apiId == null && !createNew) || files == null || files.isEmpty()) {
+        if (validateArgsFirstIfCondition()) {
             return false;
         }
 
-        if (cleanup && apiId != null) {
+        if (validateArgsSecondIfCondition()) {
             LOG.error("Test mode is not supported when updating an API");
             return false;
         }
 
         final String fileName = files.get(0);
         
-        if (!new File(fileName).exists()) {
+        if (validateArgsThirdIfCondition(fileName)) {
             LOG.error(String.format("Could not load file '%s'", fileName));
             return false;
         }
 
         return true;
+    }
+
+    private boolean validateArgsThirdIfCondition(final String fileName) {
+        return !new File(fileName).exists();
+    }
+
+    private boolean validateArgsSecondIfCondition() {
+        return cleanup && apiId != null;
+    }
+
+    private boolean validateArgsFirstIfCondition() {
+        return (apiId == null && !createNew) || files == null || files.isEmpty();
     }
 
 }

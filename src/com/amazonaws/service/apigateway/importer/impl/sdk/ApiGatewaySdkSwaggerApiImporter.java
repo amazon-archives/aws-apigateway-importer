@@ -607,16 +607,16 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
     // note: assumption - models in an api will always use one of the api "produces" content types, favoring application/json. models created from operation responses may use the operation "produces" content type
     private String getProducesContentType(List<String> apiProduces, List<String> methodProduces) {
 
-        if (methodProduces != null && !methodProduces.isEmpty()) {
-            if (methodProduces.stream().anyMatch(t -> t.equalsIgnoreCase(DEFAULT_PRODUCES_CONTENT_TYPE))) {
+        if (methodProducesNotEmpty(methodProduces)) {
+            if (apiProducesAnyMatch(methodProduces)) {
                 return DEFAULT_PRODUCES_CONTENT_TYPE;
             }
 
             return methodProduces.get(0);
         }
 
-        if (apiProduces != null && !apiProduces.isEmpty()) {
-            if (apiProduces.stream().anyMatch(t -> t.equalsIgnoreCase(DEFAULT_PRODUCES_CONTENT_TYPE))) {
+        if (methodProducesNotEmpty(apiProduces)) {
+            if (apiProducesAnyMatch(apiProduces)) {
                 return DEFAULT_PRODUCES_CONTENT_TYPE;
             }
 
@@ -624,6 +624,14 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         }
 
         return DEFAULT_PRODUCES_CONTENT_TYPE;
+    }
+
+    private boolean apiProducesAnyMatch(List<String> apiProduces) {
+        return apiProduces.stream().anyMatch(t -> t.equalsIgnoreCase(DEFAULT_PRODUCES_CONTENT_TYPE));
+    }
+
+    private boolean methodProducesNotEmpty(List<String> methodProduces) {
+        return methodProduces != null && !methodProduces.isEmpty();
     }
 
     private void cleanupResources(RestApi api, Set<String> paths) {

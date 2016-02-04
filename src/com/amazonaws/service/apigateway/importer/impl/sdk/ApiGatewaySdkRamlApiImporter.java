@@ -210,7 +210,7 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
     private void createMethod(final RestApi api, final Resource resource, final ActionType httpMethod, final Action action, boolean update) {
         Method method;
 
-        if (update && methodExists(resource, httpMethod.toString())) {
+        if (createMethodFirstIfCondition(resource, httpMethod, update)) {
             method = resource.getMethodByHttpMethod(httpMethod.toString());
 
             PatchDocument pd = createPatchDocument(
@@ -219,18 +219,7 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
 
             method.updateMethod(pd);
 
-            if (action.hasBody()) {
-                for (Map.Entry<String, MimeType> entry : action.getBody().entrySet()) {
-                    final String mime = entry.getKey();
-                    final String modelName = createModel(api, mime, entry.getValue());
-
-                    if (modelName != null) {
-                        method.updateMethod(createPatchDocument(createAddOperation(
-                                "/requestModels/" + escapeOperationString(mime), modelName
-                        )));
-                    }
-                }
-            }
+            ifHasBodyUpdateMethod(api, action, method);
 
             cleanupMethodModels(api, method, action.getBody());
         } else {
@@ -243,20 +232,52 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
             input.setAuthorizationType(getAuthorizationTypeFromConfig(resource, httpMethod.toString(), this.config));
             input.setRequestModels(new HashMap<>());
 
-            if (action.hasBody()) {
-                for (Map.Entry<String, MimeType> entry : action.getBody().entrySet()) {
-                    final String mime = entry.getKey();
-                    final String modelName = createModel(api, mime, entry.getValue());
-
-                    if (modelName != null) {
-                        input.getRequestModels().put(mime, modelName);
-                    }
-                }
-            }
+            ifHasBodyPutMimeAndModelName(api, action, input);
 
             method = resource.putMethod(input, httpMethod.toString());
         }
 
+        processModel(api, action, method);
+
+        cleanupMethod(api, action, update, method);
+
+        createIntegration(resource, method, this.config);
+
+        createMethodResponses(api, method, action.getResponses(), update);
+    }
+
+    private void ifHasBodyPutMimeAndModelName(final RestApi api,
+            final Action action, PutMethodInput input) {
+        if (action.hasBody()) {
+            for (Map.Entry<String, MimeType> entry : action.getBody().entrySet()) {
+                final String mime = entry.getKey();
+                final String modelName = createModel(api, mime, entry.getValue());
+
+                if (modelName != null) {
+                    input.getRequestModels().put(mime, modelName);
+                }
+            }
+        }
+    }
+
+    private void ifHasBodyUpdateMethod(final RestApi api, final Action action,
+            Method method) {
+        if (action.hasBody()) {
+            for (Map.Entry<String, MimeType> entry : action.getBody().entrySet()) {
+                final String mime = entry.getKey();
+                final String modelName = createModel(api, mime, entry.getValue());
+
+                if (modelName != null) {
+                    method.updateMethod(createPatchDocument(createAddOperation(
+                            "/requestModels/" + escapeOperationString(mime), modelName
+                    )));
+                }
+            }
+        }
+    }
+
+    private void processModel(final RestApi api, final Action action,
+            Method method) {
         for (Map.Entry<String, UriParameter> entry : action.getResource().getUriParameters().entrySet()) {
             updateMethod(api, method, "path", entry.getKey(), entry.getValue().isRequired());
         }
@@ -268,16 +289,19 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
         for (Map.Entry<String, QueryParameter> entry : action.getQueryParameters().entrySet()) {
             updateMethod(api, method, "querystring", entry.getKey(), entry.getValue().isRequired());
         }
+    }
 
+    private void cleanupMethod(final RestApi api, final Action action,
+            boolean update, Method method) {
         if (update) {
             cleanupMethod(api, method, "path", action.getResource().getUriParameters().keySet());
             cleanupMethod(api, method, "header", action.getHeaders().keySet());
             cleanupMethod(api, method, "querystring", action.getQueryParameters().keySet());
         }
+    }
 
-        createIntegration(resource, method, this.config);
-
-        createMethodResponses(api, method, action.getResponses(), update);
+    private boolean createMethodFirstIfCondition(final Resource resource, final ActionType httpMethod, boolean update) {
+        return update && methodExists(resource, httpMethod.toString());
     }
 
     private void createIntegration(Resource resource, Method method, JSONObject config) {

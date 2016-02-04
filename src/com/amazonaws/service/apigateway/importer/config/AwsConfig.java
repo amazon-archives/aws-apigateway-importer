@@ -67,26 +67,39 @@ public class AwsConfig {
 
             while ((line = br.readLine()) != null) {
 
-                if (line.startsWith("[") && line.contains(this.profile)) {
-                    foundProfile = true;
-                }
+                foundProfile = checkProfileString(foundProfile, line);
 
                 if (foundProfile && line.startsWith("region")) {
                     eqPos = line.indexOf("=");
                     region = line.substring(eqPos + 1, line.length()).trim();
                     regionMat = regionPat.matcher(region);
-                    if (! regionMat.matches()) {
-                        LOG.error("Region does not match '[a-z]{2}+-[a-z]{2,}+-[0-9]': " + region);
-                        throw new RuntimeException("Region does not match '[a-z]{2}+-[a-z]{2,}+-[0-9]'" + region);
-                    }
+                    checkReginMatches(region, regionMat);
                     return Optional.of(region);
                 }
             }
         } catch (Throwable t) {
-            throw new RuntimeException("Could not load configuration. Please run 'aws configure'");
+            throwCouldntLoadConfigRuntimeException();
         }
 
         return Optional.empty();
+    }
+
+    private void checkReginMatches(String region, Matcher regionMat) {
+        if (! regionMat.matches()) {
+            LOG.error("Region does not match '[a-z]{2}+-[a-z]{2,}+-[0-9]': " + region);
+            throw new RuntimeException("Region does not match '[a-z]{2}+-[a-z]{2,}+-[0-9]'" + region);
+        }
+    }
+
+    private boolean checkProfileString(boolean foundProfile, String line) {
+        if (line.startsWith("[") && line.contains(this.profile)) {
+            foundProfile = true;
+        }
+        return foundProfile;
+    }
+
+    private void throwCouldntLoadConfigRuntimeException() {
+        throw new RuntimeException("Could not load configuration. Please run 'aws configure'");
     }
 
 }
