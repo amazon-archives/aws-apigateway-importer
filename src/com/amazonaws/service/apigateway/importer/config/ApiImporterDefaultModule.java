@@ -81,7 +81,7 @@ public class ApiImporterDefaultModule extends AbstractModule {
 
     /**
      * Override the default SDK exponential backoff implementation
-     *  See {@link PredefinedRetryPolicies#DEFAULT_BACKOFF_STRATEGY
+     *  See {@link}} PredefinedRetryPolicies#DEFAULT_BACKOFF_STRATEGY
      */
     @Provides
     protected RetryPolicy.BackoffStrategy provideBackoffStrategy() {
