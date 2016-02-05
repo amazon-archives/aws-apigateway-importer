@@ -55,23 +55,11 @@
             <artifactId>log4j</artifactId>
             <version>1.2.14</version>
         </dependency>
-
+        
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-parser</artifactId>
-            <version>1.0.7</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-compat-spec-parser</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-core</artifactId>
-            <version>1.5.0</version>
+            <version>1.0.15-SNAPSHOT</version>
         </dependency>
 
         <dependency>

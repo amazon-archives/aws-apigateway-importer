@@ -18,17 +18,7 @@ import com.amazonaws.service.apigateway.importer.SwaggerApiImporter;
 import com.amazonaws.service.apigateway.importer.impl.SchemaTransformer;
 import com.amazonaws.services.apigateway.model.*;
 import com.google.inject.Inject;
-import com.wordnik.swagger.models.Operation;
-import com.wordnik.swagger.models.Path;
-import com.wordnik.swagger.models.RefModel;
-import com.wordnik.swagger.models.Response;
-import com.wordnik.swagger.models.Swagger;
-import com.wordnik.swagger.models.auth.SecuritySchemeDefinition;
-import com.wordnik.swagger.models.parameters.BodyParameter;
-import com.wordnik.swagger.models.parameters.Parameter;
-import com.wordnik.swagger.models.properties.Property;
-import com.wordnik.swagger.models.properties.RefProperty;
-import com.wordnik.swagger.util.Json;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,6 +30,19 @@ import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createAd
 import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createPatchDocument;
 import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createRemoveOperation;
 import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createReplaceOperation;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.swagger.models.Operation;
+import io.swagger.models.Path;
+import io.swagger.models.RefModel;
+import io.swagger.models.Response;
+import io.swagger.models.Swagger;
+import io.swagger.models.auth.SecuritySchemeDefinition;
+import io.swagger.models.parameters.BodyParameter;
+import io.swagger.models.parameters.Parameter;
+import io.swagger.models.properties.Property;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.util.Json;
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 
@@ -97,20 +100,20 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         return StringUtils.isNotBlank(title) ? title : fileName;
     }
 
-    private void createModels(RestApi api, Map<String, com.wordnik.swagger.models.Model> definitions, List<String> produces) {
+    private void createModels(RestApi api, Map<String, io.swagger.models.Model> definitions, List<String> produces) {
         if (definitions == null) {
             return;
         }
 
-        for (Map.Entry<String, com.wordnik.swagger.models.Model> entry : definitions.entrySet()) {
+        for (Map.Entry<String, io.swagger.models.Model> entry : definitions.entrySet()) {
             final String modelName = entry.getKey();
-            final com.wordnik.swagger.models.Model model = entry.getValue();
+            final io.swagger.models.Model model = entry.getValue();
 
             createModel(api, modelName, model, definitions, getProducesContentType(produces, emptyList()));
         }
     }
 
-    private void createModel(RestApi api, String modelName, com.wordnik.swagger.models.Model model, Map<String, com.wordnik.swagger.models.Model> definitions, String modelContentType) {
+    private void createModel(RestApi api, String modelName, io.swagger.models.Model model, Map<String, io.swagger.models.Model> definitions, String modelContentType) {
         LOG.info(format("Creating model for api id %s with name %s", api.getId(), modelName));
 
         createModel(api, modelName, model.getDescription(), generateSchema(model, modelName, definitions), modelContentType);
@@ -202,7 +205,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
     }
 
     public void createMethod(RestApi api, Resource resource, String httpMethod,
-                             Operation op, String modelContentType) {
+            Operation op, String modelContentType) {
         PutMethodInput input = new PutMethodInput();
 
         input.setAuthorizationType(getAuthorizationType(op));
@@ -246,28 +249,74 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
             return;
         }
 
-        HashMap<String, HashMap> integ =
-                (HashMap<String, HashMap>) vendorExtensions.get(EXTENSION_INTEGRATION);
+        if (vendorExtensions.get(EXTENSION_INTEGRATION) instanceof ObjectNode) {
+            ObjectNode integ = (ObjectNode) vendorExtensions.get(EXTENSION_INTEGRATION);
 
-        IntegrationType type = IntegrationType.valueOf(getStringValue(integ.get("type")).toUpperCase());
+            IntegrationType type = IntegrationType.valueOf(getStringValue(integ.get("type") != null ? integ.get("type").asText().toUpperCase() : null));
 
-        LOG.info("Creating integration with type " + type);
+            LOG.info("Creating integration with type " + type);
 
-        PutIntegrationInput input = new PutIntegrationInput()
-                .withType(type)
-                .withUri(getStringValue(integ.get("uri")))
-                .withCredentials(getStringValue(integ.get("credentials")))
-                .withHttpMethod((getStringValue(integ.get("httpMethod"))))
-                .withRequestParameters(integ.get("requestParameters"))
-                .withRequestTemplates(integ.get("requestTemplates"))
-                .withCacheNamespace(getStringValue(integ.get("cacheNamespace")))
-                .withCacheKeyParameters((List<String>) integ.get("cacheKeyParameters"));
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, String> requestParameters = mapper.convertValue(integ.get("requestParameters"), Map.class);
+            Map<String, String> requestTemplates = mapper.convertValue(integ.get("requestTemplates"), Map.class);
+            List<String> cacheKeyParameters = mapper.convertValue(integ.get("cacheKeyParameters"), List.class);
 
-        Integration integration = method.putIntegration(input);
+            PutIntegrationInput input = new PutIntegrationInput()
+                    .withType(type)
+                    .withUri(getStringValue(integ.get("uri") != null ? integ.get("uri").asText() : null))
+                    .withCredentials(getStringValue(integ.get("credentials") != null ? integ.get("credentials").asText() : null))
+                    .withHttpMethod((getStringValue(integ.get("httpMethod") != null ? integ.get("httpMethod").asText() : null)))
+                    .withRequestParameters(requestParameters)
+                    .withRequestTemplates(requestTemplates)
+                    .withCacheNamespace(getStringValue(integ.get("cacheNamespace") != null ? integ.get("cacheNamespace").asText() : null))
+                    .withCacheKeyParameters(cacheKeyParameters);
 
-        createIntegrationResponses(integration, integ);
+            Integration integration = method.putIntegration(input);
+
+            createIntegrationResponses(integration, integ);
+        } else {
+            HashMap<String, HashMap> integ
+                    = (HashMap<String, HashMap>) vendorExtensions.get(EXTENSION_INTEGRATION);
+
+            IntegrationType type = IntegrationType.valueOf(getStringValue(integ.get("type")).toUpperCase());
+
+            LOG.info("Creating integration with type " + type);
+
+            PutIntegrationInput input = new PutIntegrationInput()
+                    .withType(type)
+                    .withUri(getStringValue(integ.get("uri")))
+                    .withCredentials(getStringValue(integ.get("credentials")))
+                    .withHttpMethod((getStringValue(integ.get("httpMethod"))))
+                    .withRequestParameters(integ.get("requestParameters"))
+                    .withRequestTemplates(integ.get("requestTemplates"))
+                    .withCacheNamespace(getStringValue(integ.get("cacheNamespace")))
+                    .withCacheKeyParameters((List<String>) integ.get("cacheKeyParameters"));
+
+            Integration integration = method.putIntegration(input);
+
+            createIntegrationResponses(integration, integ);
+        }
     }
 
+    private void createIntegrationResponses(Integration integration, ObjectNode integ) {
+        // todo: avoid unchecked casts
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, HashMap> responses = mapper.convertValue(integ.get("responses"), Map.class);
+        responses.entrySet().forEach(e -> {
+            String pattern = e.getKey().equals("default") ? null : e.getKey();
+            HashMap response = e.getValue();
+
+            String status = (String) response.get("statusCode");
+
+            PutIntegrationResponseInput input = new PutIntegrationResponseInput()
+                    .withResponseParameters((Map<String, String>) response.get("responseParameters"))
+                    .withResponseTemplates((Map<String, String>) response.get("responseTemplates"))
+                    .withSelectionPattern(pattern);
+
+            integration.putIntegrationResponse(input, status);
+        });
+    }
+    
     private void createIntegrationResponses(Integration integration, HashMap<String, HashMap> integ) {
         // todo: avoid unchecked casts
         HashMap<String, HashMap> responses = (HashMap<String, HashMap>) integ.get("responses");
@@ -290,10 +339,16 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
     private String getAuthorizationType(Operation op) {
         String authType = "NONE";
         if (op.getVendorExtensions() != null) {
-            HashMap<String, String> authExtension = (HashMap<String, String>) op.getVendorExtensions().get(EXTENSION_AUTH);
-
-            if (authExtension != null) {
-                authType = authExtension.get("type").toUpperCase();
+            if (op.getVendorExtensions().get(EXTENSION_AUTH) instanceof ObjectNode) {
+                ObjectNode authExtension = (ObjectNode) op.getVendorExtensions().get(EXTENSION_AUTH);
+                if (authExtension != null) {
+                    authType = (authExtension.get("type") != null ? authExtension.get("type").asText().toUpperCase() : null);
+                }
+            } else {
+                HashMap<String, String> authExtension = (HashMap<String, String>) op.getVendorExtensions().get(EXTENSION_AUTH);
+                if (authExtension != null) {
+                    authType = authExtension.get("type").toUpperCase();
+                }
             }
         }
         return authType;
@@ -322,11 +377,11 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         return false;
     }
 
-    private String generateSchema(Property model, String modelName, Map<String, com.wordnik.swagger.models.Model> definitions) {
+    private String generateSchema(Property model, String modelName, Map<String, io.swagger.models.Model> definitions) {
         return generateSchemaString(model, modelName, definitions);
     }
 
-    private String generateSchemaString(Object model, String modelName, Map<String, com.wordnik.swagger.models.Model> definitions) {
+    private String generateSchemaString(Object model, String modelName, Map<String, io.swagger.models.Model> definitions) {
         try {
             String modelSchema = Json.mapper().writeValueAsString(model);
             String models = Json.mapper().writeValueAsString(definitions);
@@ -342,12 +397,12 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         }
     }
 
-    private String generateSchema(com.wordnik.swagger.models.Model model, String modelName, Map<String, com.wordnik.swagger.models.Model> definitions) {
+    private String generateSchema(io.swagger.models.Model model, String modelName, Map<String, io.swagger.models.Model> definitions) {
         return generateSchemaString(model, modelName, definitions);
     }
 
     private Optional<String> getInputModel(BodyParameter p) {
-        com.wordnik.swagger.models.Model model = p.getSchema();
+        io.swagger.models.Model model = p.getSchema();
 
         if (model instanceof RefModel) {
             String modelName = ((RefModel) model).getSimpleRef();   // assumption: complex ref?
@@ -383,14 +438,14 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         createResources(api, rootResourceId, basePath, apiProduces, paths, false);
     }
 
-    private void updateModels(RestApi api, Map<String, com.wordnik.swagger.models.Model> definitions, List<String> apiProduces) {
+    private void updateModels(RestApi api, Map<String, io.swagger.models.Model> definitions, List<String> apiProduces) {
         if (definitions == null) {
             return;
         }
 
-        for (Map.Entry<String, com.wordnik.swagger.models.Model> entry : definitions.entrySet()) {
+        for (Map.Entry<String, io.swagger.models.Model> entry : definitions.entrySet()) {
             final String modelName = entry.getKey();
-            final com.wordnik.swagger.models.Model model = entry.getValue();
+            final io.swagger.models.Model model = entry.getValue();
 
             if (getModel(api, modelName).isPresent()) {
                 updateModel(api, modelName, model);
@@ -400,7 +455,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         }
     }
 
-    private void updateModel(RestApi api, String modelName, com.wordnik.swagger.models.Model model) {
+    private void updateModel(RestApi api, String modelName, io.swagger.models.Model model) {
         LOG.info(format("Updating model for api id %s and model name %s", api.getId(), modelName));
         updateModel(api, modelName, generateSchema(model, modelName, swagger.getDefinitions()));
     }
@@ -512,7 +567,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
                 LOG.warn("Default response not supported, skipping");
             } else {
                 LOG.info(format("Creating method response for api %s and method %s and status %s",
-                                api.getId(), method.getHttpMethod(), e.getKey()));
+                        api.getId(), method.getHttpMethod(), e.getKey()));
 
                 method.putMethodResponse(getCreateResponseInput(api, modelContentType, e.getValue()), e.getKey());
             }
@@ -536,7 +591,8 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
 
         try {
             return Optional.of(api.getModelByName(modelName));
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
 
         return Optional.empty();
     }
@@ -548,10 +604,10 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
                     String expression = createRequestParameterExpression(p);
 
                     LOG.info(format("Creating method parameter for api %s and method %s with name %s",
-                                    api.getId(), method.getHttpMethod(), expression));
+                            api.getId(), method.getHttpMethod(), expression));
 
                     method.updateMethod(createPatchDocument(createAddOperation("/requestParameters/" + expression,
-                                                                               getStringValue(p.getRequired()))));
+                            getStringValue(p.getRequired()))));
                 }
             }
         });
