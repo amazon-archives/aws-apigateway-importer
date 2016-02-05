@@ -92,7 +92,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         cleanupModels(api, this.processedModels);
     }
 
-    private String getApiName(Swagger swagger, String fileName) {
+    private static String getApiName(Swagger swagger, String fileName) {
         String title = swagger.getInfo().getTitle();
         return StringUtils.isNotBlank(title) ? title : fileName;
     }
@@ -182,7 +182,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         });
     }
 
-    private Map<String, Operation> getOperations(Path path) {
+    private static Map<String, Operation> getOperations(Path path) {
         final Map<String, Operation> ops = new HashMap<>();
 
         addOp(ops, "get", path.getGet());
@@ -195,7 +195,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         return ops;
     }
 
-    private void addOp(Map<String, Operation> ops, String method, Operation operation) {
+    private static void addOp(Map<String, Operation> ops, String method, Operation operation) {
         if (operation != null) {
             ops.put(method, operation);
         }
@@ -287,7 +287,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         });
     }
 
-    private String getAuthorizationType(Operation op) {
+    private static String getAuthorizationType(Operation op) {
         String authType = "NONE";
         if (op.getVendorExtensions() != null) {
             HashMap<String, String> authExtension = (HashMap<String, String>) op.getVendorExtensions().get(EXTENSION_AUTH);
@@ -346,7 +346,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         return generateSchemaString(model, modelName, definitions);
     }
 
-    private Optional<String> getInputModel(BodyParameter p) {
+    private static Optional<String> getInputModel(BodyParameter p) {
         com.wordnik.swagger.models.Model model = p.getSchema();
 
         if (model instanceof RefModel) {
@@ -361,7 +361,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         return generateModelName(response.getDescription());
     }
 
-    private String generateModelName(String description) {
+    private static String generateModelName(String description) {
         if (StringUtils.isBlank(description)) {
             LOG.warn("No description found for model, will generate a unique model name");
             return "model" + UUID.randomUUID().toString().substring(0, 8);
@@ -371,11 +371,11 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         return description.replaceAll(getModelNameSanitizeRegex(), "");
     }
 
-    private String generateModelName(BodyParameter param) {
+    private static String generateModelName(BodyParameter param) {
         return generateModelName(param.getDescription());
     }
 
-    private String getModelNameSanitizeRegex() {
+    private static String getModelNameSanitizeRegex() {
         return "[^A-Za-z0-9]";
     }
 
@@ -452,7 +452,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         cleanupResources(api, buildResourceSet(paths.keySet(), basePath));
     }
 
-    private Set<String> buildResourceSet(Set<String> paths, String basePath) {
+    private static Set<String> buildResourceSet(Set<String> paths, String basePath) {
         if (StringUtils.isBlank(basePath)) {
             basePath = "/";
         }
@@ -557,12 +557,12 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         });
     }
 
-    private String createRequestParameterExpression(Parameter p) {
+    private static String createRequestParameterExpression(Parameter p) {
         Optional<String> loc = getParameterLocation(p);
         return "method.request." + loc.get() + "." + p.getName();
     }
 
-    private Optional<String> getParameterLocation(Parameter p) {
+    private static Optional<String> getParameterLocation(Parameter p) {
         switch (p.getIn()) {
             case "path":
                 return Optional.of("path");

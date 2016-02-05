@@ -105,7 +105,7 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
         cleanupModels(api, this.models);
     }
 
-    private String getApiName (Raml raml, String fileName) {
+    private static String getApiName (Raml raml, String fileName) {
         String title = raml.getTitle();
         return StringUtils.isNotBlank(title) ? title : fileName;
     }
@@ -189,7 +189,7 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
         }
     }
 
-    private void cleanupMethods (RestApi api, Resource resource, Map<ActionType, Action> actions) {
+    private static void cleanupMethods (RestApi api, Resource resource, Map<ActionType, Action> actions) {
         final HashSet<String> methods = new HashSet<>();
 
         for (ActionType action : actions.keySet()) {
@@ -280,7 +280,7 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
         createMethodResponses(api, method, action.getResponses(), update);
     }
 
-    private void createIntegration(Resource resource, Method method, JSONObject config) {
+    private static void createIntegration(Resource resource, Method method, JSONObject config) {
         if (config == null) {
             return;
         }
@@ -312,7 +312,7 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
         }
     }
 
-    private void createIntegrationResponses(Integration integration, JSONObject responses) {
+    private static void createIntegrationResponses(Integration integration, JSONObject responses) {
         if (responses == null) {
             return;
         }
@@ -339,7 +339,7 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
         }
     }
 
-    private List<String> jsonObjectToListString (JSONArray json) {
+    private static List<String> jsonObjectToListString (JSONArray json) {
         if (json == null) {
           return null;
         }
@@ -355,7 +355,7 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
         return list;
     }
 
-    private Map<String, String> jsonObjectToHashMapString (JSONObject json) {
+    private static Map<String, String> jsonObjectToHashMapString (JSONObject json) {
         if (json == null) {
           return null;
         }
@@ -400,7 +400,7 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
         }
     }
 
-    private String generateModelName(MimeType mimeType) {
+    private static String generateModelName(MimeType mimeType) {
         return "model" + UUID.randomUUID().toString().substring(0, 8);
     }
 
@@ -473,7 +473,7 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
         return null;
     }
 
-    private String getExpression(String area, String part, String type, String name) {
+    private static String getExpression(String area, String part, String type, String name) {
         return area + "." + part + "." + type + "." + name;
     }
 
@@ -492,7 +492,7 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
         method.updateMethod(createPatchDocument(createAddOperation("/requestParameters/" + expression, getStringValue(required))));
     }
 
-    private String getAuthorizationTypeFromConfig(Resource resource, String method, JSONObject config) {
+    private static String getAuthorizationTypeFromConfig(Resource resource, String method, JSONObject config) {
         if (config == null) {
             return "NONE";
         }
@@ -508,7 +508,7 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
         }
     }
 
-    private String escapeOperationString(String value) {
+    private static String escapeOperationString(String value) {
         return value.replaceAll("~", "~0").replaceAll("/", "~1");
     }
 

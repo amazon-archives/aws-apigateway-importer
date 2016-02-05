@@ -234,7 +234,7 @@ public class ApiGatewaySdkApiImporter {
         return result;
     }
 
-    private String trimSlashes(String path) {
+    private static String trimSlashes(String path) {
         return StringUtils.removeEnd(StringUtils.removeStart(path, "/"), "/");
     }
 
