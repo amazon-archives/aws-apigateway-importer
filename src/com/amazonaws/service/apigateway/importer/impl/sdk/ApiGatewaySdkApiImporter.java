@@ -168,7 +168,7 @@ public class ApiGatewaySdkApiImporter {
         });
     }
 
-    protected Optional<Resource> getResource(RestApi api, String parentResourceId, String pathPart, List<Resource> resources) {
+    protected Optional<Resource> getResource(String parentResourceId, String pathPart, List<Resource> resources) {
         for (Resource r : resources) {
             if (pathEquals(pathPart, r.getPathPart()) && r.getParentId().equals(parentResourceId)) {
                 return Optional.of(r);
@@ -239,7 +239,7 @@ public class ApiGatewaySdkApiImporter {
     }
 
     protected Resource createResource(RestApi api, String parentResourceId, String part, List<Resource> resources) {
-        final Optional<Resource> existingResource = getResource(api, parentResourceId, part, resources);
+        final Optional<Resource> existingResource = getResource(parentResourceId, part, resources);
 
         // create resource if doesn't exist
         if (!existingResource.isPresent()) {

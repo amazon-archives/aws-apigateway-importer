@@ -535,7 +535,10 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         }
 
         try {
-            return Optional.of(api.getModelByName(modelName));
+            Model model = api.getModelByName(modelName);
+            if (model.getName() != null) {
+                return Optional.of(model);
+            }
         } catch (Exception ignored) {}
 
         return Optional.empty();
