@@ -243,12 +243,18 @@ public class ApiGatewaySdkApiImporter {
 
         // create resource if doesn't exist
         if (!existingResource.isPresent()) {
+
             LOG.info("Creating resource '" + part + "' on " + parentResourceId);
 
             CreateResourceInput input = new CreateResourceInput();
             input.setPathPart(part);
             Resource resource = api.getResourceById(parentResourceId);
-            return resource.createResource(input);
+
+            Resource created = resource.createResource(input);
+
+            resources.add(created);
+
+            return created;
         } else {
             return existingResource.get();
         }
