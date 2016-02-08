@@ -79,7 +79,7 @@ public class ApiImporterDefaultModule extends AbstractModule {
         return String.format("https://apigateway.%s.amazonaws.com", region);
     }
 
-    /**
+    /*
      * Override the default SDK exponential backoff implementation
      *  See {@link PredefinedRetryPolicies#DEFAULT_BACKOFF_STRATEGY
      */
