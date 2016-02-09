@@ -17,6 +17,7 @@ package com.amazonaws.service.apigateway.importer.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
@@ -39,15 +40,15 @@ public class SchemaTransformer {
 
     /**
      * Get a schema schema in "flattened" form whereby all dependent references are resolved
-     * and included as inline schema definitions
+     * and included as external schema definitions
      *
      * @return the json-schema string in flattened form
      */
-    public String flatten(String model, String models) {
-        return getFlattened(deserialize(model), deserialize(models));
+    public String flatten(String apiId, String model, String models) {
+        return getFlattened(apiId, deserialize(model), deserialize(models));
     }
 
-    private void buildSchemaReferenceMap(JsonNode model, JsonNode models, Map<String, String> modelMap) {
+    private void buildSchemaReferenceMap(String apiId, JsonNode model, JsonNode models, Map<String, String> modelMap) {
         Map<JsonNode, JsonNode> refs = new HashMap<>();
         findReferences(model, refs);
 
@@ -58,10 +59,10 @@ public class SchemaTransformer {
 
             JsonNode subSchema = getSchema(schemaName, models);
 
-            // replace reference values with inline definitions
-            replaceRef((ObjectNode) refs.get(ref), schemaName);
+            // replace reference values with external definitions
+            replaceRef(apiId, (ObjectNode) refs.get(ref), schemaName);
 
-            buildSchemaReferenceMap(subSchema, models, modelMap);
+            buildSchemaReferenceMap(apiId, subSchema, models, modelMap);
 
             modelMap.put(schemaName, serializeExisting(subSchema));
         }
@@ -71,12 +72,10 @@ public class SchemaTransformer {
         return models.findPath(schemaName);
     }
 
-    private String getFlattened(JsonNode model, JsonNode models) {
+    private String getFlattened(String apiId, JsonNode model, JsonNode models) {
         HashMap<String, String> schemaMap = new HashMap<>();
 
-        buildSchemaReferenceMap(model, models, schemaMap);
-
-        replaceRefs(model, schemaMap);
+        buildSchemaReferenceMap(apiId, model, models, schemaMap);
 
         if (LOG.isTraceEnabled()) {
             try {
@@ -109,25 +108,11 @@ public class SchemaTransformer {
     }
 
     /*
-     * Add schema references as inline definitions to the root schema
-     */
-    private void replaceRefs(JsonNode root, HashMap<String, String> schemaMap) {
-
-        ObjectNode definitionsNode = new ObjectNode(JsonNodeFactory.instance);
-
-        for (Map.Entry<String, String> entry : schemaMap.entrySet()) {
-            JsonNode schemaNode = deserialize(entry.getValue());
-            definitionsNode.set(entry.getKey(), schemaNode);
-        }
-
-        ((ObjectNode)root).set("definitions", definitionsNode);
-    }
-
-    /*
      * Replace a reference node with an inline reference
      */
-    private void replaceRef(ObjectNode parent, String schemaName) {
-        parent.set("$ref", new TextNode("#/definitions/" + schemaName));
+    private void replaceRef(String apiId, ObjectNode parent, String schemaName) {
+//        parent.set("$ref", new TextNode("#/definitions/" + schemaName));
+        parent.set("$ref", new TextNode("https://apigateway.amazonaws.com/restapis/" + apiId + "/models/" + schemaName));
     }
 
     /*
@@ -163,7 +148,7 @@ public class SchemaTransformer {
      */
     private String serializeExisting(JsonNode root) {
         try {
-            return new ObjectMapper().writeValueAsString(root);
+            return new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(root);
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("Could not serialize generated schema json", e);
         }

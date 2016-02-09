@@ -113,13 +113,13 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
     private void createModel(RestApi api, String modelName, com.wordnik.swagger.models.Model model, Map<String, com.wordnik.swagger.models.Model> definitions, String modelContentType) {
         LOG.info(format("Creating model for api id %s with name %s", api.getId(), modelName));
 
-        createModel(api, modelName, model.getDescription(), generateSchema(model, modelName, definitions), modelContentType);
+        createModel(api, modelName, model.getDescription(), generateSchema(api, model, modelName, definitions), modelContentType);
     }
 
     private void createModel(RestApi api, String modelName, Property model, String modelContentType) {
         LOG.info(format("Creating model for api id %s with name %s", api.getId(), modelName));
 
-        createModel(api, modelName, model.getDescription(), generateSchema(model, modelName, swagger.getDefinitions()), modelContentType);
+        createModel(api, modelName, model.getDescription(), generateSchema(api, model, modelName, swagger.getDefinitions()), modelContentType);
     }
 
     private void updateMethods(RestApi api, String basePath, Map<String, Path> paths, List<String> apiProduces) {
@@ -322,17 +322,17 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         return false;
     }
 
-    private String generateSchema(Property model, String modelName, Map<String, com.wordnik.swagger.models.Model> definitions) {
-        return generateSchemaString(model, modelName, definitions);
+    private String generateSchema(RestApi api, Property model, String modelName, Map<String, com.wordnik.swagger.models.Model> definitions) {
+        return generateSchemaString(api, model, modelName, definitions);
     }
 
-    private String generateSchemaString(Object model, String modelName, Map<String, com.wordnik.swagger.models.Model> definitions) {
+    private String generateSchemaString(RestApi api, Object model, String modelName, Map<String, com.wordnik.swagger.models.Model> definitions) {
         try {
             String modelSchema = Json.mapper().writeValueAsString(model);
             String models = Json.mapper().writeValueAsString(definitions);
 
             // inline all references
-            String schema = new SchemaTransformer().flatten(modelSchema, models);
+            String schema = new SchemaTransformer().flatten(api.getId(), modelSchema, models);
 
             LOG.info("Generated json-schema for model " + modelName + ": " + schema);
 
@@ -342,8 +342,8 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         }
     }
 
-    private String generateSchema(com.wordnik.swagger.models.Model model, String modelName, Map<String, com.wordnik.swagger.models.Model> definitions) {
-        return generateSchemaString(model, modelName, definitions);
+    private String generateSchema(RestApi api, com.wordnik.swagger.models.Model model, String modelName, Map<String, com.wordnik.swagger.models.Model> definitions) {
+        return generateSchemaString(api, model, modelName, definitions);
     }
 
     private Optional<String> getInputModel(BodyParameter p) {
@@ -402,7 +402,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
 
     private void updateModel(RestApi api, String modelName, com.wordnik.swagger.models.Model model) {
         LOG.info(format("Updating model for api id %s and model name %s", api.getId(), modelName));
-        updateModel(api, modelName, generateSchema(model, modelName, swagger.getDefinitions()));
+        updateModel(api, modelName, generateSchema(api, model, modelName, swagger.getDefinitions()));
     }
 
     private void updateMethod(RestApi api, Resource resource, String httpMethod, Operation op, String modelContentType) {
