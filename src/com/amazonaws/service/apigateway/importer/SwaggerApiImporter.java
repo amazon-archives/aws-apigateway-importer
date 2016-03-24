@@ -14,7 +14,7 @@
  */
 package com.amazonaws.service.apigateway.importer;
 
-import com.wordnik.swagger.models.Swagger;
+import io.swagger.models.Swagger;
 
 public interface SwaggerApiImporter {
     String createApi(Swagger swagger, String name);
