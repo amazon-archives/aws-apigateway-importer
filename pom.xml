@@ -29,7 +29,7 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-core</artifactId>
-            <version>[1.8.6,2.0)</version>
+            <version>[1.8.6,1.10.77)</version>
         </dependency>
 
         <dependency>
