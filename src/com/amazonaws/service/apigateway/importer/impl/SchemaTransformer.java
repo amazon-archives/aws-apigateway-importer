@@ -23,10 +23,12 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,10 +49,12 @@ public class SchemaTransformer {
         return getFlattened(deserialize(model), deserialize(models));
     }
 
+    public String flatten(String model, String models, List<String> modelNames) {
+        return getFlattened(deserialize(model), deserialize(models), modelNames);
+    }
     private void buildSchemaReferenceMap(JsonNode model, JsonNode models, Map<String, String> modelMap) {
         Map<JsonNode, JsonNode> refs = new HashMap<>();
         findReferences(model, refs);
-
         for (JsonNode ref : refs.keySet()) {
             String canonicalRef = ref.textValue();
 
@@ -67,17 +71,32 @@ public class SchemaTransformer {
         }
     }
 
+    private void buildSchemaReferenceMap(JsonNode model, JsonNode models, Map<String, String> modelMap, List<String> modelNames) {
+        Map<JsonNode, JsonNode> refs = new HashMap<>();
+        findReferences(model, refs);
+
+        for (JsonNode ref : refs.keySet()) {
+            String canonicalRef = ref.textValue();
+            String schemaName = getSchemaName(canonicalRef);
+            JsonNode subSchema = getSchema(schemaName, models);
+            // replace reference values with inline definitions
+            replaceRef((ObjectNode) refs.get(ref), schemaName);
+            if (!modelNames.contains(schemaName)){
+                modelNames.add(schemaName);
+                buildSchemaReferenceMap(subSchema, models, modelMap, modelNames);
+            }
+            modelMap.put(schemaName, serializeExisting(subSchema));
+        }
+    }
+
     private JsonNode getSchema(String schemaName, JsonNode models) {
         return models.findPath(schemaName);
     }
 
     private String getFlattened(JsonNode model, JsonNode models) {
         HashMap<String, String> schemaMap = new HashMap<>();
-
         buildSchemaReferenceMap(model, models, schemaMap);
-
         replaceRefs(model, schemaMap);
-
         if (LOG.isTraceEnabled()) {
             try {
                 LOG.trace("Flattened schema to: " + new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(model));
@@ -91,6 +110,20 @@ public class SchemaTransformer {
         return flattened;
     }
 
+    private String getFlattened(JsonNode model, JsonNode models, List<String> modelNames) {
+        HashMap<String, String> schemaMap = new HashMap<>();
+        buildSchemaReferenceMap(model, models, schemaMap, modelNames);
+        replaceRefs(model, schemaMap);
+        removeExampleFromBooleanNode(model);
+        if (LOG.isTraceEnabled()) {
+            try {
+                LOG.trace("Flattened schema to: " + new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(model));
+            } catch (JsonProcessingException ignored){}
+        }
+        String flattened = serializeExisting(model);
+        validate(model);
+        return flattened;
+    }
     private void validate(JsonNode rootNode) {
         final JsonSchemaFactory factory;
         try {
@@ -144,12 +177,28 @@ public class SchemaTransformer {
         }
     }
 
+    private void removeExampleFromBooleanNode(JsonNode node) {
+        JsonNode refNode = node.path("type");
+        if (!refNode.isMissingNode()) {
+            if(refNode.asText().equalsIgnoreCase("boolean")){
+                ((ObjectNode) node).remove("example");
+            }
+        }
+
+        for (JsonNode child : node) {
+            removeExampleFromBooleanNode(child);
+        }
+    }
+
     /*
     * Attempt to serialize an existing schema
     * If this fails something is seriously wrong, because this schema has already been saved by the control plane
     */
     JsonNode deserialize(String schemaText) {
         try {
+            if(StringUtils.isBlank(schemaText) || schemaText.equals("null")) {
+                schemaText = "{}";
+            }
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readTree(schemaText);
         } catch (IOException e) {
@@ -173,7 +222,7 @@ public class SchemaTransformer {
         String schemaName;
         try {
             schemaName = refVal.substring(refVal.lastIndexOf("/") + 1,
-                                          refVal.length());
+                    refVal.length());
         } catch (Throwable t) {
             throw new IllegalStateException("Invalid reference found: " + refVal, t);
         }
@@ -185,7 +234,7 @@ public class SchemaTransformer {
         String apiId;
         try {
             apiId = refVal.substring(refVal.indexOf("restapis/"),
-                                     refVal.length()).split("/")[1];
+                    refVal.length()).split("/")[1];
         } catch (Throwable t) {
             throw new IllegalStateException("Invalid reference found: " + refVal, t);
         }

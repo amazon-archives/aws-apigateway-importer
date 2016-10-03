@@ -14,17 +14,7 @@
  */
 package com.amazonaws.service.apigateway.importer.impl.sdk;
 
-import com.amazonaws.services.apigateway.model.ApiGateway;
-import com.amazonaws.services.apigateway.model.CreateDeploymentInput;
-import com.amazonaws.services.apigateway.model.CreateModelInput;
-import com.amazonaws.services.apigateway.model.CreateResourceInput;
-import com.amazonaws.services.apigateway.model.CreateRestApiInput;
-import com.amazonaws.services.apigateway.model.Model;
-import com.amazonaws.services.apigateway.model.Models;
-import com.amazonaws.services.apigateway.model.NotFoundException;
-import com.amazonaws.services.apigateway.model.Resource;
-import com.amazonaws.services.apigateway.model.Resources;
-import com.amazonaws.services.apigateway.model.RestApi;
+import com.amazonaws.services.apigateway.model.*;
 import com.google.common.util.concurrent.RateLimiter;
 import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
@@ -148,8 +138,11 @@ public class ApiGatewaySdkApiImporter {
         input.setDescription(description);
         input.setContentType(modelContentType);
         input.setSchema(schema);
-
-        api.createModel(input);
+        try {
+            api.createModel(input);
+        }catch (ConflictException e) {
+            //ignore conflicts
+        }
     }
 
     protected void updateModel(RestApi api, String modelName, String schema) {
@@ -249,9 +242,12 @@ public class ApiGatewaySdkApiImporter {
             CreateResourceInput input = new CreateResourceInput();
             input.setPathPart(part);
             Resource resource = api.getResourceById(parentResourceId);
-
-            Resource created = resource.createResource(input);
-
+            Resource created = null;
+            try {
+                created = resource.createResource(input);
+            }catch (Exception e) {
+                throw e;
+            }
             resources.add(created);
 
             return created;
