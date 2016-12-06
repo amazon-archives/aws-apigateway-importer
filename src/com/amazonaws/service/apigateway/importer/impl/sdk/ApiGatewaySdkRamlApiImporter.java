@@ -82,7 +82,8 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
             final Resource rootResource = getRootResource(api).get();
             deleteDefaultModels(api);
             createModels(api, raml.getSchemas(), false);
-            createResources(api, createResourcePath(api, rootResource, raml.getBasePath()), raml.getResources(), false);
+            createResources(api, createResourcePath(api, rootResource, raml.getBasePath()),
+                             new HashMap<String, UriParameter>(), raml.getResources(), false);
         } catch (Throwable t) {
             LOG.error("Error creating API, rolling back", t);
             rollback(api);
@@ -99,7 +100,8 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
         Optional<Resource> rootResource = getRootResource(api);
 
         createModels(api, raml.getSchemas(), true);
-        createResources(api, createResourcePath(api, rootResource.get(), raml.getBasePath()), raml.getResources(), true);
+        createResources(api, createResourcePath(api, rootResource.get(), raml.getBasePath()),
+                         new HashMap<String, UriParameter>(), raml.getResources(), true);
 
         cleanupResources(api, this.paths);
         cleanupModels(api, this.models);
@@ -143,13 +145,17 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
         createModel(api, schemaName, null, schemaValue, isJson ? "application/json" : "text/xml");
     }
 
-    private void createResources(RestApi api, Resource rootResource, Map<String, org.raml.model.Resource> resources, boolean update) {
+    private void createResources(RestApi api, Resource rootResource, Map<String, UriParameter> ancestorRequestParameters,
+                                Map<String, org.raml.model.Resource> resources, boolean update) {
         for (Map.Entry<String, org.raml.model.Resource> entry : resources.entrySet()) {
             final org.raml.model.Resource resource = entry.getValue();
             final Resource parentResource = createResourcePath(api, rootResource, entry.getKey());
 
-            createMethods(api, parentResource, resource.getActions(), update);
-            createResources(api, parentResource, resource.getResources(), update);
+            Map<String, UriParameter> requestParameters = new HashMap<String, UriParameter>(resource.getUriParameters());
+            requestParameters.putAll(ancestorRequestParameters);
+
+            createMethods(api, parentResource, requestParameters, resource.getActions(), update);
+            createResources(api, parentResource, requestParameters, resource.getResources(), update);
         }
     }
 
@@ -179,9 +185,10 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
         return parentResource;
     }
 
-    private void createMethods(RestApi api, Resource resource, Map<ActionType, Action> actions, boolean update) {
+    private void createMethods(RestApi api, Resource resource, Map<String, UriParameter> requestParameters,
+                               Map<ActionType, Action> actions, boolean update) {
         for (Map.Entry<ActionType, Action> entry : actions.entrySet()) {
-            createMethod(api, resource, entry.getKey(), entry.getValue(), update);
+            createMethod(api, resource, entry.getKey(), entry.getValue(), requestParameters, update);
         }
 
         if (update) {
@@ -207,7 +214,8 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
         }
     }
 
-    private void createMethod(final RestApi api, final Resource resource, final ActionType httpMethod, final Action action, boolean update) {
+    private void createMethod(final RestApi api, final Resource resource, final ActionType httpMethod, final Action action,
+                              final Map<String, UriParameter> requestParameters, boolean update) {
         Method method;
 
         if (update && methodExists(resource, httpMethod.toString())) {
@@ -257,7 +265,7 @@ public class ApiGatewaySdkRamlApiImporter extends ApiGatewaySdkApiImporter imple
             method = resource.putMethod(input, httpMethod.toString());
         }
 
-        for (Map.Entry<String, UriParameter> entry : action.getResource().getUriParameters().entrySet()) {
+        for (Map.Entry<String, UriParameter> entry : requestParameters.entrySet()) {
             updateMethod(api, method, "path", entry.getKey(), entry.getValue().isRequired());
         }
 
