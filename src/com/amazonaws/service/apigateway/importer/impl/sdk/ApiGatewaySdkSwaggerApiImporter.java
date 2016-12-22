@@ -48,6 +48,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
 
     private static final Log LOG = LogFactory.getLog(ApiGatewaySdkSwaggerApiImporter.class);
     private static final String DEFAULT_PRODUCES_CONTENT_TYPE = "application/json";
+    private static final String VOID_PRODUCES_CONTENT_TYPE = "*/*";
     private static final String EXTENSION_AUTH = "x-amazon-apigateway-auth";
     private static final String EXTENSION_INTEGRATION = "x-amazon-apigateway-integration";
 
@@ -58,16 +59,13 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
     public String createApi(Swagger swagger, String name) {
         this.swagger = swagger;
         this.processedModels.clear();
-
         final RestApi api = createApi(getApiName(swagger, name), swagger.getInfo().getDescription());
-
-        LOG.info("Created API "+api.getId());
-        
+        LOG.info("Created API "+api.getId() +"  " + swagger.getHost());
         try {
             final Resource rootResource = getRootResource(api).get();
             deleteDefaultModels(api);
             createModels(api, swagger.getDefinitions(), swagger.getProduces());
-            createResources(api, rootResource, swagger.getBasePath(), swagger.getProduces(), swagger.getPaths(), true);
+            createResources(api, rootResource, swagger, true);
         } catch (Throwable t) {
             LOG.error("Error creating API, rolling back", t);
             rollback(api);
@@ -85,8 +83,8 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         Optional<Resource> rootResource = getRootResource(api);
 
         updateModels(api, swagger.getDefinitions(), swagger.getProduces());
-        updateResources(api, rootResource.get(), swagger.getBasePath(), swagger.getPaths(), swagger.getProduces());
-        updateMethods(api, swagger.getBasePath(), swagger.getPaths(), swagger.getProduces());
+        updateResources(api, rootResource.get(), swagger);
+        updateMethods(api, swagger);
 
         cleanupMethods(api, swagger.getBasePath(), swagger.getPaths());
         cleanupResources(api, swagger.getBasePath(), swagger.getPaths());
@@ -95,7 +93,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
 
     private String getApiName(Swagger swagger, String fileName) {
         String title = swagger.getInfo().getTitle();
-        return StringUtils.isNotBlank(title) ? title : fileName;
+        return StringUtils.isNotBlank(title) ? title + swagger.getHost() : fileName;
     }
 
     private void createModels(RestApi api, Map<String, io.swagger.models.Model> definitions, List<String> produces) {
@@ -104,9 +102,11 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         }
 
         for (Map.Entry<String, io.swagger.models.Model> entry : definitions.entrySet()) {
-            final String modelName = entry.getKey();
+            String modelName = entry.getKey();
             final io.swagger.models.Model model = entry.getValue();
-
+            if(modelName.contains("«")) {
+                modelName = modelName.substring(0, modelName.indexOf("«"));
+            }
             createModel(api, modelName, model, definitions, getProducesContentType(produces, emptyList()));
         }
     }
@@ -123,7 +123,10 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         createModel(api, modelName, model.getDescription(), generateSchema(model, modelName, swagger.getDefinitions()), modelContentType);
     }
 
-    private void updateMethods(RestApi api, String basePath, Map<String, Path> paths, List<String> apiProduces) {
+    private void updateMethods(RestApi api, Swagger swagger){
+        String basePath = swagger.getBasePath();
+        Map<String, Path> paths = swagger.getPaths();
+        List<String> apiProduces = swagger.getProduces();
         for (Map.Entry<String, Path> entry : paths.entrySet()) {
             final String fullPath = buildResourcePath(basePath, entry.getKey());
 
@@ -141,17 +144,19 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
                 String modelContentType = getProducesContentType(apiProduces, op.getProduces());
 
                 if (methodExists(resource, httpMethod)) {
-                    updateMethod(api, resource, httpMethod, op, modelContentType);
+                    updateMethod(api, resource, httpMethod, op, modelContentType, swagger.getHost());
                 } else {
-                    createMethod(api, resource, httpMethod, op, modelContentType);
+                    createMethod(api, resource, httpMethod, op, modelContentType, swagger.getHost());
                 }
             }
         }
     }
 
-    private void createResources(RestApi api, Resource rootResource, String basePath, List<String> apiProduces, Map<String, Path> paths, boolean createMethods) {
+    private void createResources(RestApi api, Resource rootResource, Swagger swagger, boolean createMethods) {
         //build path tree
-
+        String basePath = swagger.getBasePath();
+        List<String> apiProduces = swagger.getProduces();
+        Map<String, Path> paths = swagger.getPaths();
         List<Resource> resources = buildResourceList(api);
 
         for (Map.Entry<String, Path> entry : paths.entrySet()) {
@@ -168,17 +173,17 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
 
             if (createMethods) {
                 // create methods on the leaf resource for each path
-                createMethods(api, parentResource, entry.getValue(), apiProduces);
+                createMethods(api, parentResource, entry.getValue(), apiProduces, swagger.getHost());
             }
         }
     }
 
-    private void createMethods(final RestApi api, final Resource resource, Path path, List<String> apiProduces) {
+    private void createMethods(final RestApi api, final Resource resource, Path path, List<String> apiProduces, String hostname) {
         final Map<String, Operation> ops = getOperations(path);
 
         ops.entrySet().forEach(x -> {
             createMethod(api, resource, x.getKey(), x.getValue(),
-                    getProducesContentType(apiProduces, x.getValue().getProduces()));
+                    getProducesContentType(apiProduces, x.getValue().getProduces()), hostname);
             LOG.info(format("Creating method for api id %s and resource id %s with method %s", api.getId(), resource.getId(), x.getKey()));
         });
     }
@@ -203,7 +208,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
     }
 
     public void createMethod(RestApi api, Resource resource, String httpMethod,
-                             Operation op, String modelContentType) {
+                             Operation op, String modelContentType, String hostname) {
         PutMethodInput input = new PutMethodInput();
 
         input.setAuthorizationType(getAuthorizationType(op));
@@ -239,10 +244,10 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
 
         createMethodResponses(api, method, modelContentType, op.getResponses());
         createMethodParameters(api, method, op.getParameters());
-        createIntegration(method, op.getVendorExtensions());
+        createIntegration(method, op.getVendorExtensions(), hostname);
     }
 
-    private void createIntegration(Method method, Map<String, Object> vendorExtensions) {
+    private void createIntegration(Method method, Map<String, Object> vendorExtensions, String hostname) {
         if (!vendorExtensions.containsKey(EXTENSION_INTEGRATION)) {
             return;
         }
@@ -252,21 +257,22 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
 
         IntegrationType type = IntegrationType.valueOf(getStringValue(integ.get("type")).toUpperCase());
 
-        LOG.info("Creating integration with type " + type);
+        LOG.info("Creating integration with type " + type + " method "+ method.getHttpMethod());
 
         PutIntegrationInput input = new PutIntegrationInput()
                 .withType(type)
-                .withUri(getStringValue(integ.get("uri")))
+                .withUri("https://ube-dev.shodogg.com"+ getStringValue(integ.get("uri")))
                 .withCredentials(getStringValue(integ.get("credentials")))
-                .withHttpMethod((getStringValue(integ.get("httpMethod"))))
+                .withHttpMethod(method.getHttpMethod())
                 .withRequestParameters(integ.get("requestParameters"))
                 .withRequestTemplates(integ.get("requestTemplates"))
                 .withCacheNamespace(getStringValue(integ.get("cacheNamespace")))
                 .withCacheKeyParameters((List<String>) integ.get("cacheKeyParameters"));
 
         Integration integration = method.putIntegration(input);
-
-        createIntegrationResponses(integration, integ);
+        if(integ.containsKey("responses")) {
+            createIntegrationResponses(integration, integ);
+        }
     }
 
     private void createIntegrationResponses(Integration integration, Map<String, HashMap> integ) {
@@ -332,9 +338,10 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         try {
             String modelSchema = Json.mapper().writeValueAsString(model);
             String models = Json.mapper().writeValueAsString(definitions);
-
+            List<String> modelNames = new ArrayList<>();
+            modelNames.add(modelName);
             // inline all references
-            String schema = new SchemaTransformer().flatten(modelSchema, models);
+            String schema = new SchemaTransformer().flatten(modelSchema, models, modelNames);
 
             LOG.info("Generated json-schema for model " + modelName + ": " + schema);
 
@@ -381,8 +388,8 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         return "[^A-Za-z0-9]";
     }
 
-    private void updateResources(RestApi api, Resource rootResourceId, String basePath, Map<String, Path> paths, List<String> apiProduces) {
-        createResources(api, rootResourceId, basePath, apiProduces, paths, false);
+    private void updateResources(RestApi api, Resource rootResourceId, Swagger swagger) {
+        createResources(api, rootResourceId, swagger, false);
     }
 
     private void updateModels(RestApi api, Map<String, io.swagger.models.Model> definitions, List<String> apiProduces) {
@@ -407,7 +414,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         updateModel(api, modelName, generateSchema(model, modelName, swagger.getDefinitions()));
     }
 
-    private void updateMethod(RestApi api, Resource resource, String httpMethod, Operation op, String modelContentType) {
+    private void updateMethod(RestApi api, Resource resource, String httpMethod, Operation op, String modelContentType, String hostName) {
         LOG.info(format("Updating method for api id %s and resource %s and method %s", api.getId(), resource.getId(), httpMethod));
 
         PatchDocument pd = createPatchDocument(
@@ -417,7 +424,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
 
         updateMethodResponses(api, method, modelContentType, op.getResponses());
         updateMethodParameters(api, method, op.getParameters());
-        createIntegration(method, op.getVendorExtensions());
+        createIntegration(method, op.getVendorExtensions(), hostName);
     }
 
     private void cleanupMethods(RestApi api, String basePath, Map<String, Path> paths) {
@@ -514,7 +521,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
                 LOG.warn("Default response not supported, skipping");
             } else {
                 LOG.info(format("Creating method response for api %s and method %s and status %s",
-                                api.getId(), method.getHttpMethod(), e.getKey()));
+                        api.getId(), method.getHttpMethod(), e.getKey()));
 
                 method.putMethodResponse(getCreateResponseInput(api, modelContentType, e.getValue()), e.getKey());
             }
@@ -553,10 +560,10 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
                     String expression = createRequestParameterExpression(p);
 
                     LOG.info(format("Creating method parameter for api %s and method %s with name %s",
-                                    api.getId(), method.getHttpMethod(), expression));
+                            api.getId(), method.getHttpMethod(), expression));
 
                     method.updateMethod(createPatchDocument(createAddOperation("/requestParameters/" + expression,
-                                                                               getStringValue(p.getRequired()))));
+                            getStringValue(p.getRequired()))));
                 }
             }
         });
@@ -616,7 +623,9 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
             if (methodProduces.stream().anyMatch(t -> t.equalsIgnoreCase(DEFAULT_PRODUCES_CONTENT_TYPE))) {
                 return DEFAULT_PRODUCES_CONTENT_TYPE;
             }
-
+            if (methodProduces.stream().anyMatch(t -> t.equalsIgnoreCase(VOID_PRODUCES_CONTENT_TYPE))) {
+                return DEFAULT_PRODUCES_CONTENT_TYPE;
+            }
             return methodProduces.get(0);
         }
 

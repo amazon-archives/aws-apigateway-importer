@@ -1,0 +1,5769 @@
+{
+  "UnauthorizedSessionToken": {
+    "type": "object",
+    "properties": {
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "deviceGUID": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "mcoAppId": {
+        "type": "string"
+      },
+      "mcoAppPublicKey": {
+        "type": "string"
+      },
+      "mcoId": {
+        "type": "string"
+      },
+      "mid": {
+        "type": "string"
+      },
+      "sessionToken": {
+        "type": "string"
+      },
+      "token": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "userAuthToken": {
+        "type": "string"
+      }
+    }
+  },
+  "MIDPreSyncDTO": {
+    "type": "object",
+    "properties": {
+      "screenSessionId": {
+        "type": "string"
+      },
+      "screenUrl": {
+        "type": "string"
+      }
+    }
+  },
+  "AnalyticsReport": {
+    "type": "object",
+    "properties": {
+      "companyName": {
+        "type": "string"
+      },
+      "created": {
+        "type": "string"
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "downloadCount": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "favoritesCount": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "folderIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "groupIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "id": {
+        "type": "string"
+      },
+      "internalUseOnly": {
+        "type": "boolean"
+      },
+      "level": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "name": {
+        "type": "string"
+      },
+      "profiles": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "refId": {
+        "type": "string"
+      },
+      "screenCastsCount": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "subscriberCount": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "viewCount": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "vpnOnly": {
+        "type": "boolean"
+      }
+    }
+  },
+  "SimpleSuccessResultsDTO«ScreenWithSessionDTO»": {
+    "type": "object",
+    "properties": {
+      "data": {
+        "$ref": "#/definitions/ScreenWithSessionDTO"
+      },
+      "errorMessage": {
+        "type": "string"
+      },
+      "success": {
+        "type": "boolean"
+      }
+    },
+    "description": "Wraps a Data Model Object"
+  },
+  "AssetEditDTO": {
+    "type": "object",
+    "properties": {
+      "asset_label_ids": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "description": {
+        "type": "string"
+      },
+      "display_name": {
+        "type": "string"
+      },
+      "flag": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": ["VPN", "INTERNAL_USE_ONLY"]
+        }
+      },
+      "flags_length": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "flightTimeEnd": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "flightTimeStart": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "locale_country": {
+        "type": "string"
+      },
+      "locale_language": {
+        "type": "string"
+      },
+      "read_only": {
+        "type": "boolean"
+      },
+      "tag": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "tags_length": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "thumbnail_url": {
+        "type": "string"
+      },
+      "version": {
+        "type": "string"
+      }
+    }
+  },
+  "GroupDTO": {
+    "type": "object",
+    "properties": {
+      "adminUserEmails": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "adminUserIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "assetsLastModifiedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "deleted": {
+        "type": "boolean"
+      },
+      "description": {
+        "type": "string"
+      },
+      "flags": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": ["VPN", "INTERNAL_USE_ONLY"]
+        }
+      },
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "ownerId": {
+        "type": "string"
+      },
+      "ownerType": {
+        "type": "string",
+        "enum": ["USER", "COMPANY"]
+      },
+      "readOnly": {
+        "type": "boolean"
+      },
+      "repoProvider": {
+        "type": "string",
+        "enum": ["DROPBOX", "BOX", "BRAINSHARK", "COMMS_FACTORY", "FACEBOOK", "S3", "GMAIL", "GOOGLE_PLUS", "TWITTER", "FLICKR", "LINKEDIN", "YOUTUBE", "VIMEO", "NETFLIX", "HULU", "AMAZON_PRIME", "HBO_GO", "ESPN", "CRACKLE", "VUDU", "FTP_SERVER", "ITUNES", "INSTAGRAM", "UPLOADED_BY_USER", "EXTERNAL_LINK"]
+      },
+      "thumbnailUrl": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "UserWithActiveCompanyDTO": {
+    "type": "object",
+    "properties": {
+      "active": {
+        "type": "boolean"
+      },
+      "activeCompanyId": {
+        "type": "string"
+      },
+      "addresses": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/UserAddress"
+        }
+      },
+      "admin": {
+        "type": "boolean"
+      },
+      "attrs": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "clientInformation": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/ClientInformation"
+        }
+      },
+      "companyAdmin": {
+        "type": "boolean"
+      },
+      "companyIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "currentUserAuthToken": {
+        "type": "string"
+      },
+      "email": {
+        "type": "string"
+      },
+      "eventUrlId": {
+        "type": "string"
+      },
+      "firstName": {
+        "type": "string"
+      },
+      "fistTimeUser": {
+        "type": "boolean"
+      },
+      "id": {
+        "type": "string"
+      },
+      "lastLoginTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "lastName": {
+        "type": "string"
+      },
+      "oauthUserIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "pnHost": {
+        "type": "string"
+      },
+      "pnPort": {
+        "type": "string"
+      },
+      "pnProto": {
+        "type": "string"
+      },
+      "repoMetadata": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/UserLinkedRepoMetadataDTO"
+        }
+      },
+      "screenSessionId": {
+        "type": "string"
+      },
+      "title": {
+        "type": "string"
+      },
+      "userLinkedOAuthMetadata": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/UserLinkedOAuthMetadataDTO"
+        }
+      },
+      "wsHost": {
+        "type": "string"
+      },
+      "wsPort": {
+        "type": "string"
+      },
+      "wsProto": {
+        "type": "string"
+      }
+    }
+  },
+  "Image": {
+    "type": "object",
+    "properties": {
+      "companyId": {
+        "type": "string"
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "default": {
+        "type": "boolean"
+      },
+      "description": {
+        "type": "string"
+      },
+      "etag": {
+        "type": "string"
+      },
+      "height": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "objectStoreBucket": {
+        "type": "string"
+      },
+      "objectStoreFileKey": {
+        "type": "string"
+      },
+      "objectStoreProvider": {
+        "type": "string",
+        "enum": ["S3", "HP_CLOUD"]
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "uploadedByUserId": {
+        "type": "string"
+      },
+      "url": {
+        "type": "string"
+      },
+      "width": {
+        "type": "integer",
+        "format": "int32"
+      }
+    }
+  },
+  "ScreenAssetAnalytics": {
+    "type": "object",
+    "properties": {
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "id": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "DateTime": {
+    "type": "object",
+    "properties": {
+      "afterNow": {
+        "type": "boolean"
+      },
+      "beforeNow": {
+        "type": "boolean"
+      },
+      "centuryOfEra": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "chronology": {
+        "$ref": "#/definitions/Chronology"
+      },
+      "dayOfMonth": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "dayOfWeek": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "dayOfYear": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "equalNow": {
+        "type": "boolean"
+      },
+      "era": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "hourOfDay": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "millis": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "millisOfDay": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "millisOfSecond": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "minuteOfDay": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "minuteOfHour": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "monthOfYear": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "secondOfDay": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "secondOfMinute": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "weekOfWeekyear": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "weekyear": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "year": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "yearOfCentury": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "yearOfEra": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "zone": {
+        "$ref": "#/definitions/DateTimeZone"
+      }
+    }
+  },
+  "BrainsharkSearchResultDTO": {
+    "type": "object",
+    "properties": {
+      "active": {
+        "type": "boolean"
+      },
+      "allTimeViews": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "allowMobile": {
+        "type": "boolean"
+      },
+      "allowShare": {
+        "type": "boolean"
+      },
+      "aspectRatio": {
+        "type": "string"
+      },
+      "authorCompanyName": {
+        "type": "string"
+      },
+      "authorEmail": {
+        "type": "string"
+      },
+      "authorFullName": {
+        "type": "string"
+      },
+      "authorId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "authorPhotoUrl": {
+        "type": "string"
+      },
+      "authorTitle": {
+        "type": "string"
+      },
+      "authorUsername": {
+        "type": "string"
+      },
+      "averageRating": {
+        "type": "number",
+        "format": "double"
+      },
+      "bypassPlayer": {
+        "type": "boolean"
+      },
+      "companyHighlight": {
+        "type": "boolean"
+      },
+      "companyId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "companyLoginDirectory": {
+        "type": "string"
+      },
+      "companyLogoUrl": {
+        "type": "string"
+      },
+      "companyName": {
+        "type": "string"
+      },
+      "createdDate": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "deleted": {
+        "type": "boolean"
+      },
+      "description": {
+        "type": "string"
+      },
+      "deviceCanHideSlides": {
+        "type": "boolean"
+      },
+      "deviceCanReOrderSlides": {
+        "type": "boolean"
+      },
+      "displayAuthorInfo": {
+        "type": "boolean"
+      },
+      "durationInSeconds": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "expired": {
+        "type": "boolean"
+      },
+      "folderId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "id": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "lastViewedDate": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "mobileUrl": {
+        "type": "string"
+      },
+      "modifiedDate": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "numberOfSlides": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "personalizeUrl": {
+        "type": "string"
+      },
+      "presentationVersion": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "requiresGuestbook": {
+        "type": "boolean"
+      },
+      "requiresPassword": {
+        "type": "boolean"
+      },
+      "shareMessage": {
+        "type": "string"
+      },
+      "shareSubject": {
+        "type": "string"
+      },
+      "shareUrl": {
+        "type": "string"
+      },
+      "slides": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/BrainsharkSlideDTO"
+        }
+      },
+      "thumbnailUrl": {
+        "type": "string"
+      },
+      "title": {
+        "type": "string"
+      },
+      "viewingPrice": {
+        "type": "number",
+        "format": "double"
+      },
+      "viewingUrl": {
+        "type": "string"
+      }
+    }
+  },
+  "Playlist": {
+    "type": "object",
+    "properties": {
+      "assets": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/AssetRef"
+        }
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "defaultInsertionLocation": {
+        "type": "string",
+        "enum": ["BEGINNING", "END"]
+      },
+      "deleted": {
+        "type": "boolean"
+      },
+      "description": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "ownerId": {
+        "type": "string"
+      },
+      "ownerType": {
+        "type": "string",
+        "enum": ["USER", "COMPANY", "MCO_APP", "SYSTEM"]
+      },
+      "publiclyViewable": {
+        "type": "boolean"
+      },
+      "sharedWithUserIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "RecScreenErrorLog": {
+    "type": "object",
+    "properties": {
+      "appCodeName": {
+        "type": "string"
+      },
+      "appName": {
+        "type": "string"
+      },
+      "appVersion": {
+        "type": "string"
+      },
+      "cookieEnabled": {
+        "type": "string"
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "errorMessage": {
+        "type": "string"
+      },
+      "fileName": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "ip": {
+        "type": "string"
+      },
+      "lastCommand": {
+        "type": "string"
+      },
+      "lineNumber": {
+        "type": "string"
+      },
+      "loadingScreenShown": {
+        "type": "string"
+      },
+      "platform": {
+        "type": "string"
+      },
+      "screenId": {
+        "type": "string"
+      },
+      "screenSessionId": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "userAgent": {
+        "type": "string"
+      },
+      "userId": {
+        "type": "string"
+      },
+      "vendor": {
+        "type": "string"
+      }
+    }
+  },
+  "ScreenBrowserAnalytics": {
+    "type": "object",
+    "properties": {
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "id": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "SocialKeyPair": {
+    "type": "object",
+    "properties": {
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "id": {
+        "type": "string"
+      },
+      "oauthAppId": {
+        "type": "string"
+      },
+      "oauthProvider": {
+        "type": "string",
+        "enum": ["LINKEDIN", "SALESFORCE", "FACEBOOK", "GOOGLE"]
+      },
+      "privateKey": {
+        "type": "string"
+      },
+      "publicKey": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "Asset": {
+    "type": "object",
+    "properties": {
+      "active": {
+        "type": "boolean"
+      },
+      "assetLabelIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "assetType": {
+        "type": "string",
+        "enum": ["VIDEO", "IMAGE", "AUDIO", "CROCODOC", "BOX", "BRAINSHARK", "SLIDESHOW", "WEB_PAGE", "LINK", "OEMBED"]
+      },
+      "augmentedPages": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/definitions/AugmentedPage"
+        }
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "deleted": {
+        "type": "boolean"
+      },
+      "description": {
+        "type": "string"
+      },
+      "displayName": {
+        "type": "string"
+      },
+      "externalAssetId": {
+        "type": "string"
+      },
+      "externalOwnerId": {
+        "type": "string"
+      },
+      "favoritesCount": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "flags": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": ["VPN", "INTERNAL_USE_ONLY"]
+        }
+      },
+      "flightTimeEnd": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "flightTimeStart": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "folderIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "groupIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "id": {
+        "type": "string"
+      },
+      "keywords": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "localeCountryOrRegionIETFBCP47": {
+        "type": "string"
+      },
+      "localeLanguageCodeISO639": {
+        "type": "string"
+      },
+      "notes": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Note"
+        }
+      },
+      "originalFilename": {
+        "type": "string"
+      },
+      "originalUrl": {
+        "type": "string"
+      },
+      "pages": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Page"
+        }
+      },
+      "ps": {
+        "$ref": "#/definitions/PublishedStatus"
+      },
+      "readOnly": {
+        "type": "boolean"
+      },
+      "relatedAssetIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "relatedContentURLs": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "repoMetadata": {
+        "$ref": "#/definitions/AssetRepoMetadata"
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "thumbnailUrl": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "userId": {
+        "type": "string"
+      },
+      "version": {
+        "type": "string"
+      }
+    }
+  },
+  "JasperMetaData": {
+    "type": "object",
+    "properties": {
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "errorMessage": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "password": {
+        "type": "string"
+      },
+      "updated": {
+        "type": "boolean"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "ContactInfo": {
+    "type": "object",
+    "properties": {
+      "email": {
+        "type": "string"
+      },
+      "firstName": {
+        "type": "string"
+      },
+      "lastName": {
+        "type": "string"
+      },
+      "phoneNumber": {
+        "type": "string"
+      }
+    },
+    "description": "Nested Data Model within Event Model"
+  },
+  "ScreenAssetStateCommandDTO": {
+    "type": "object",
+    "properties": {
+      "cmd": {
+        "type": "string"
+      },
+      "cmdParms": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "screenId": {
+        "type": "string"
+      },
+      "screenSessionId": {
+        "type": "string"
+      },
+      "seq": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "states": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/ScreenAssetState"
+        }
+      },
+      "timestamp": {
+        "type": "string",
+        "format": "date-time"
+      }
+    }
+  },
+  "BillingInformationDTO": {
+    "type": "object",
+    "properties": {
+      "billingAddress": {
+        "type": "string"
+      },
+      "billingAddress2": {
+        "type": "string"
+      },
+      "billingCardExpirationMonth": {
+        "type": "string"
+      },
+      "billingCardExpirationYear": {
+        "type": "string"
+      },
+      "billingCity": {
+        "type": "string"
+      },
+      "billingCountry": {
+        "type": "string"
+      },
+      "billingFirstName": {
+        "type": "string"
+      },
+      "billingLastName": {
+        "type": "string"
+      },
+      "billingMaskedCard": {
+        "type": "string"
+      },
+      "billingPeriodEnd": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "billingPeriodStart": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "billingState": {
+        "type": "string"
+      },
+      "billingZipCode": {
+        "type": "string"
+      },
+      "companyId": {
+        "type": "string"
+      },
+      "companyName": {
+        "type": "string"
+      },
+      "currentBillingPlan": {
+        "$ref": "#/definitions/BillingPlan"
+      },
+      "customerId": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "numCompanySeats": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "numCompanyUsers": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "planStartDate": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "subscriptionId": {
+        "type": "string"
+      },
+      "subscriptionState": {
+        "type": "string",
+        "enum": ["trialing", "trial_ended", "assessing", "active", "soft_failure", "past_due", "suspended", "canceled", "unpaid", "expired"]
+      },
+      "userId": {
+        "type": "string"
+      },
+      "userSubscriptionActive": {
+        "type": "boolean"
+      }
+    }
+  },
+  "MCOAppLightDTO": {
+    "type": "object",
+    "properties": {
+      "advancedAuthEnabled": {
+        "type": "boolean"
+      },
+      "appId": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "mcoId": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "platform": {
+        "type": "string",
+        "enum": ["IOS", "ANDROID", "WINDOWS_STORE", "WEB"]
+      }
+    }
+  },
+  "UserLinkedRepoMetadata": {
+    "type": "object",
+    "properties": {
+      "authenticationParams": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "id": {
+        "type": "string"
+      },
+      "repoProvider": {
+        "type": "string",
+        "enum": ["DROPBOX", "BOX", "BRAINSHARK", "COMMS_FACTORY", "FACEBOOK", "S3", "GMAIL", "GOOGLE_PLUS", "TWITTER", "FLICKR", "LINKEDIN", "YOUTUBE", "VIMEO", "NETFLIX", "HULU", "AMAZON_PRIME", "HBO_GO", "ESPN", "CRACKLE", "VUDU", "FTP_SERVER", "ITUNES", "INSTAGRAM", "UPLOADED_BY_USER", "EXTERNAL_LINK"]
+      },
+      "repoType": {
+        "type": "string",
+        "enum": ["DEVICE_LOCAL_CONTENT", "PRIVATE_SERVER", "CLOUD_STORAGE", "CLOUD_STREAMING_CONTENT", "SOCIAL_NETWORK", "FTP", "SFTP", "USER_UPLOADED_CONTENT"]
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "MIDContentRegistrationDTO": {
+    "type": "object",
+    "properties": {
+      "description": {
+        "type": "string"
+      },
+      "displayName": {
+        "type": "string"
+      },
+      "folderId": {
+        "type": "string"
+      },
+      "groupId": {
+        "type": "string"
+      },
+      "mcoAssetId": {
+        "type": "string"
+      },
+      "thumbnailUrl": {
+        "type": "string"
+      },
+      "url": {
+        "type": "string"
+      }
+    }
+  },
+  "ScreenStyleDTO": {
+    "type": "object",
+    "properties": {
+      "additionalElements": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "audio": {
+        "type": "string"
+      },
+      "connectedUsers": {
+        "type": "string"
+      },
+      "css": {
+        "type": "string"
+      },
+      "disconnect": {
+        "type": "string"
+      },
+      "loadingScreen": {
+        "type": "string"
+      },
+      "postConnect": {
+        "type": "string"
+      },
+      "preConnect": {
+        "type": "string"
+      },
+      "qrCode": {
+        "type": "string"
+      },
+      "syncCode": {
+        "type": "string"
+      },
+      "uri": {
+        "type": "string"
+      }
+    }
+  },
+  "ScreenAssetState": {
+    "type": "object",
+    "properties": {
+      "assetId": {
+        "type": "string"
+      },
+      "assetType": {
+        "type": "string",
+        "enum": ["VIDEO", "IMAGE", "AUDIO", "CROCODOC", "BOX", "BRAINSHARK", "SLIDESHOW", "WEB_PAGE", "LINK", "OEMBED"]
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "externalAssetId": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "state": {
+        "type": "string",
+        "enum": ["ScreenAssetStateType(name=started)", "ScreenAssetStateType(name=stopped)", "ScreenAssetStateType(name=paused)", "ScreenAssetStateType(name=seek)", "ScreenAssetStateType(name=volume)", "ScreenAssetStateType(name=buffering)", "ScreenAssetStateType(name=loading)", "ScreenAssetStateType(name=viewing)", "ScreenAssetStateType(name=converting)"]
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "ScreenSession": {
+    "type": "object",
+    "properties": {
+      "active": {
+        "type": "boolean"
+      },
+      "activeCompanyId": {
+        "type": "string"
+      },
+      "activeScreens": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Screen"
+        }
+      },
+      "companyIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "durationInSecs": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "endedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "id": {
+        "type": "string"
+      },
+      "lastCommand": {
+        "$ref": "#/definitions/ScreenAssetStateCommandDTO"
+      },
+      "locked": {
+        "type": "boolean"
+      },
+      "name": {
+        "type": "string"
+      },
+      "screens": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Screen"
+        }
+      },
+      "startedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "unauthorizedSessionTokenIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "userId": {
+        "type": "string"
+      },
+      "viewedAssetIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "MIDContentConsumption": {
+    "type": "object",
+    "properties": {
+      "ad_campaign_id": {
+        "type": "string"
+      },
+      "ad_id": {
+        "type": "string"
+      },
+      "asset_id": {
+        "type": "string"
+      },
+      "asset_url": {
+        "type": "string"
+      },
+      "content_event_type": {
+        "type": "string"
+      },
+      "end_time": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "mco_asset_id": {
+        "type": "string"
+      },
+      "player_current_state": {
+        "type": "string"
+      },
+      "player_current_time_index": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "start_time": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "time_index": {
+        "type": "integer",
+        "format": "int64"
+      }
+    }
+  },
+  "ScreenSessionStatus": {
+    "type": "object",
+    "properties": {
+      "active": {
+        "type": "boolean"
+      },
+      "endedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "locked": {
+        "type": "boolean"
+      },
+      "secondsSinceLastCommand": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "startedAt": {
+        "type": "string",
+        "format": "date-time"
+      }
+    }
+  },
+  "MobileDeviceInfoDTO": {
+    "type": "object",
+    "properties": {
+      "addlDeviceInfo": {
+        "type": "object",
+        "properties": {}
+      },
+      "appName": {
+        "type": "string"
+      },
+      "appVersion": {
+        "type": "string"
+      },
+      "connectedByMobileNetwork": {
+        "type": "boolean"
+      },
+      "deviceId": {
+        "type": "string"
+      },
+      "mobileNetworkProvider": {
+        "type": "string"
+      },
+      "operatingSys": {
+        "type": "string"
+      },
+      "operatingSysVersion": {
+        "type": "string"
+      },
+      "type": {
+        "type": "string"
+      },
+      "version": {
+        "type": "string"
+      }
+    }
+  },
+  "DateTimeZone": {
+    "type": "object",
+    "properties": {
+      "fixed": {
+        "type": "boolean"
+      },
+      "id": {
+        "type": "string"
+      }
+    }
+  },
+  "RecScreenModule": {
+    "type": "object",
+    "properties": {
+      "additionalJSFileURLs": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "cssFileURLs": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "deleted": {
+        "type": "boolean"
+      },
+      "description": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "javascriptModuleURL": {
+        "type": "string"
+      },
+      "mcoAppId": {
+        "type": "string"
+      },
+      "mcoId": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    },
+    "description": "Defines a custom JS module used by the rec screen"
+  },
+  "Survey": {
+    "type": "object",
+    "properties": {
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "deleted": {
+        "type": "boolean"
+      },
+      "externalLink": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "questions": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Question"
+        }
+      },
+      "remoteSurveyId": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "MCOWithAppsDTO": {
+    "type": "object",
+    "properties": {
+      "apps": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/MCOAppLightDTO"
+        }
+      },
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      }
+    }
+  },
+  "MobileAppClosedDTO": {
+    "type": "object",
+    "properties": {
+      "deviceId": {
+        "type": "string"
+      },
+      "toBackground": {
+        "type": "boolean"
+      }
+    }
+  },
+  "ApplicationVersionResponseDTO": {
+    "type": "object",
+    "properties": {
+      "message": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string",
+        "enum": ["OK", "WARNING", "INCOMPATIBLE"]
+      },
+      "version": {
+        "type": "string"
+      }
+    }
+  },
+  "UserLinkedOAuthMetadata": {
+    "type": "object",
+    "properties": {
+      "accessToken": {
+        "type": "string"
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "id": {
+        "type": "string"
+      },
+      "oauthProvider": {
+        "type": "string",
+        "enum": ["LINKEDIN", "SALESFORCE", "FACEBOOK", "GOOGLE"]
+      },
+      "oauthVersion": {
+        "type": "string",
+        "enum": ["V1A", "V2"]
+      },
+      "providerUserId": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "Note": {
+    "type": "object",
+    "properties": {
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "id": {
+        "type": "string"
+      },
+      "note": {
+        "type": "string"
+      },
+      "type": {
+        "type": "string",
+        "enum": ["EMBEDDED", "PERSONAL", "EVENT"]
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "userId": {
+        "type": "string"
+      }
+    }
+  },
+  "NotificationType": {
+    "type": "object",
+    "properties": {
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "deleted": {
+        "type": "boolean"
+      },
+      "description": {
+        "type": "string"
+      },
+      "emailTemplateName": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "messageTemplate": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "notificationCategory": {
+        "type": "string",
+        "enum": ["teamContentUpdated", "personalContentUpdated", "salesActivity", "teamActivity", "shodoggCommunication"]
+      },
+      "recipientType": {
+        "type": "string",
+        "enum": ["user", "allInCompany", "presenter", "companyAdmin", "systemAdmin", "groupMembers", "allUsers"]
+      },
+      "systemAction": {
+        "type": "string",
+        "enum": ["login", "logout", "loginFail", "resetPW", "s", "sa", "rv", "aa", "ad", "ag", "v", "vE", "cilc", "cilca", "cilcr", "cilcE", "sucilc", "sucilcE", "as", "scSyncCo", "scSyncEv", "scDisc", "ssEUd", "lockSs", "ssDisc", "evUrlPresStart", "evUrlPresEnd", "evUrlDeactivate", "ucP", "ucL", "ucS", "AaCS", "ACF", "pc", "wnu", "fatpcf", "fripcf", "fdipcf", "pcfc", "pcfd", "mobCmd", "mobDeviceInfo", "mobAppCrash", "mobAppUse", "mobUserDevLink", "cA", "cR", "prt", "prtOLD", "prtSL", "als", "AOPL", "ash", "aS", "aPI", "aMI", "aSAN", "aAA", "aDA", "agSS", "agSSs", "auSS", "agSSScrCnt", "apiReapSS", "apiUploadBrainshark", "apiUploadFile", "apiUploadYouTube", "aUVbU", "aUIbU", "auCF", "auTn", "auLA", "auCR", "acUser", "ujc", "auUser", "adUser", "aCC", "aGC", "aUC", "aDC", "aAUtC", "aRUtC", "acGroup", "auGroup", "adGroup", "aga", "dga", "aAddAssetGroup", "aAAtF", "aRAfF", "aAAtGF", "aRAfGF", "aCA", "aUA", "aCAl", "aARA", "aSAFs", "aRA", "aGAlrt", "aGAlrts", "aUAl", "aRAl", "aCFG", "aFAAa", "aFAAu", "aFAAF", "aFAAFU", "aFAAc", "aFAAGF", "aFAAG", "aFAFU", "aFAFG", "aaPtA", "adPfA", "aRemAssetGroup", "acAssetNote", "auAssetNote", "adAssetNote", "aAD", "acPageNote", "auPageNote", "adPageNote", "adUGS", "arUGS", "aaUGS", "apUGS", "adCGS", "apCGS", "apCI", "apSUCI", "agFC", "agRF", "agCRF", "agUF", "auF", "adF", "acF", "auFP", "agFcR", "aRNAC", "agAsset", "acFav", "adFav", "agFav", "acSSL", "aSSLC", "aSSLCE", "aCESSL", "aEAL", "aGACS", "aDBfu", "aDBal", "aDBau", "aDBs", "aDBui", "aaLC", "aaLCE", "aFAU", "aFDU", "aFGAU", "acFU", "oGAU", "oGWR", "oGIR", "oGAR", "oL", "moGAU", "moGWR", "moGIR", "moGAR", "moL", "amaC", "amaGa", "amaG", "amaE", "amaD", "amkC", "amkD", "amkT", "amskC", "amskE", "amskD", "amRV", "amPSSS", "oMRS", "iMRS", "aGFSL", "aFSLC", "aFSLE", "plc", "ple", "pld", "plia", "plie", "plid", "browserInfo"]
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "AssetRef": {
+    "type": "object",
+    "properties": {
+      "addedFromMCOAppId": {
+        "type": "string"
+      },
+      "assetId": {
+        "type": "string"
+      },
+      "companyId": {
+        "type": "string"
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "externalAssetId": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "thumbnailUrl": {
+        "type": "string"
+      },
+      "thumbnailsList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/JSONObject"
+        }
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "url": {
+        "type": "string"
+      }
+    }
+  },
+  "AssetSearchResultDTO": {
+    "type": "object",
+    "properties": {
+      "asset": {
+        "$ref": "#/definitions/AssetPrunedNotesDTO"
+      },
+      "breadcrumbs": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/FolderLightDTO"
+        }
+      },
+      "folderId": {
+        "type": "string"
+      },
+      "folderName": {
+        "type": "string"
+      },
+      "groupId": {
+        "type": "string"
+      },
+      "groupName": {
+        "type": "string"
+      },
+      "groupOwnerId": {
+        "type": "string"
+      },
+      "groupOwnerType": {
+        "type": "string",
+        "enum": ["USER", "COMPANY", "MCO_APP", "SYSTEM"]
+      },
+      "privateAsset": {
+        "type": "boolean"
+      }
+    },
+    "description": "A specific asset search result, which includes additional metadata, such as a list of folders that can be used as breadcrumbs"
+  },
+  "MIDEventQueryResult": {
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      "eventId": {
+        "type": "string"
+      },
+      "eventType": {
+        "type": "string"
+      }
+    }
+  },
+  "MIDEvent": {
+    "type": "object",
+    "properties": {
+      "adEvent": {
+        "$ref": "#/definitions/MIDAdEvent"
+      },
+      "appInfo": {
+        "$ref": "#/definitions/MCOAppInfo"
+      },
+      "assetId": {
+        "type": "string"
+      },
+      "assetUrl": {
+        "type": "string"
+      },
+      "cast": {
+        "$ref": "#/definitions/MIDCastMetadata"
+      },
+      "content": {
+        "$ref": "#/definitions/MIDContentConsumption"
+      },
+      "deviceGUID": {
+        "type": "string"
+      },
+      "eventType": {
+        "type": "string"
+      },
+      "eventValue": {
+        "type": "object",
+        "properties": {}
+      },
+      "eventValueOld": {
+        "type": "object",
+        "properties": {}
+      },
+      "id": {
+        "type": "string"
+      },
+      "label": {
+        "type": "string"
+      },
+      "mcoAppId": {
+        "type": "string"
+      },
+      "mcoAppPublicKey": {
+        "type": "string"
+      },
+      "mcoAssetId": {
+        "type": "string"
+      },
+      "mcoId": {
+        "type": "string"
+      },
+      "mid": {
+        "type": "string"
+      },
+      "save": {
+        "$ref": "#/definitions/MCOSaveMetadata"
+      },
+      "screenSessionId": {
+        "type": "string"
+      },
+      "sessionToken": {
+        "type": "string"
+      },
+      "timestampFromServer": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "timestampUTC": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "unauthorizedSessionToken": {
+        "type": "string"
+      },
+      "unauthorizedSessionTokenId": {
+        "type": "string"
+      }
+    }
+  },
+  "Link": {
+    "type": "object",
+    "properties": {
+      "assetId": {
+        "type": "string"
+      },
+      "clickCount": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "code": {
+        "type": "string"
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "enabled": {
+        "type": "boolean"
+      },
+      "eventId": {
+        "type": "string"
+      },
+      "eventUrlId": {
+        "type": "string"
+      },
+      "expirationDate": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "id": {
+        "type": "string"
+      },
+      "maxClicksAllowed": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "screenSessionId": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "userId": {
+        "type": "string"
+      }
+    }
+  },
+  "MCOAdminDataFilterDTO": {
+    "type": "object",
+    "properties": {
+      "eventTypes": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "mcos": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/MCOWithAppsDTO"
+        }
+      },
+      "users": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/MIDUserMinimalDTO"
+        }
+      }
+    }
+  },
+  "BrandedTemplateData": {
+    "type": "object",
+    "properties": {
+      "companyId": {
+        "type": "string"
+      },
+      "fieldValues": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "name": {
+        "type": "string"
+      },
+      "subdomain": {
+        "type": "string"
+      },
+      "templateId": {
+        "type": "string"
+      },
+      "uriStyleId": {
+        "type": "string"
+      },
+      "userId": {
+        "type": "string"
+      }
+    }
+  },
+  "Group": {
+    "type": "object",
+    "properties": {
+      "adminUserIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "assetsLastModifiedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "deleted": {
+        "type": "boolean"
+      },
+      "description": {
+        "type": "string"
+      },
+      "flags": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": ["VPN", "INTERNAL_USE_ONLY"]
+        }
+      },
+      "folders": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Folder"
+        }
+      },
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "ownerId": {
+        "type": "string"
+      },
+      "ownerType": {
+        "type": "string",
+        "enum": ["USER", "COMPANY"]
+      },
+      "readOnly": {
+        "type": "boolean"
+      },
+      "repositoryProvider": {
+        "type": "string",
+        "enum": ["DROPBOX", "BOX", "BRAINSHARK", "COMMS_FACTORY", "FACEBOOK", "S3", "GMAIL", "GOOGLE_PLUS", "TWITTER", "FLICKR", "LINKEDIN", "YOUTUBE", "VIMEO", "NETFLIX", "HULU", "AMAZON_PRIME", "HBO_GO", "ESPN", "CRACKLE", "VUDU", "FTP_SERVER", "ITUNES", "INSTAGRAM", "UPLOADED_BY_USER", "EXTERNAL_LINK"]
+      },
+      "thumbnailUrl": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "uploadsRequireApproval": {
+        "type": "boolean"
+      }
+    }
+  },
+  "MIDEventLoggingDetail": {
+    "type": "object",
+    "properties": {
+      "index": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "msg": {
+        "type": "string"
+      },
+      "sev": {
+        "type": "string"
+      }
+    }
+  },
+  "SystemConfig": {
+    "type": "object",
+    "properties": {
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "id": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "ClientInformation": {
+    "type": "object",
+    "properties": {
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "id": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "Folder": {
+    "type": "object",
+    "properties": {
+      "authorizedUserIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "description": {
+        "type": "string"
+      },
+      "flags": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": ["VPN", "INTERNAL_USE_ONLY"]
+        }
+      },
+      "folders": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Folder"
+        }
+      },
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "repositoryProvider": {
+        "type": "string",
+        "enum": ["DROPBOX", "BOX", "BRAINSHARK", "COMMS_FACTORY", "FACEBOOK", "S3", "GMAIL", "GOOGLE_PLUS", "TWITTER", "FLICKR", "LINKEDIN", "YOUTUBE", "VIMEO", "NETFLIX", "HULU", "AMAZON_PRIME", "HBO_GO", "ESPN", "CRACKLE", "VUDU", "FTP_SERVER", "ITUNES", "INSTAGRAM", "UPLOADED_BY_USER", "EXTERNAL_LINK"]
+      },
+      "subtitle": {
+        "type": "string"
+      },
+      "thumbnailUrl": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "uploadsRequireApproval": {
+        "type": "boolean"
+      }
+    }
+  },
+  "FavoriteDTO": {
+    "type": "object",
+    "properties": {
+      "favType": {
+        "type": "string",
+        "enum": ["ASSET", "FOLDER", "GROUP"]
+      },
+      "itemId": {
+        "type": "string"
+      }
+    }
+  },
+  "AutowireCapableBeanFactory": {
+    "type": "object"
+  },
+  "BrainsharkSearchResultsDTO": {
+    "type": "object",
+    "properties": {
+      "didYouMean": {
+        "type": "string"
+      },
+      "done": {
+        "type": "boolean"
+      },
+      "results": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/BrainsharkSearchResultDTO"
+        }
+      },
+      "totalRows": {
+        "type": "integer",
+        "format": "int64"
+      }
+    }
+  },
+  "RequestLog": {
+    "type": "object",
+    "properties": {
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "id": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "ScreenDTO": {
+    "type": "object",
+    "properties": {
+      "active": {
+        "type": "boolean"
+      },
+      "autoReconnectApproved": {
+        "type": "boolean"
+      },
+      "flurryApiKey": {
+        "type": "string"
+      },
+      "hasAssetState": {
+        "type": "boolean"
+      },
+      "screenId": {
+        "type": "string"
+      },
+      "screenSessionId": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string"
+      },
+      "statusBeforeDisconnect": {
+        "type": "string"
+      },
+      "syncCode": {
+        "type": "string"
+      },
+      "userId": {
+        "type": "string"
+      },
+      "userName": {
+        "type": "string"
+      }
+    }
+  },
+  "MIDDataExport": {
+    "type": "object",
+    "properties": {
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "exportStatus": {
+        "type": "string",
+        "enum": ["IN_PROGRESS", "COMPLETE", "FAILED"]
+      },
+      "fileName": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "mcoId": {
+        "type": "string"
+      },
+      "queryRecords": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/MIDDataExportQueryRecord"
+        }
+      },
+      "storageBucket": {
+        "type": "string"
+      },
+      "storageFileKey": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "url": {
+        "type": "string"
+      },
+      "userId": {
+        "type": "string"
+      }
+    }
+  },
+  "NotificationTypeDTO": {
+    "type": "object",
+    "properties": {
+      "description": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "messageTemplate": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "notificationCategory": {
+        "type": "string",
+        "enum": ["teamContentUpdated", "personalContentUpdated", "salesActivity", "teamActivity", "shodoggCommunication"]
+      },
+      "recipientType": {
+        "type": "string",
+        "enum": ["user", "allInCompany", "presenter", "companyAdmin", "systemAdmin", "groupMembers", "allUsers"]
+      }
+    }
+  },
+  "Question": {
+    "type": "object",
+    "properties": {
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "options": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/QuestionOption"
+        }
+      },
+      "questionType": {
+        "type": "string",
+        "enum": ["POLL", "TEXT"]
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "LogoutResponseBody": {
+    "type": "object",
+    "properties": {
+      "success": {
+        "type": "boolean"
+      }
+    },
+    "description": "LogoutResponseBody"
+  },
+  "MIDReceivingScreenInitDTO": {
+    "type": "object",
+    "properties": {
+      "canReceiveCommands": {
+        "type": "boolean"
+      },
+      "customModules": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/RecScreenModule"
+        }
+      },
+      "debugEnabled": {
+        "type": "boolean"
+      },
+      "googleAnalyticsId": {
+        "type": "string"
+      },
+      "midRecScreenStyle": {
+        "$ref": "#/definitions/MIDRecScreenStyle"
+      },
+      "screenId": {
+        "type": "string"
+      },
+      "webSocketHost": {
+        "type": "string"
+      },
+      "webSocketPort": {
+        "type": "string"
+      },
+      "webSocketProtocol": {
+        "type": "string"
+      }
+    }
+  },
+  "SimpleSuccessResultsDTO«Asset»": {
+    "type": "object",
+    "properties": {
+      "data": {
+        "$ref": "#/definitions/Asset"
+      },
+      "errorMessage": {
+        "type": "string"
+      },
+      "success": {
+        "type": "boolean"
+      }
+    },
+    "description": "Wraps a Data Model Object"
+  },
+  "SlideShareConsumptionAction": {
+    "type": "object",
+    "properties": {
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "id": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "AssetPrunedNotesDTO": {
+    "type": "object",
+    "properties": {
+      "active": {
+        "type": "boolean"
+      },
+      "assetLabelIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "assetType": {
+        "type": "string",
+        "enum": ["VIDEO", "IMAGE", "AUDIO", "CROCODOC", "BOX", "BRAINSHARK", "SLIDESHOW", "WEB_PAGE", "LINK", "OEMBED"]
+      },
+      "augmentedPages": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/definitions/AugmentedPage"
+        }
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "deleted": {
+        "type": "boolean"
+      },
+      "description": {
+        "type": "string"
+      },
+      "displayName": {
+        "type": "string"
+      },
+      "externalAssetId": {
+        "type": "string"
+      },
+      "externalOwnerId": {
+        "type": "string"
+      },
+      "favoritesCount": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "flags": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": ["VPN", "INTERNAL_USE_ONLY"]
+        }
+      },
+      "flightTimeEnd": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "flightTimeStart": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "folderIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "groupIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "id": {
+        "type": "string"
+      },
+      "keywords": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "localeCountryOrRegionIETFBCP47": {
+        "type": "string"
+      },
+      "localeLanguageCodeISO639": {
+        "type": "string"
+      },
+      "notes": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Note"
+        }
+      },
+      "originalFilename": {
+        "type": "string"
+      },
+      "originalUrl": {
+        "type": "string"
+      },
+      "pages": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Page"
+        }
+      },
+      "ps": {
+        "$ref": "#/definitions/PublishedStatus"
+      },
+      "readOnly": {
+        "type": "boolean"
+      },
+      "relatedAssetIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "relatedContentURLs": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "repoMetadata": {
+        "$ref": "#/definitions/AssetRepoMetadata"
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "thumbnailUrl": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "userCanWrite": {
+        "type": "boolean"
+      },
+      "userId": {
+        "type": "string"
+      },
+      "valid": {
+        "type": "boolean"
+      },
+      "version": {
+        "type": "string"
+      }
+    },
+    "description": "Full Asset but notes that do not belong to the current user are pruned out."
+  },
+  "MIDAdEvent": {
+    "type": "object",
+    "properties": {
+      "ad_id": {
+        "type": "string"
+      },
+      "ad_ids": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "ad_system": {
+        "type": "string"
+      },
+      "ad_title": {
+        "type": "string"
+      },
+      "ad_type": {
+        "type": "string",
+        "enum": ["linear", "nonlinear", "companion"]
+      },
+      "advertiser": {
+        "type": "string"
+      },
+      "campaign_id": {
+        "type": "string"
+      },
+      "error_code": {
+        "type": "string"
+      },
+      "error_msg": {
+        "type": "string"
+      },
+      "impression_id": {
+        "type": "string"
+      },
+      "impression_url": {
+        "type": "string"
+      },
+      "is_tracking_event": {
+        "type": "boolean"
+      },
+      "metric_companion": {
+        "type": "string",
+        "enum": ["creativeView"]
+      },
+      "metric_linear": {
+        "type": "string",
+        "enum": ["start", "firstQuartile", "midpoint", "thirdQuartile", "complete", "acceptInvitationLinear", "timeSpentViewing", "otherAdInteraction"]
+      },
+      "metric_nonlinear": {
+        "type": "string",
+        "enum": ["creativeView", "acceptInvitation", "adExpand", "adCollapse", "minimize", "close", "overlayViewDuration", "otherAdInteraction"]
+      },
+      "player_op": {
+        "type": "string",
+        "enum": ["mute", "unmute", "pause", "resume", "rewind", "skip", "progress", "playerExpand", "playerCollapse"]
+      },
+      "pod_id": {
+        "type": "string"
+      },
+      "vast_req_xml": {
+        "type": "string"
+      },
+      "vast_res_xml": {
+        "type": "string"
+      },
+      "vast_tag": {
+        "type": "string"
+      },
+      "vast_version": {
+        "type": "number",
+        "format": "float"
+      }
+    }
+  },
+  "UserAPIKeyDTO": {
+    "type": "object",
+    "properties": {
+      "active": {
+        "type": "boolean"
+      },
+      "activeCompanyId": {
+        "type": "string"
+      },
+      "addresses": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/UserAddress"
+        }
+      },
+      "admin": {
+        "type": "boolean"
+      },
+      "apiKeyApplicationNotes": {
+        "type": "string"
+      },
+      "apiKeyDeclinedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "apiKeyGrantedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "apiKeyRequestedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "approvalComments": {
+        "type": "string"
+      },
+      "attrs": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "clientInformation": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/ClientInformation"
+        }
+      },
+      "companyAdmin": {
+        "type": "boolean"
+      },
+      "companyIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "companyName": {
+        "type": "string"
+      },
+      "currentUserAuthToken": {
+        "type": "string"
+      },
+      "email": {
+        "type": "string"
+      },
+      "eventUrlId": {
+        "type": "string"
+      },
+      "firstName": {
+        "type": "string"
+      },
+      "fistTimeUser": {
+        "type": "boolean"
+      },
+      "id": {
+        "type": "string"
+      },
+      "lastLoginTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "lastName": {
+        "type": "string"
+      },
+      "oauthUserIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "phone1": {
+        "type": "string"
+      },
+      "pnHost": {
+        "type": "string"
+      },
+      "pnPort": {
+        "type": "string"
+      },
+      "pnProto": {
+        "type": "string"
+      },
+      "repoMetadata": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/UserLinkedRepoMetadataDTO"
+        }
+      },
+      "screenSessionId": {
+        "type": "string"
+      },
+      "title": {
+        "type": "string"
+      },
+      "userLinkedOAuthMetadata": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/UserLinkedOAuthMetadataDTO"
+        }
+      },
+      "wsHost": {
+        "type": "string"
+      },
+      "wsPort": {
+        "type": "string"
+      },
+      "wsProto": {
+        "type": "string"
+      }
+    }
+  },
+  "CompanySettingsDTO": {
+    "type": "object",
+    "properties": {
+      "defaultValue": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "type": {
+        "type": "string",
+        "enum": ["string", "boolean", "int", "float"]
+      }
+    }
+  },
+  "MIDShareQueryResult": {
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      "eventId": {
+        "type": "string"
+      }
+    }
+  },
+  "Event": {
+    "type": "object",
+    "properties": {
+      "accessCode": {
+        "type": "string"
+      },
+      "assetIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "attendees": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Attendee"
+        }
+      },
+      "contactInfo": {
+        "$ref": "#/definitions/ContactInfo"
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "dateAndTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "deleted": {
+        "type": "boolean"
+      },
+      "duration": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "endedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "eventUrlId": {
+        "type": "string"
+      },
+      "groupIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "id": {
+        "type": "string"
+      },
+      "invitationMemo": {
+        "type": "string"
+      },
+      "location": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "notes": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/EventNote"
+        }
+      },
+      "pausedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "phoneNumber": {
+        "type": "string"
+      },
+      "practicedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "screenSessionId": {
+        "type": "string"
+      },
+      "startedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "state": {
+        "type": "string",
+        "enum": ["READY", "IN_PROGRESS", "PAUSED", "ENDED", "PRACTICE_MODE", "CANCELED"]
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "userId": {
+        "type": "string"
+      },
+      "viewStartedAt": {
+        "type": "string",
+        "format": "date-time"
+      }
+    }
+  },
+  "MIDDataExportQueryRecord": {
+    "type": "object",
+    "properties": {
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "exportFileType": {
+        "type": "string",
+        "enum": ["CSV", "XLSX"]
+      },
+      "fileName": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "queryParamEnd": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "queryParamMCOAppId": {
+        "type": "string"
+      },
+      "queryParamMCOId": {
+        "type": "string"
+      },
+      "queryParamMID": {
+        "type": "string"
+      },
+      "queryParamStart": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "selectedCols": {
+        "type": "string"
+      },
+      "type": {
+        "type": "string",
+        "enum": ["EVENT_DATA_QUERY", "SHARE_DATA_QUERY", "SOCIAL_DATA_QUERY"]
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "SimpleMessageResultDTO": {
+    "type": "object",
+    "properties": {
+      "message": {
+        "type": "string"
+      }
+    }
+  },
+  "MCOSaveMetadata": {
+    "type": "object",
+    "properties": {
+      "assetRefId": {
+        "type": "string"
+      },
+      "ownerId": {
+        "type": "string"
+      },
+      "ownerType": {
+        "type": "string",
+        "enum": ["USER", "COMPANY", "MCO_APP", "SYSTEM"]
+      },
+      "playlistId": {
+        "type": "string"
+      }
+    }
+  },
+  "DropboxAccountDTO": {
+    "type": "object",
+    "properties": {
+      "country": {
+        "type": "string"
+      },
+      "displayName": {
+        "type": "string"
+      },
+      "quota": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "quotaNormal": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "quotaShared": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "referralLink": {
+        "type": "string"
+      },
+      "uid": {
+        "type": "integer",
+        "format": "int64"
+      }
+    }
+  },
+  "Company": {
+    "type": "object",
+    "properties": {
+      "addresses": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/UserAddress"
+        }
+      },
+      "adminUserIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "assetLabels": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/AssetLabel"
+        }
+      },
+      "childCompanyIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "configurationSettings": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "defaultGroupId": {
+        "type": "string"
+      },
+      "defaultSequenceOfFolderIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "defaultUserPermissions": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": ["PORTAL_LOGIN", "PORTAL_UPLOAD", "UPLOAD_APPROVER"]
+        }
+      },
+      "deleted": {
+        "type": "boolean"
+      },
+      "displaySequenceOfFolderIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "groupIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "id": {
+        "type": "string"
+      },
+      "localeVariant": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "ownerId": {
+        "type": "string"
+      },
+      "seats": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "CompanyWithChildren": {
+    "type": "object",
+    "properties": {
+      "addresses": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/UserAddress"
+        }
+      },
+      "adminUserIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "assetLabels": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/AssetLabel"
+        }
+      },
+      "childCompanies": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/CompanyWithChildren"
+        }
+      },
+      "childCompanyIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "configurationSettings": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "defaultGroupId": {
+        "type": "string"
+      },
+      "defaultSequenceOfFolderIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "defaultUserPermissions": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": ["PORTAL_LOGIN", "PORTAL_UPLOAD", "UPLOAD_APPROVER"]
+        }
+      },
+      "deleted": {
+        "type": "boolean"
+      },
+      "displaySequenceOfFolderIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "groupIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "id": {
+        "type": "string"
+      },
+      "localeVariant": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "ownerId": {
+        "type": "string"
+      },
+      "seats": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "Page": {
+    "type": "object",
+    "properties": {
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "hqThumbnailUrl": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "marker": {
+        "type": "string"
+      },
+      "notes": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Note"
+        }
+      },
+      "pageNumber": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "smallThumbnailUrl": {
+        "type": "string"
+      },
+      "thumbnailUrl": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "UserAddress": {
+    "type": "object",
+    "properties": {
+      "city": {
+        "type": "string"
+      },
+      "country": {
+        "type": "string"
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "description": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "postalCode": {
+        "type": "string"
+      },
+      "state": {
+        "type": "string"
+      },
+      "street1": {
+        "type": "string"
+      },
+      "street2": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "AssetCreationDTO": {
+    "type": "object",
+    "properties": {
+      "asset_type": {
+        "type": "string",
+        "enum": ["VIDEO", "IMAGE", "AUDIO", "CROCODOC", "BOX", "BRAINSHARK", "SLIDESHOW", "WEB_PAGE", "LINK", "OEMBED"]
+      },
+      "description": {
+        "type": "string"
+      },
+      "display_name": {
+        "type": "string"
+      },
+      "original_filename": {
+        "type": "string"
+      },
+      "original_url": {
+        "type": "string"
+      },
+      "read_only": {
+        "type": "boolean"
+      },
+      "thumbnail_url": {
+        "type": "string"
+      },
+      "version": {
+        "type": "string"
+      }
+    }
+  },
+  "MIDEventLoggingResults": {
+    "type": "object",
+    "properties": {
+      "details": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/MIDEventLoggingDetail"
+        }
+      },
+      "eventsLoggedCount": {
+        "type": "integer",
+        "format": "int32"
+      }
+    }
+  },
+  "DropboxEntryDTO": {
+    "type": "object",
+    "properties": {
+      "assetId": {
+        "type": "string"
+      },
+      "bytes": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "clientMtime": {
+        "type": "string"
+      },
+      "deleted": {
+        "type": "boolean"
+      },
+      "dir": {
+        "type": "boolean"
+      },
+      "filename": {
+        "type": "string"
+      },
+      "hash": {
+        "type": "string"
+      },
+      "icon": {
+        "type": "string"
+      },
+      "mimeType": {
+        "type": "string"
+      },
+      "modified": {
+        "type": "string"
+      },
+      "newVersionAvailable": {
+        "type": "boolean"
+      },
+      "path": {
+        "type": "string"
+      },
+      "rev": {
+        "type": "string"
+      },
+      "root": {
+        "type": "string"
+      },
+      "size": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string",
+        "enum": ["QUEUED", "CONVERTING", "COMPLETE", "ERROR"]
+      },
+      "statusMessage": {
+        "type": "string"
+      },
+      "thumbExists": {
+        "type": "boolean"
+      }
+    }
+  },
+  "ApplicationContext": {
+    "type": "object",
+    "properties": {
+      "applicationName": {
+        "type": "string"
+      },
+      "autowireCapableBeanFactory": {
+        "$ref": "#/definitions/AutowireCapableBeanFactory"
+      },
+      "beanDefinitionCount": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "beanDefinitionNames": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "classLoader": {
+        "$ref": "#/definitions/ClassLoader"
+      },
+      "displayName": {
+        "type": "string"
+      },
+      "environment": {
+        "$ref": "#/definitions/Environment"
+      },
+      "id": {
+        "type": "string"
+      },
+      "parent": {
+        "$ref": "#/definitions/ApplicationContext"
+      },
+      "parentBeanFactory": {
+        "$ref": "#/definitions/BeanFactory"
+      },
+      "startupDate": {
+        "type": "integer",
+        "format": "int64"
+      }
+    }
+  },
+  "BrainsharkSlideDTO": {
+    "type": "object",
+    "properties": {
+      "animationTimings": {
+        "type": "string"
+      },
+      "chapterTitle": {
+        "type": "string"
+      },
+      "duration": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "firstAnimationTimed": {
+        "type": "boolean"
+      },
+      "id": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "mobileDuration": {
+        "type": "number",
+        "format": "double"
+      },
+      "mobileUrl": {
+        "type": "string"
+      },
+      "notes": {
+        "type": "string"
+      },
+      "number": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "questionId": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "shapes": {
+        "type": "object",
+        "properties": {}
+      },
+      "slideTransition": {
+        "type": "object",
+        "properties": {}
+      },
+      "thumbnailUrl": {
+        "type": "string"
+      },
+      "title": {
+        "type": "string"
+      }
+    }
+  },
+  "FolderDTO": {
+    "type": "object",
+    "properties": {
+      "assetIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "attrs": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "authorizedUserIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "description": {
+        "type": "string"
+      },
+      "flags": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": ["VPN", "INTERNAL_USE_ONLY"]
+        }
+      },
+      "folders": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/FolderDTO"
+        }
+      },
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "subtitle": {
+        "type": "string"
+      },
+      "thumbnailUrl": {
+        "type": "string"
+      }
+    }
+  },
+  "VerifySessionResponseDTO": {
+    "type": "object",
+    "properties": {
+      "admin": {
+        "type": "boolean"
+      },
+      "adminOfCompanyIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "email": {
+        "type": "string"
+      },
+      "firstName": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "lastName": {
+        "type": "string"
+      }
+    }
+  },
+  "MobileCommandDTO": {
+    "type": "object",
+    "properties": {
+      "cmd": {
+        "type": "string",
+        "enum": ["DISCONNECT", "HOME", "DISPLAY", "SAVE_AS", "PROMPT"]
+      },
+      "cmdParms": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "screenId": {
+        "type": "string"
+      },
+      "screenSessionId": {
+        "type": "string"
+      },
+      "states": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/MobileScreenAssetState"
+        }
+      }
+    }
+  },
+  "MIDSocialData": {
+    "type": "object"
+  },
+  "Collection«string»": {
+    "type": "object"
+  },
+  "MobileAppCrashDTO": {
+    "type": "object",
+    "properties": {
+      "errorMessage": {
+        "type": "string"
+      },
+      "mobileInfo": {
+        "$ref": "#/definitions/MobileDeviceInfoDTO"
+      },
+      "stackTrace": {
+        "type": "string"
+      }
+    }
+  },
+  "UserLinkedOAuthMetadataDTO": {
+    "type": "object",
+    "properties": {
+      "oauthProvider": {
+        "type": "string",
+        "enum": ["LINKEDIN", "SALESFORCE", "FACEBOOK", "GOOGLE"]
+      },
+      "oauthVersion": {
+        "type": "string",
+        "enum": ["V1A", "V2"]
+      },
+      "providerUserId": {
+        "type": "string"
+      }
+    }
+  },
+  "FolderContentDTO": {
+    "type": "object",
+    "properties": {
+      "assets": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/AssetMinimalDTO"
+        }
+      },
+      "authorizedUserIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "description": {
+        "type": "string"
+      },
+      "folders": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Folder"
+        }
+      },
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "repositoryProvider": {
+        "type": "string",
+        "enum": ["DROPBOX", "BOX", "BRAINSHARK", "COMMS_FACTORY", "FACEBOOK", "S3", "GMAIL", "GOOGLE_PLUS", "TWITTER", "FLICKR", "LINKEDIN", "YOUTUBE", "VIMEO", "NETFLIX", "HULU", "AMAZON_PRIME", "HBO_GO", "ESPN", "CRACKLE", "VUDU", "FTP_SERVER", "ITUNES", "INSTAGRAM", "UPLOADED_BY_USER", "EXTERNAL_LINK"]
+      },
+      "subtitle": {
+        "type": "string"
+      }
+    }
+  },
+  "NotificationSettingsDTO": {
+    "type": "object",
+    "properties": {
+      "companyId": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "notificationFrequency": {
+        "type": "string",
+        "enum": ["instant", "instantOnceComplete", "daily", "weekly", "monthly", "dateTime"]
+      },
+      "notificationType": {
+        "$ref": "#/definitions/NotificationTypeDTO"
+      },
+      "notificationTypeId": {
+        "type": "string"
+      },
+      "shouldBeInFeed": {
+        "type": "boolean"
+      },
+      "shouldSendEmail": {
+        "type": "boolean"
+      },
+      "shouldSendMobilePushNotification": {
+        "type": "boolean"
+      },
+      "shouldSendPortalPush": {
+        "type": "boolean"
+      },
+      "shouldSendTextMessage": {
+        "type": "boolean"
+      },
+      "userId": {
+        "type": "string"
+      }
+    }
+  },
+  "AssetMinimalDTO": {
+    "type": "object",
+    "properties": {
+      "active": {
+        "type": "boolean"
+      },
+      "assetId": {
+        "type": "string"
+      },
+      "assetType": {
+        "type": "string",
+        "enum": ["VIDEO", "YOUTUBE", "IMAGE", "AUDIO", "CROCODOC"]
+      },
+      "createdAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "createdByEmail": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "displayName": {
+        "type": "string"
+      },
+      "externalAssetId": {
+        "type": "string"
+      },
+      "externalOwnerId": {
+        "type": "string"
+      },
+      "flags": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": ["VPN", "INTERNAL_USE_ONLY"]
+        }
+      },
+      "folderIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "id": {
+        "type": "string"
+      },
+      "noteCount": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "originalFilename": {
+        "type": "string"
+      },
+      "originalUrl": {
+        "type": "string"
+      },
+      "pageCount": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "readOnly": {
+        "type": "boolean"
+      },
+      "repoMetadata": {
+        "$ref": "#/definitions/AssetRepoMetadata"
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "thumbnailUrl": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "userId": {
+        "type": "string"
+      },
+      "version": {
+        "type": "string"
+      }
+    }
+  },
+  "MobileAppOpenedDTO": {
+    "type": "object",
+    "properties": {
+      "deviceInfo": {
+        "$ref": "#/definitions/MobileDeviceInfoDTO"
+      },
+      "fromBackground": {
+        "type": "boolean"
+      }
+    }
+  },
+  "recScreenStyle": {
+    "type": "object",
+    "properties": {
+      "additionalElements": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "audio": {
+        "type": "string"
+      },
+      "connectedUsers": {
+        "type": "string"
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "css": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "disconnect": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "loadingScreen": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "postConnect": {
+        "type": "string"
+      },
+      "preConnect": {
+        "type": "string"
+      },
+      "qrCode": {
+        "type": "string"
+      },
+      "syncCode": {
+        "type": "string"
+      },
+      "templateData": {
+        "$ref": "#/definitions/BrandedTemplateData"
+      },
+      "thumbnailUrl": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "FollowUpCreationDTO": {
+    "type": "object",
+    "properties": {
+      "assetIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "message": {
+        "type": "string"
+      },
+      "recipients": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/NameAndEmailDTO"
+        }
+      },
+      "screenSessionId": {
+        "type": "string"
+      }
+    }
+  },
+  "RecScreenTemplate": {
+    "type": "object",
+    "properties": {
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "description": {
+        "type": "string"
+      },
+      "disabled": {
+        "type": "boolean"
+      },
+      "fields": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/TemplateField"
+        }
+      },
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "recScreenStyleTemplate": {
+        "$ref": "#/definitions/recScreenStyle"
+      },
+      "thumbnailUrl": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "MobileInitDTO": {
+    "type": "object",
+    "properties": {
+      "numUnreadNotifications": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "supportedUploadFileTypes": {
+        "type": "string"
+      },
+      "wsHost": {
+        "type": "string"
+      },
+      "wsPort": {
+        "type": "string"
+      },
+      "wsProto": {
+        "type": "string"
+      }
+    }
+  },
+  "YouTubeAssetCreationDTO": {
+    "type": "object",
+    "properties": {
+      "folder_id": {
+        "type": "string"
+      },
+      "group_id": {
+        "type": "string"
+      },
+      "url": {
+        "type": "string"
+      }
+    }
+  },
+  "AssetLabel": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "value": {
+        "type": "string"
+      }
+    }
+  },
+  "MIDSessionCreationRequest": {
+    "type": "object",
+    "properties": {
+      "mid": {
+        "type": "string"
+      },
+      "userAuthToken": {
+        "type": "string"
+      }
+    }
+  },
+  "MIDRecScreenStyle": {
+    "type": "object",
+    "properties": {
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "description": {
+        "type": "string"
+      },
+      "disconnectBGColorHex": {
+        "type": "string"
+      },
+      "disconnectImages": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Image"
+        }
+      },
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "ownerId": {
+        "type": "string"
+      },
+      "ownerType": {
+        "type": "string",
+        "enum": ["USER", "COMPANY", "MCO_APP", "SYSTEM"]
+      },
+      "splashBGColorHex": {
+        "type": "string"
+      },
+      "splashImages": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Image"
+        }
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "MIDAppInitResponseDTO": {
+    "type": "object",
+    "properties": {
+      "appId": {
+        "type": "string"
+      },
+      "deviceDiscoveryTrackingURL": {
+        "type": "string"
+      },
+      "kinesisEnabled": {
+        "type": "boolean"
+      },
+      "mcoAppInfo": {
+        "$ref": "#/definitions/MCOAppLightDTO"
+      },
+      "mcoId": {
+        "type": "string"
+      },
+      "ustId": {
+        "type": "string"
+      }
+    }
+  },
+  "AugmentedPage": {
+    "type": "object",
+    "properties": {
+      "afterPageNumber": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "assets": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/AssetMinimalDTO"
+        }
+      }
+    }
+  },
+  "MIDUserMinimalDTO": {
+    "type": "object",
+    "properties": {
+      "email": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      }
+    }
+  },
+  "NameAndEmailDTO": {
+    "type": "object",
+    "properties": {
+      "email": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      }
+    }
+  },
+  "RedirectView": {
+    "type": "object",
+    "properties": {
+      "applicationContext": {
+        "$ref": "#/definitions/ApplicationContext"
+      },
+      "attributesMap": {
+        "type": "object",
+        "properties": {}
+      },
+      "beanName": {
+        "type": "string"
+      },
+      "contentType": {
+        "type": "string"
+      },
+      "exposePathVariables": {
+        "type": "boolean"
+      },
+      "propagateQueryProperties": {
+        "type": "boolean"
+      },
+      "redirectView": {
+        "type": "boolean"
+      },
+      "requestContextAttribute": {
+        "type": "string"
+      },
+      "staticAttributes": {
+        "type": "object",
+        "properties": {}
+      },
+      "url": {
+        "type": "string"
+      }
+    }
+  },
+  "Environment": {
+    "type": "object",
+    "properties": {
+      "activeProfiles": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "defaultProfiles": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "UserAPIKeyMetadata": {
+    "type": "object",
+    "properties": {
+      "apiKeyApplicationNotes": {
+        "type": "string"
+      },
+      "apiKeyDeclinedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "apiKeyGrantedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "apiKeyRequestedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "approvalComments": {
+        "type": "string"
+      }
+    }
+  },
+  "AssetRepoMetadata": {
+    "type": "object",
+    "properties": {
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "denyRetry": {
+        "type": "boolean"
+      },
+      "displayMessage": {
+        "type": "string"
+      },
+      "errorDetails": {
+        "type": "string"
+      },
+      "errorType": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "internalState": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "path": {
+        "type": "string"
+      },
+      "repoProvider": {
+        "type": "string",
+        "enum": ["DROPBOX", "BOX", "BRAINSHARK", "COMMS_FACTORY", "FACEBOOK", "S3", "GMAIL", "GOOGLE_PLUS", "TWITTER", "FLICKR", "LINKEDIN", "YOUTUBE", "VIMEO", "NETFLIX", "HULU", "AMAZON_PRIME", "HBO_GO", "ESPN", "CRACKLE", "VUDU", "FTP_SERVER", "ITUNES", "INSTAGRAM", "UPLOADED_BY_USER", "EXTERNAL_LINK"]
+      },
+      "repoType": {
+        "type": "string",
+        "enum": ["DEVICE_LOCAL_CONTENT", "PRIVATE_SERVER", "CLOUD_STORAGE", "CLOUD_STREAMING_CONTENT", "SOCIAL_NETWORK", "FTP", "SFTP", "USER_UPLOADED_CONTENT"]
+      },
+      "shared": {
+        "type": "boolean"
+      },
+      "status": {
+        "type": "string",
+        "enum": ["QUEUED", "CONVERTING", "COMPLETE", "ERROR"]
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "FolderLightDTO": {
+    "type": "object",
+    "properties": {
+      "description": {
+        "type": "string"
+      },
+      "flags": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": ["VPN", "INTERNAL_USE_ONLY"]
+        }
+      },
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "subtitle": {
+        "type": "string"
+      },
+      "thumbnailUrl": {
+        "type": "string"
+      }
+    },
+    "description": "This DTO is intended to look exactly like a Folder, but without a list of sub-folders."
+  },
+  "Favorite": {
+    "type": "object",
+    "properties": {
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "favoriteType": {
+        "type": "string",
+        "enum": ["ASSET", "FOLDER", "GROUP"]
+      },
+      "id": {
+        "type": "string"
+      },
+      "itemId": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "ScreenTestResult": {
+    "type": "object",
+    "properties": {
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "id": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "ScreenSessionDTO": {
+    "type": "object",
+    "properties": {
+      "active": {
+        "type": "boolean"
+      },
+      "activeCompanyId": {
+        "type": "string"
+      },
+      "assets": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/AssetMinimalDTO"
+        }
+      },
+      "companyIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "durationInSecs": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "endedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "id": {
+        "type": "string"
+      },
+      "lastCommand": {
+        "$ref": "#/definitions/ScreenAssetStateCommandDTO"
+      },
+      "locked": {
+        "type": "boolean"
+      },
+      "name": {
+        "type": "string"
+      },
+      "screens": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/ScreenDTO"
+        }
+      },
+      "startedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "unauthorizedSessionTokenIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "userId": {
+        "type": "string"
+      }
+    }
+  },
+  "EventNote": {
+    "type": "object",
+    "properties": {
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "eventId": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "note": {
+        "type": "string"
+      },
+      "type": {
+        "type": "string",
+        "enum": ["EMBEDDED", "PERSONAL", "EVENT"]
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "userId": {
+        "type": "string"
+      }
+    }
+  },
+  "User": {
+    "type": "object",
+    "properties": {
+      "active": {
+        "type": "boolean"
+      },
+      "activeCompanyId": {
+        "type": "string"
+      },
+      "addresses": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/UserAddress"
+        }
+      },
+      "admin": {
+        "type": "boolean"
+      },
+      "apiKey": {
+        "type": "string"
+      },
+      "apiKeyMetadata": {
+        "$ref": "#/definitions/UserAPIKeyMetadata"
+      },
+      "apiKeyPendingApproval": {
+        "type": "boolean"
+      },
+      "clientInformation": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/ClientInformation"
+        }
+      },
+      "companyIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "companyName": {
+        "type": "string"
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "defaultPlaylistId": {
+        "type": "string"
+      },
+      "displaySequenceOfFolderIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "email": {
+        "type": "string"
+      },
+      "emailLowerCase": {
+        "type": "string"
+      },
+      "favorites": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Favorite"
+        }
+      },
+      "firstName": {
+        "type": "string"
+      },
+      "firstTimeUser": {
+        "type": "boolean"
+      },
+      "folders": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Folder"
+        }
+      },
+      "groups": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Group"
+        }
+      },
+      "id": {
+        "type": "string"
+      },
+      "jasperMetadata": {
+        "$ref": "#/definitions/JasperMetaData"
+      },
+      "jasperMetadataSHA1": {
+        "type": "string"
+      },
+      "lastLoginTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "lastName": {
+        "type": "string"
+      },
+      "loginStatus": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "oauthUserIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "password": {
+        "type": "string"
+      },
+      "passwordExpired": {
+        "type": "boolean"
+      },
+      "passwordResetToken": {
+        "type": "string"
+      },
+      "permissions": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": ["PORTAL_LOGIN", "PORTAL_UPLOAD", "UPLOAD_APPROVER"]
+        }
+      },
+      "phone1": {
+        "type": "string"
+      },
+      "repoMetadata": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/UserLinkedRepoMetadata"
+        }
+      },
+      "salt": {
+        "type": "string"
+      },
+      "sessionTokens": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "title": {
+        "type": "string"
+      },
+      "udid": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "userAuthTokens": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/definitions/DateTime"
+        }
+      },
+      "userLinkedOAuthMetadata": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/UserLinkedOAuthMetadata"
+        }
+      },
+      "verificationLinkId": {
+        "type": "string"
+      }
+    }
+  },
+  "NotificationDTO": {
+    "type": "object",
+    "properties": {
+      "category": {
+        "type": "string",
+        "enum": ["teamContentUpdated", "personalContentUpdated", "salesActivity", "teamActivity", "shodoggCommunication"]
+      },
+      "companyId": {
+        "type": "string"
+      },
+      "createdAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "id": {
+        "type": "string"
+      },
+      "link": {
+        "type": "string"
+      },
+      "message": {
+        "type": "string"
+      },
+      "notificationTypeId": {
+        "type": "string"
+      },
+      "notificationTypeName": {
+        "type": "string"
+      },
+      "read": {
+        "type": "boolean"
+      },
+      "targetObjectId": {
+        "type": "string"
+      },
+      "targetObjectType": {
+        "type": "string"
+      },
+      "userId": {
+        "type": "string"
+      }
+    }
+  },
+  "Screen": {
+    "type": "object",
+    "properties": {
+      "active": {
+        "type": "boolean"
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "currentAssetsState": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/ScreenAssetState"
+        }
+      },
+      "domainURL": {
+        "type": "string"
+      },
+      "eventId": {
+        "type": "string"
+      },
+      "flurryApiKey": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "screenId": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string",
+        "enum": ["new", "waiting", "insession", "rejected", "removed", "disconnected"]
+      },
+      "statusBeforeDisconnect": {
+        "type": "string",
+        "enum": ["new", "waiting", "insession", "rejected", "removed", "disconnected"]
+      },
+      "syncCode": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "userAgent": {
+        "type": "string"
+      },
+      "userAgentId": {
+        "type": "string"
+      },
+      "userId": {
+        "type": "string"
+      },
+      "userName": {
+        "type": "string"
+      }
+    }
+  },
+  "UserLinkedRepoMetadataDTO": {
+    "type": "object",
+    "properties": {
+      "repoProvider": {
+        "type": "string",
+        "enum": ["DROPBOX", "BOX", "BRAINSHARK", "COMMS_FACTORY", "FACEBOOK", "S3", "GMAIL", "GOOGLE_PLUS", "TWITTER", "FLICKR", "LINKEDIN", "YOUTUBE", "VIMEO", "NETFLIX", "HULU", "AMAZON_PRIME", "HBO_GO", "ESPN", "CRACKLE", "VUDU", "FTP_SERVER", "ITUNES", "INSTAGRAM", "UPLOADED_BY_USER", "EXTERNAL_LINK"]
+      },
+      "repoType": {
+        "type": "string",
+        "enum": ["DEVICE_LOCAL_CONTENT", "PRIVATE_SERVER", "CLOUD_STORAGE", "CLOUD_STREAMING_CONTENT", "SOCIAL_NETWORK", "FTP", "SFTP", "USER_UPLOADED_CONTENT"]
+      }
+    }
+  },
+  "DataConsumptionResultsDTO": {
+    "type": "object",
+    "properties": {
+      "dryRun": {
+        "type": "boolean"
+      },
+      "recordsProcessed": {
+        "type": "integer",
+        "format": "int32"
+      }
+    }
+  },
+  "ModelAndView": {
+    "type": "object",
+    "properties": {
+      "empty": {
+        "type": "boolean"
+      },
+      "model": {
+        "type": "object",
+        "properties": {}
+      },
+      "modelMap": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      "reference": {
+        "type": "boolean"
+      },
+      "view": {
+        "$ref": "#/definitions/View"
+      },
+      "viewName": {
+        "type": "string"
+      }
+    }
+  },
+  "EventUrlSyncResponse": {
+    "type": "object",
+    "properties": {
+      "eventId": {
+        "type": "string"
+      },
+      "eventUrlId": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "screenSessionDTO": {
+        "$ref": "#/definitions/ScreenSessionDTO"
+      },
+      "screenSessionId": {
+        "type": "string"
+      },
+      "uriPath": {
+        "type": "string"
+      },
+      "webSocketHost": {
+        "type": "string"
+      },
+      "webSocketPort": {
+        "type": "string"
+      },
+      "webSocketProtocol": {
+        "type": "string"
+      }
+    }
+  },
+  "AssetStatus": {
+    "type": "object",
+    "properties": {
+      "assetId": {
+        "type": "string"
+      },
+      "error": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string",
+        "enum": ["QUEUED", "CONVERTING", "COMPLETE", "ERROR"]
+      }
+    }
+  },
+  "BillingPlan": {
+    "type": "object",
+    "properties": {
+      "active": {
+        "type": "boolean"
+      },
+      "componentPeriodicCostCents": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "description": {
+        "type": "string"
+      },
+      "free": {
+        "type": "boolean"
+      },
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "periodLength": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "periodicCostCents": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "productId": {
+        "type": "string"
+      },
+      "quantityComponentId": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "MessageAlert": {
+    "type": "object",
+    "properties": {
+      "companyId": {
+        "type": "string"
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "deleted": {
+        "type": "boolean"
+      },
+      "id": {
+        "type": "string"
+      },
+      "message": {
+        "type": "string"
+      },
+      "title": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "url": {
+        "type": "string"
+      },
+      "userId": {
+        "type": "string"
+      }
+    }
+  },
+  "UserLightDTO": {
+    "type": "object",
+    "properties": {
+      "email": {
+        "type": "string"
+      },
+      "firstName": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "lastName": {
+        "type": "string"
+      }
+    }
+  },
+  "MCOApp": {
+    "type": "object",
+    "properties": {
+      "activeRecScreenStyleId": {
+        "type": "string"
+      },
+      "applicationPlatform": {
+        "type": "string",
+        "enum": ["IOS", "ANDROID", "WINDOWS_STORE", "WEB"]
+      },
+      "companyId": {
+        "type": "string"
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "deleted": {
+        "type": "boolean"
+      },
+      "description": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "keyPairIDList": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "keyPairs": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/MCOAppKeyPair"
+        }
+      },
+      "mcoMidAuthServiceEnabled": {
+        "type": "boolean"
+      },
+      "mcoMidAuthServiceUrl": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "socialKeyPairIDList": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "socialKeyPairs": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/SocialKeyPair"
+        }
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "MIDUserSocialDataDTO": {
+    "type": "object",
+    "properties": {
+      "email": {
+        "type": "string"
+      },
+      "socialData": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/MIDSocialData"
+        }
+      },
+      "userId": {
+        "type": "string"
+      }
+    }
+  },
+  "AutoSyncDTO": {
+    "type": "object",
+    "properties": {
+      "recScreenUrl": {
+        "type": "string"
+      },
+      "screenId": {
+        "type": "string"
+      },
+      "screenSessionId": {
+        "type": "string"
+      }
+    }
+  },
+  "BeanFactory": {
+    "type": "object"
+  },
+  "ClassLoader": {
+    "type": "object",
+    "properties": {
+      "parent": {
+        "$ref": "#/definitions/ClassLoader"
+      }
+    }
+  },
+  "Chronology": {
+    "type": "object",
+    "properties": {
+      "zone": {
+        "$ref": "#/definitions/DateTimeZone"
+      }
+    }
+  },
+  "SimpleSuccessResultsDTO«UserLightDTO»": {
+    "type": "object",
+    "properties": {
+      "data": {
+        "$ref": "#/definitions/UserLightDTO"
+      },
+      "errorMessage": {
+        "type": "string"
+      },
+      "success": {
+        "type": "boolean"
+      }
+    },
+    "description": "Wraps a Data Model Object"
+  },
+  "SimpleCountResultDTO": {
+    "type": "object",
+    "properties": {
+      "count": {
+        "type": "integer",
+        "format": "int64"
+      }
+    }
+  },
+  "PortalInitDTO": {
+    "type": "object",
+    "properties": {
+      "activeCompanyId": {
+        "type": "string"
+      },
+      "activeCompanyOwnerId": {
+        "type": "string"
+      },
+      "activeCompanySettings": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "admin": {
+        "type": "boolean"
+      },
+      "analyticsViewsEnabled": {
+        "type": "boolean"
+      },
+      "assetFlagsEnabled": {
+        "type": "boolean"
+      },
+      "assetLabelsEnabled": {
+        "type": "boolean"
+      },
+      "assetTagsEnabled": {
+        "type": "boolean"
+      },
+      "companyIdsAndDefaultGroupIds": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "companyIdsAndNames": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "companySupportedRepos": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "defaultSupportedRepos": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "email": {
+        "type": "string"
+      },
+      "environmentShortName": {
+        "type": "string"
+      },
+      "eventPrefix": {
+        "type": "string"
+      },
+      "folderFlagsEnabled": {
+        "type": "boolean"
+      },
+      "jasperReportsServerUrl": {
+        "type": "string"
+      },
+      "jaspersoftName": {
+        "type": "string"
+      },
+      "jaspersoftPassword": {
+        "type": "string"
+      },
+      "maxUploadFileSizeBytes": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "pnHost": {
+        "type": "string"
+      },
+      "pnPort": {
+        "type": "string"
+      },
+      "pnProto": {
+        "type": "string"
+      },
+      "recscreenUrl": {
+        "type": "string"
+      },
+      "subscriptionState": {
+        "type": "string",
+        "enum": ["trialing", "trial_ended", "assessing", "active", "soft_failure", "past_due", "suspended", "canceled", "unpaid", "expired"]
+      },
+      "supportedAssetFlags": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": ["VPN", "INTERNAL_USE_ONLY"]
+        }
+      },
+      "supportedUploadFileTypes": {
+        "type": "string"
+      },
+      "userAdminCompanies": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "userFirstName": {
+        "type": "string"
+      },
+      "userId": {
+        "type": "string"
+      },
+      "userLastName": {
+        "type": "string"
+      }
+    }
+  },
+  "MCOAppKeyPair": {
+    "type": "object",
+    "properties": {
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "enabled": {
+        "type": "boolean"
+      },
+      "id": {
+        "type": "string"
+      },
+      "privateKey": {
+        "type": "string"
+      },
+      "publicKey": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "QuestionOption": {
+    "type": "object",
+    "properties": {
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "YouTubeSearchResult": {
+    "type": "object",
+    "properties": {
+      "assetIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "authorName": {
+        "type": "string"
+      },
+      "authorUri": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "durationInSeconds": {
+        "type": "string"
+      },
+      "key": {
+        "type": "string"
+      },
+      "link": {
+        "type": "string"
+      },
+      "thumbnail": {
+        "type": "string"
+      },
+      "thumbnails": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "title": {
+        "type": "string"
+      },
+      "viewCount": {
+        "type": "string"
+      }
+    }
+  },
+  "NotificationEnums": {
+    "type": "object",
+    "properties": {
+      "categories": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "frequencies": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "messageTemplateKeys": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "recipientTypes": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "systemActions": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "MCOAppInfo": {
+    "type": "object",
+    "properties": {
+      "appName": {
+        "type": "string"
+      },
+      "build": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "verMajor": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "verMinor": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "verPatch": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "version": {
+        "type": "string"
+      }
+    }
+  },
+  "MediaAssetCreationDTO": {
+    "type": "object",
+    "properties": {
+      "description": {
+        "type": "string"
+      },
+      "display_name": {
+        "type": "string"
+      },
+      "folder_id": {
+        "type": "string"
+      },
+      "group_id": {
+        "type": "string"
+      },
+      "thumbnail_url": {
+        "type": "string"
+      },
+      "url": {
+        "type": "string"
+      }
+    }
+  },
+  "UserPortalErrorLog": {
+    "type": "object",
+    "properties": {
+      "apiCallMethod": {
+        "type": "string"
+      },
+      "apiCallParams": {
+        "type": "string"
+      },
+      "apiCallUri": {
+        "type": "string"
+      },
+      "appCodeName": {
+        "type": "string"
+      },
+      "appName": {
+        "type": "string"
+      },
+      "appVersion": {
+        "type": "string"
+      },
+      "cookieEnabled": {
+        "type": "string"
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "errorMessage": {
+        "type": "string"
+      },
+      "fileName": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "ip": {
+        "type": "string"
+      },
+      "lineNumber": {
+        "type": "string"
+      },
+      "platform": {
+        "type": "string"
+      },
+      "responseCode": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "userAgent": {
+        "type": "string"
+      },
+      "userId": {
+        "type": "string"
+      },
+      "vendor": {
+        "type": "string"
+      }
+    }
+  },
+  "View": {
+    "type": "object",
+    "properties": {
+      "contentType": {
+        "type": "string"
+      }
+    }
+  },
+  "Analytics": {
+    "type": "object",
+    "properties": {
+      "P": {
+        "type": "string"
+      },
+      "act": {
+        "type": "string",
+        "enum": ["login", "logout", "loginFail", "resetPW", "s", "sa", "rv", "aa", "ad", "ag", "v", "vE", "cilc", "cilca", "cilcr", "cilcE", "sucilc", "sucilcE", "as", "scSyncCo", "scSyncEv", "scDisc", "ssEUd", "lockSs", "ssDisc", "evUrlPresStart", "evUrlPresEnd", "evUrlDeactivate", "ucP", "ucL", "ucS", "AaCS", "ACF", "pc", "wnu", "fatpcf", "fripcf", "fdipcf", "pcfc", "pcfd", "mobCmd", "mobDeviceInfo", "mobAppCrash", "mobAppUse", "mobUserDevLink", "cA", "cR", "prt", "prtOLD", "prtSL", "als", "AOPL", "ash", "aS", "aPI", "aMI", "aSAN", "aAA", "aDA", "agSS", "agSSs", "auSS", "agSSScrCnt", "apiReapSS", "apiUploadBrainshark", "apiUploadFile", "apiUploadYouTube", "aUVbU", "aUIbU", "auCF", "auTn", "auLA", "auCR", "acUser", "ujc", "auUser", "adUser", "aCC", "aGC", "aUC", "aDC", "aAUtC", "aRUtC", "acGroup", "auGroup", "adGroup", "aga", "dga", "aAddAssetGroup", "aAAtF", "aRAfF", "aAAtGF", "aRAfGF", "aCA", "aUA", "aCAl", "aARA", "aSAFs", "aRA", "aGAlrt", "aGAlrts", "aUAl", "aRAl", "aCFG", "aFAAa", "aFAAu", "aFAAF", "aFAAFU", "aFAAc", "aFAAGF", "aFAAG", "aFAFU", "aFAFG", "aaPtA", "adPfA", "aRemAssetGroup", "acAssetNote", "auAssetNote", "adAssetNote", "aAD", "acPageNote", "auPageNote", "adPageNote", "adUGS", "arUGS", "aaUGS", "apUGS", "adCGS", "apCGS", "apCI", "apSUCI", "agFC", "agRF", "agCRF", "agUF", "auF", "adF", "acF", "auFP", "agFcR", "aRNAC", "agAsset", "acFav", "adFav", "agFav", "acSSL", "aSSLC", "aSSLCE", "aCESSL", "aEAL", "aGACS", "aDBfu", "aDBal", "aDBau", "aDBs", "aDBui", "aaLC", "aaLCE", "aFAU", "aFDU", "aFGAU", "acFU", "oGAU", "oGWR", "oGIR", "oGAR", "oL", "moGAU", "moGWR", "moGIR", "moGAR", "moL", "amaC", "amaGa", "amaG", "amaE", "amaD", "amkC", "amkD", "amkT", "amskC", "amskE", "amskD", "amRV", "amPSSS", "oMRS", "iMRS", "aGFSL", "aFSLC", "aFSLE", "plc", "ple", "pld", "plia", "plie", "plid", "browserInfo"]
+      },
+      "creAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "id": {
+        "type": "string"
+      }
+    }
+  },
+  "Attendee": {
+    "type": "object",
+    "properties": {
+      "connected": {
+        "type": "boolean"
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "email": {
+        "type": "string"
+      },
+      "emailSent": {
+        "type": "boolean"
+      },
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "screenId": {
+        "type": "string"
+      },
+      "syncCode": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      }
+    }
+  },
+  "ScreenSessionMinimalDTO": {
+    "type": "object",
+    "properties": {
+      "active": {
+        "type": "boolean"
+      },
+      "activeCompanyId": {
+        "type": "string"
+      },
+      "createdAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "durationInSecs": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "endedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "startedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "userId": {
+        "type": "string"
+      }
+    }
+  },
+  "MobileScreenAssetState": {
+    "type": "object",
+    "properties": {
+      "assetId": {
+        "type": "string"
+      },
+      "assetType": {
+        "type": "string",
+        "enum": ["VIDEO", "IMAGE", "AUDIO", "CROCODOC", "BOX", "BRAINSHARK", "SLIDESHOW", "WEB_PAGE", "LINK", "OEMBED"]
+      },
+      "state": {
+        "type": "string",
+        "enum": ["PLAY", "PAUSE", "SEEK", "VOLUME", "SAVEAS"]
+      }
+    }
+  },
+  "MIDCastMetadata": {
+    "type": "object",
+    "properties": {
+      "asset_state_type": {
+        "type": "string"
+      },
+      "cmd_sequence": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "cmd_timestamp": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "cmd_verb": {
+        "type": "string"
+      },
+      "screen_id": {
+        "type": "string"
+      },
+      "screen_session_id": {
+        "type": "string"
+      },
+      "tcd_id": {
+        "type": "string"
+      },
+      "tcd_state": {
+        "type": "string"
+      }
+    }
+  },
+  "ScreenSessionLight": {
+    "type": "object",
+    "properties": {
+      "activeScreens": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/ScreenDTO"
+        }
+      },
+      "screenSessionId": {
+        "type": "string"
+      }
+    }
+  },
+  "ApplicationVersion": {
+    "type": "object",
+    "properties": {
+      "applicationName": {
+        "type": "string",
+        "enum": ["SHODOGG_CONNECT", "HPSN_PARTNERS", "HPSN_EMPLOYEES"]
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "id": {
+        "type": "string"
+      },
+      "message": {
+        "type": "string"
+      },
+      "platform": {
+        "type": "string",
+        "enum": ["IOS", "ANDROID", "WINDOWS_STORE", "WEB"]
+      },
+      "status": {
+        "type": "string",
+        "enum": ["OK", "WARNING", "INCOMPATIBLE"]
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "version": {
+        "type": "string"
+      },
+      "versionMajor": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "versionMinor": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "versionPatch": {
+        "type": "integer",
+        "format": "int32"
+      }
+    }
+  },
+  "SimpleSuccessResultsDTO«ScreenSession»": {
+    "type": "object",
+    "properties": {
+      "data": {
+        "$ref": "#/definitions/ScreenSession"
+      },
+      "errorMessage": {
+        "type": "string"
+      },
+      "success": {
+        "type": "boolean"
+      }
+    },
+    "description": "Wraps a Data Model Object"
+  },
+  "YouTubeSearchResults": {
+    "type": "object",
+    "properties": {
+      "itemsPerPage": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "results": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/YouTubeSearchResult"
+        }
+      },
+      "startIndex": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "totalResults": {
+        "type": "integer",
+        "format": "int64"
+      }
+    }
+  },
+  "ScreenWithSessionDTO": {
+    "type": "object",
+    "properties": {
+      "active": {
+        "type": "boolean"
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "currentAssetsState": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/ScreenAssetState"
+        }
+      },
+      "domainURL": {
+        "type": "string"
+      },
+      "eventId": {
+        "type": "string"
+      },
+      "flurryApiKey": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "screenId": {
+        "type": "string"
+      },
+      "screenSessionId": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string",
+        "enum": ["new", "waiting", "insession", "rejected", "removed", "disconnected"]
+      },
+      "statusBeforeDisconnect": {
+        "type": "string",
+        "enum": ["new", "waiting", "insession", "rejected", "removed", "disconnected"]
+      },
+      "syncCode": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "userAgent": {
+        "type": "string"
+      },
+      "userAgentId": {
+        "type": "string"
+      },
+      "userId": {
+        "type": "string"
+      },
+      "userName": {
+        "type": "string"
+      },
+      "webSocketHost": {
+        "type": "string"
+      },
+      "webSocketPort": {
+        "type": "string"
+      },
+      "webSocketProtocol": {
+        "type": "string"
+      }
+    }
+  },
+  "FollowUpDTO": {
+    "type": "object",
+    "properties": {
+      "activeCompanyId": {
+        "type": "string"
+      },
+      "assets": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/AssetMinimalDTO"
+        }
+      },
+      "attendeeStatusMap": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "attendees": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Attendee"
+        }
+      },
+      "consumptionData": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/SlideShareConsumptionAction"
+        }
+      },
+      "createdAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "id": {
+        "type": "string"
+      },
+      "linkAnalytics": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Analytics"
+        }
+      },
+      "links": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Link"
+        }
+      },
+      "screenSession": {
+        "$ref": "#/definitions/ScreenSessionMinimalDTO"
+      },
+      "screenSessionId": {
+        "type": "string"
+      },
+      "userId": {
+        "type": "string"
+      }
+    }
+  },
+  "PublishedStatus": {
+    "type": "object",
+    "properties": {
+      "approvedOrRejectedByUserId": {
+        "type": "string"
+      },
+      "approvedOrRejectedOnDate": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "id": {
+        "type": "string"
+      },
+      "state": {
+        "type": "string",
+        "enum": ["UPLOADED", "APPROVED", "REJECTED"]
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "uploadedByUserId": {
+        "type": "string"
+      }
+    }
+  },
+  "EventUrl": {
+    "type": "object",
+    "properties": {
+      "baseUriPath": {
+        "type": "string"
+      },
+      "createdAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "deleted": {
+        "type": "boolean"
+      },
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "updatedAt": {
+        "$ref": "#/definitions/DateTime"
+      },
+      "uriPath": {
+        "type": "string"
+      },
+      "userId": {
+        "type": "string"
+      }
+    }
+  },
+  "AssetSearchResultsDTO": {
+    "type": "object",
+    "properties": {
+      "count": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "pageNumber": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "pageOffset": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "pageSize": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "query": {
+        "type": "string"
+      },
+      "results": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/AssetSearchResultDTO"
+        }
+      },
+      "sort": {
+        "type": "string"
+      }
+    },
+    "description": "an object that encapsulates all of the search results for a query plus additional metadata"
+  },
+  "MIDUserSession": {
+    "type": "object",
+    "properties": {
+      "mcoAppId": {
+        "type": "string"
+      },
+      "mcoAppPublicKey": {
+        "type": "string"
+      },
+      "mcoId": {
+        "type": "string"
+      },
+      "mid": {
+        "type": "string"
+      },
+      "sessionToken": {
+        "type": "string"
+      }
+    }
+  },
+  "TemplateField": {
+    "type": "object",
+    "properties": {
+      "cssClass": {
+        "type": "string"
+      },
+      "defaultValue": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "displayName": {
+        "type": "string"
+      },
+      "fieldType": {
+        "type": "string",
+        "enum": ["IMG_URL", "HEX_COLOR", "TEXT"]
+      },
+      "name": {
+        "type": "string"
+      },
+      "optional": {
+        "type": "boolean"
+      }
+    }
+  }
+}

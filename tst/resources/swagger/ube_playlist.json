@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "properties": {
+    "assets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/AssetRef"
+      }
+    },
+    "createdAt": {
+      "$ref": "#/definitions/DateTime"
+    },
+    "defaultInsertionLocation": {
+      "type": "string",
+      "enum": ["BEGINNING", "END"]
+    },
+    "deleted": {
+      "type": "boolean",
+      "example": false
+    }
+  }
+}
