@@ -71,7 +71,10 @@ public class ApiGatewaySwaggerFileImporter implements SwaggerApiFileImporter {
     private Swagger parse(String filePath) {
         final Swagger swagger = parser.read(filePath);
 
-        if (swagger != null && swagger.getPaths() != null) {
+        if (swagger == null) {
+            throw new RuntimeException("Failed to parse "+filePath);
+        }
+        else if (swagger.getPaths() != null) {
             LOG.info("Parsed Swagger with " + swagger.getPaths().size() + " paths");
         }
 
