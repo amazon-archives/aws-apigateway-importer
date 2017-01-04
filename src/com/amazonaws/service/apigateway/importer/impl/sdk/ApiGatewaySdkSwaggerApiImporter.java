@@ -17,15 +17,13 @@ package com.amazonaws.service.apigateway.importer.impl.sdk;
 import com.amazonaws.service.apigateway.importer.SwaggerApiImporter;
 import com.amazonaws.service.apigateway.importer.impl.SchemaTransformer;
 import com.amazonaws.services.apigateway.model.*;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.amazonaws.services.apigateway.model.Method;
+import com.amazonaws.services.apigateway.model.Model;
 import com.google.inject.Inject;
-import io.swagger.models.Operation;
-import io.swagger.models.Path;
-import io.swagger.models.RefModel;
-import io.swagger.models.Response;
-import io.swagger.models.Swagger;
+import io.swagger.models.*;
 import io.swagger.models.auth.SecuritySchemeDefinition;
 import io.swagger.models.parameters.BodyParameter;
+import io.swagger.models.parameters.HeaderParameter;
 import io.swagger.models.parameters.Parameter;
 import io.swagger.models.properties.Property;
 import io.swagger.models.properties.RefProperty;
@@ -37,10 +35,7 @@ import org.apache.commons.logging.LogFactory;
 import java.io.IOException;
 import java.util.*;
 
-import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createAddOperation;
-import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createPatchDocument;
-import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createRemoveOperation;
-import static com.amazonaws.service.apigateway.importer.util.PatchUtils.createReplaceOperation;
+import static com.amazonaws.service.apigateway.importer.util.PatchUtils.*;
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 
@@ -61,8 +56,8 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
 
         final RestApi api = createApi(getApiName(swagger, name), swagger.getInfo().getDescription());
 
-        LOG.info("Created API "+api.getId());
-        
+        LOG.info("Created API " + api.getId());
+
         try {
             final Resource rootResource = getRootResource(api).get();
             deleteDefaultModels(api);
@@ -238,8 +233,56 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         Method method = resource.putMethod(input, httpMethod.toUpperCase());
 
         createMethodResponses(api, method, modelContentType, op.getResponses());
+        generateDefaultRequestParameters(op);
         createMethodParameters(api, method, op.getParameters());
         createIntegration(method, op.getVendorExtensions());
+    }
+
+    private void generateDefaultRequestParameters(Operation op) {
+        Map<String, Object> vendorExtensions = op.getVendorExtensions();
+        if (!vendorExtensions.containsKey(EXTENSION_INTEGRATION)) {
+            return;
+        }
+        Map<String, Map> integ = Json.mapper().convertValue(
+                vendorExtensions.get(EXTENSION_INTEGRATION), Map.class);
+        String keyResponses = "responses";
+        if (!integ.containsKey(keyResponses)) {
+            Map<String, String> responseData = new HashMap<>();
+            responseData.put("statusCode", "200");
+            Map<String, Map> defaultRes = new HashMap<>();
+            defaultRes.put("default", responseData);
+            integ.put(keyResponses, defaultRes);
+        }
+
+        String keyRequestParameters = "requestParameters";
+        if (integ.containsKey(keyRequestParameters)) {
+            LOG.info("requestParameters had defined ");
+            return;
+        }
+        String keyPrefix = "integration.request.";
+        String valuePrefix = "method.request.";
+
+        Map<String, String> requestParameters = new HashMap<>();
+        List<Parameter> parameters = op.getParameters();
+        for (Parameter parameter : parameters) {
+            String in = parameter.getIn();
+            String paramType = in;
+            if (in.equals("query")) {
+                paramType = "querystring";
+            }
+            String name = parameter.getName();
+            requestParameters.put(keyPrefix + paramType + "." + name, valuePrefix + paramType + "." + name);
+        }
+        Parameter authorization = new HeaderParameter();
+        authorization.setIn("header");
+        authorization.setName("Authorization");
+        parameters.add(authorization);
+        op.setParameters(parameters);
+
+        requestParameters.put(keyPrefix + "header.Authorization", valuePrefix + "header.Authorization");
+        LOG.info("automatically generate:" + requestParameters);
+        integ.put(keyRequestParameters, requestParameters);
+        vendorExtensions.put(EXTENSION_INTEGRATION, integ);
     }
 
     private void createIntegration(Method method, Map<String, Object> vendorExtensions) {
@@ -248,7 +291,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         }
 
         Map<String, HashMap> integ = Json.mapper().convertValue(
-                vendorExtensions.get(EXTENSION_INTEGRATION), Map.class );
+                vendorExtensions.get(EXTENSION_INTEGRATION), Map.class);
 
         IntegrationType type = IntegrationType.valueOf(getStringValue(integ.get("type")).toUpperCase());
 
@@ -292,7 +335,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
         String authType = "NONE";
         if (op.getVendorExtensions() != null) {
             Object objectNode = op.getVendorExtensions().get(EXTENSION_AUTH);
-            Map<String, String> authExtension = Json.mapper().convertValue( objectNode, Map.class );
+            Map<String, String> authExtension = Json.mapper().convertValue(objectNode, Map.class);
 
             if (authExtension != null) {
                 authType = authExtension.get("type").toUpperCase();
@@ -514,7 +557,7 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
                 LOG.warn("Default response not supported, skipping");
             } else {
                 LOG.info(format("Creating method response for api %s and method %s and status %s",
-                                api.getId(), method.getHttpMethod(), e.getKey()));
+                        api.getId(), method.getHttpMethod(), e.getKey()));
 
                 method.putMethodResponse(getCreateResponseInput(api, modelContentType, e.getValue()), e.getKey());
             }
@@ -541,7 +584,8 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
             if (model.getName() != null) {
                 return Optional.of(model);
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
 
         return Optional.empty();
     }
@@ -553,10 +597,10 @@ public class ApiGatewaySdkSwaggerApiImporter extends ApiGatewaySdkApiImporter im
                     String expression = createRequestParameterExpression(p);
 
                     LOG.info(format("Creating method parameter for api %s and method %s with name %s",
-                                    api.getId(), method.getHttpMethod(), expression));
+                            api.getId(), method.getHttpMethod(), expression));
 
                     method.updateMethod(createPatchDocument(createAddOperation("/requestParameters/" + expression,
-                                                                               getStringValue(p.getRequired()))));
+                            getStringValue(p.getRequired()))));
                 }
             }
         });
